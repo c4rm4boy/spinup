@@ -9,6 +9,7 @@ SpinUp started on October 31, 2026 as "Cabinet Builder," a clickable mockup for 
 ## v0.9.4 · Nov 1 · A clearer label
 
 - **The label at the top now says what SpinUp is: "An AI Staff for any goal."** It's on the demo, the project page and the videos.
+- **"Switch to Microsoft Edge" banner.** The demo talks, and Edge has the most natural voices, so other browsers now show a banner with **Open in Edge** (on Windows it opens Edge straight to the demo) or **Copy link**. Dismiss it once and it stays gone.
 - **An architecture page** (`architecture.html`) shows how SpinUp is built on one page: the browser pages, the local helper and its endpoints, Claude Code in two modes (locked-down one-shot calls and sandboxed Pro sessions), Claude Opus, where everything lives, how the demo and videos are made, and the guardrails.
 
 ## v0.9.3 · Nov 1 · Chief reacts, and the plan keeps growing

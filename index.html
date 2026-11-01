@@ -30,6 +30,15 @@ header { display:flex; flex-wrap:wrap; gap:12px; justify-content:space-between; 
 h1 { font:700 clamp(28px,5vw,40px)/1.1 var(--f-display); margin:0; }
 .lede { margin:6px 0 0; color:var(--ink-2); max-width:70ch; }
 .hint { color:var(--muted); font-size:13.5px; }
+/* "Switch to Edge" banner: shown only in other browsers (the demo's voices are best in Edge). */
+.edgetip { display:flex; flex-wrap:wrap; gap:10px 12px; align-items:center; padding:12px 14px; border-radius:12px;
+  background:color-mix(in srgb, var(--lead) 14%, var(--surface)); border:1px solid color-mix(in srgb, var(--lead) 55%, var(--line)); }
+.edgetip[hidden] { display:none; }
+.edgetip .ico { font-size:22px; }
+.edgetip .tiptext { flex:1 1 260px; font-size:15px; color:var(--ink-2); }
+.edgetip .tiptext b { color:var(--lead); }
+.edgetip .btn { display:inline-block; padding:7px 14px; border-radius:9px; background:var(--accent); color:#06231f; font-weight:650; text-decoration:none; }
+.edgetip .x { background:none; border:0; color:var(--muted); padding:4px 8px; }
 .picker { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
 .picker button { border-radius:999px; }
 .picker button[aria-pressed="true"] { border-color:var(--accent); background:color-mix(in srgb, var(--accent) 18%, var(--surface)); }
@@ -177,6 +186,14 @@ body.mockup { width:1280px; height:720px; overflow:hidden; background:radial-gra
   </div>
 </header>
 
+<div class="edgetip" id="edgetip" hidden role="note">
+  <span class="ico" aria-hidden="true">🔊</span>
+  <span class="tiptext"><b>Switch to Microsoft Edge for the best experience.</b> The demo talks, and Edge has the most natural voices. Other browsers can sound robotic.</span>
+  <a class="btn" id="edgeOpen" hidden>Open in Edge</a>
+  <button type="button" id="edgeCopy">Copy link</button>
+  <button type="button" id="edgeX" class="x" aria-label="Dismiss">✕</button>
+</div>
+
 <div class="demoinfo">
   <div class="picker" id="picker" role="group" aria-label="Pick a demo"></div>
   <div class="controls" style="margin-top:10px">
@@ -228,6 +245,24 @@ var REC = window.SPINUP_RECORDINGS || {};
 var ORDER = ['taco-truck', 'japan-trip', 'surprise-50th', 'vegetable-garden'].filter(function (k) { return REC[k]; });
 var LABEL = { 'taco-truck': '🌮 Start a taco food truck', 'japan-trip': '🗾 Family trip to Japan', 'surprise-50th': '🎉 Surprise 50th birthday party', 'vegetable-garden': '🥕 Backyard vegetable garden' };
 var params = new URLSearchParams(location.search), FILM = params.get('film');
+
+// "Switch to Edge": only outside Edge, never in the video, and not again once dismissed.
+// On Windows, Edge opens straight to this page via its microsoft-edge: link; elsewhere, copy the link to paste into Edge.
+(function () {
+  var tip = document.getElementById('edgetip'); if (!tip) return;
+  var isEdge = /\bEdg(e|A|iOS)?\//.test(navigator.userAgent), dismissed = false;
+  try { dismissed = localStorage.getItem('spinup-edgetip') === 'x'; } catch (e) {}
+  if (isEdge || FILM || dismissed) return;
+  tip.hidden = false;
+  var url = location.href.split('#')[0];
+  if (/Windows/.test(navigator.userAgent) && /^https?:/.test(url)) { var o = document.getElementById('edgeOpen'); o.href = 'microsoft-edge:' + url; o.hidden = false; }
+  document.getElementById('edgeCopy').onclick = function () {
+    var b = this;
+    (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function () { b.textContent = 'Copied: paste it into Edge'; },
+      function () { b.textContent = url; });
+  };
+  document.getElementById('edgeX').onclick = function () { tip.hidden = true; try { localStorage.setItem('spinup-edgetip', 'x'); } catch (e) {} };
+})();
 // The person talking to their Staff gets a voice too (matching each demo's role-played person).
 var YOU = { 'taco-truck': 'female', 'japan-trip': 'female', 'surprise-50th': 'male', 'vegetable-garden': 'male' };
 
