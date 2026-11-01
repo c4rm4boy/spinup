@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🚀 SpinUp Architecture</title>
+<!-- How SpinUp is built: the pages, the local helper, Claude Code in two modes, the model, storage and the demo pipeline.
+     Self-contained (public repo), dark by default. Elon, 2026-11-01. -->
+<style>
+:root { --bg:#0e1522; --surface:#162033; --surface-2:#1c2840; --ink:#e8edf6; --ink-2:#b3bfd3; --muted:#8592a8; --line:#26324a; --focus:#7aa5ff;
+  --accent:#3fd1c7; --lead:#f2c94c; --good:#6fd38c; --bad:#ff6b6b; --you:#7aa5ff; --pro:#b28dff; --model:#ff9f5a;
+  --f-display:"Segoe UI Variable Display","Segoe UI",system-ui,-apple-system,sans-serif; --f-body:"Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,sans-serif;
+  --f-mono:"Cascadia Mono",Consolas,ui-monospace,monospace; color-scheme:dark; }
+:root[data-theme="light"] { --bg:#f3f5f8; --surface:#fff; --surface-2:#eef2f7; --ink:#142033; --ink-2:#4a5872; --muted:#7a879c; --line:#dbe1ea; --focus:#3d6fd9;
+  --accent:#109a92; --lead:#b88c06; --good:#2f9a4c; --you:#3d6fd9; --pro:#8a5cf0; --model:#c8643f; color-scheme:light; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 var(--f-body); }
+.wrap { max-width:1180px; margin:0 auto; padding-inline:16px; padding-block:28px 56px; display:grid; gap:22px; }
+header.top { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:start; }
+.eyebrow { margin:0; font:700 13px var(--f-display); letter-spacing:.14em; text-transform:uppercase; color:var(--lead); }
+h1 { font:700 clamp(28px,5vw,40px)/1.1 var(--f-display); margin:2px 0 0; }
+h2 { font:650 21px/1.25 var(--f-display); margin:0 0 10px; }
+h3 { font:650 15.5px/1.25 var(--f-display); margin:0 0 6px; }
+.lede { color:var(--ink-2); max-width:72ch; margin:6px 0 0; }
+.note { color:var(--muted); font-size:13.5px; margin:0; }
+a { color:var(--focus); }
+code { font-family:var(--f-mono); font-size:.88em; background:var(--surface-2); border-radius:5px; padding:0 5px; }
+button { font:inherit; font-size:14px; color:var(--ink-2); background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:6px 12px; cursor:pointer; }
+/* The stack: one band per layer, top to bottom */
+.stack { display:grid; gap:0; }
+.band { position:relative; border:1px solid var(--line); border-left:5px solid var(--c); border-radius:14px; background:var(--surface); padding:14px 16px; display:grid; gap:10px; }
+.band > .lbl { display:flex; gap:10px; align-items:baseline; flex-wrap:wrap; }
+.band > .lbl b { font:700 17px var(--f-display); }
+.band > .lbl span { color:var(--muted); font-size:13.5px; }
+.cells { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr)); gap:8px; }
+.cell { background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:9px 11px; font-size:14px; color:var(--ink-2); min-width:0; }
+.cell b { display:block; color:var(--ink); font:650 14.5px var(--f-display); margin-bottom:2px; }
+.cell code { font-size:12.5px; }
+.link { display:grid; justify-items:center; color:var(--muted); font-size:12.5px; padding:4px 0; }
+.link i { font-style:normal; font-size:20px; line-height:1; color:var(--ink-2); }
+.two { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:12px; }
+.mode { background:var(--surface-2); border:1px solid var(--line); border-top:3px solid var(--c); border-radius:12px; padding:12px 14px; }
+.mode ul { margin:6px 0 0; padding-left:18px; font-size:14px; color:var(--ink-2); }
+.mode li { margin:2px 0; }
+.side { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr)); gap:12px; }
+.box { background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:14px 16px; }
+.tree { font-family:var(--f-mono); font-size:13px; color:var(--ink-2); white-space:pre; overflow-x:auto; margin:0; line-height:1.55; }
+.tree b { color:var(--ink); font-weight:600; }
+.flow { display:flex; flex-wrap:wrap; gap:6px; align-items:center; font-size:13.5px; }
+.flow span { background:var(--surface-2); border:1px solid var(--line); border-radius:999px; padding:3px 10px; color:var(--ink-2); }
+.flow em { font-style:normal; color:var(--muted); }
+.tl { display:grid; gap:6px; }
+.tl .row { display:grid; grid-template-columns:150px 1fr 70px; gap:10px; align-items:center; font-size:14px; }
+.tl .track { height:14px; border-radius:7px; background:var(--surface-2); position:relative; overflow:hidden; }
+.tl .bar { position:absolute; top:0; bottom:0; border-radius:7px; background:var(--c); }
+.tl .t { color:var(--muted); font-size:12.5px; text-align:right; }
+.guards { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr)); gap:8px; }
+.guards div { background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--good); border-radius:10px; padding:9px 12px; font-size:14px; color:var(--ink-2); }
+.guards b { color:var(--ink); }
+@media (max-width:560px) { .tl .row { grid-template-columns:100px 1fr 54px; } }
+/* Grid items default to min-width:auto; without this the file tree widens the page on a phone instead of scrolling. */
+.wrap > *, .stack > *, .side > *, .two > *, .cells > *, .box { min-width:0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <p class="eyebrow">An AI Staff for any goal</p>
+      <h1>🚀 How SpinUp is built</h1>
+      <p class="lede">Everything runs on your own PC. A few web pages talk to a small local helper; the helper runs Claude Code in two modes (quick one-shot calls, and long-lived sessions for each Pro), and Claude Opus does the thinking. Nothing has a server in the cloud except the model itself.</p>
+    </div>
+    <button id="theme" type="button">Light</button>
+  </header>
+
+  <!-- ---------- The stack ---------- -->
+  <section class="stack" aria-label="The stack, top to bottom">
+    <div class="band" style="--c:var(--you)">
+      <div class="lbl"><b>👤 You, in the browser</b><span>plain HTML pages, no framework, no build step</span></div>
+      <div class="cells">
+        <div class="cell"><b>SpinUp</b>The live conversation: Chief, the Lead, the Pros, voices, talk back, change orders, the plan.</div>
+        <div class="cell"><b>Project page</b>Your Staff as agents, today's tasks, first work, timeline, decisions, and 💬 chat with each Pro.</div>
+        <div class="cell"><b>Demo</b>Replays recorded runs with browser voices. Fully static: it's what GitHub Pages serves.</div>
+        <div class="cell"><b>Browser speech</b>Text-to-speech in natural voices; speech recognition for talk back. Nothing extra to install.</div>
+      </div>
+    </div>
+    <div class="link"><i>↕</i>HTTP to 127.0.0.1:8787 (your PC only; other websites are refused)</div>
+
+    <div class="band" style="--c:var(--accent)">
+      <div class="lbl"><b>⚙️ The SpinUp helper</b><span>one Node.js file, no dependencies, runs locally; every answer is validated before a page sees it</span></div>
+      <div class="cells">
+        <div class="cell"><b>Staffing</b><code>/lead</code> <code>/team</code> <code>/plan</code> <code>/adjust</code><br>Find the Lead, staff the Pros, write the plan, handle change orders.</div>
+        <div class="cell"><b>Put to work</b><code>/manifest/base</code> <code>/manifest/pro</code> <code>/manifest/save</code><br>Turn Pros into agents; first deliverables run in parallel.</div>
+        <div class="cell"><b>Pro sessions</b><code>/pro/chat</code> <code>/pro/history</code> <code>/pro/file</code><br>Talk to one Pro; read the chat and the documents it wrote.</div>
+        <div class="cell"><b>Library and tracker</b><code>/project</code> <code>/project-data</code> <code>/profile</code> <code>/usage</code><br>Save projects, remember ☆ facts, log every token.</div>
+      </div>
+    </div>
+    <div class="link"><i>↕</i><span>starts Claude Code headless (<code>claude -p</code>), one process per call; it exits when done</span></div>
+
+    <div class="band" style="--c:var(--pro)">
+      <div class="lbl"><b>🤖 Claude Code, in two modes</b><span>the same tool developers use, run without a window</span></div>
+      <div class="two">
+        <div class="mode" style="--c:var(--accent)">
+          <h3>1 · One-shot calls (staffing, plans, setup)</h3>
+          <ul>
+            <li>Run from an <b>empty folder</b>, with <b>no tools</b>, no MCP servers, no settings files and no hooks.</li>
+            <li>A fixed system prompt; the answer must be one JSON object, checked by the helper (one retry if it isn't).</li>
+            <li>Extended thinking off: same quality here, a third of the wait.</li>
+            <li>Typical: Lead ~6s, team ~20s, plan ~15s.</li>
+          </ul>
+        </div>
+        <div class="mode" style="--c:var(--pro)">
+          <h3>2 · Pro sessions (each Pro, and the Lead)</h3>
+          <ul>
+            <li>A <b>real, resumable session</b> per Pro: each message resumes it, runs once and exits. Idle Pros cost nothing.</li>
+            <li>Each Pro works in <b>its own folder</b>, outside the project's code, and can't see anything else.</li>
+            <li>Tools: read and write in that folder, plus web search. <b>No shell, no email, no other files.</b> Tested: reads and writes outside were blocked by the tools themselves.</li>
+            <li>Typical reply: 4 to 10 seconds.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="link"><i>↕</i>HTTPS, signed in with your Claude account</div>
+
+    <div class="band" style="--c:var(--model)">
+      <div class="lbl"><b>🧠 Claude Opus 5.5</b><span>the only cloud piece; usage counts against your Claude plan, so there's no separate bill</span></div>
+      <div class="cells">
+        <div class="cell"><b>What it does</b>Picks the Lead, staffs the team, writes the questions, the plan, the agents' rules and every Pro's work.</div>
+        <div class="cell"><b>What it costs</b>At API prices, a full run (start to first work) is about 25¢ and a chat message about 5–7¢. The token tracker logs every call.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- One full run ---------- -->
+  <section class="box" aria-labelledby="runh">
+    <h2 id="runh">⏱ One full run, start to first work</h2>
+    <p class="note" style="margin-bottom:10px">Typical times from the log. The team is staffed in the background while the Lead talks with you, and the five first deliverables run at the same time.</p>
+    <div class="tl">
+      <div class="row"><span>Chief finds the Lead</span><div class="track"><div class="bar" style="--c:var(--lead);left:0;width:5%"></div></div><span class="t">~6s</span></div>
+      <div class="row"><span>Staff the Pros</span><div class="track"><div class="bar" style="--c:var(--accent);left:4%;width:17%"></div></div><span class="t">~20s</span></div>
+      <div class="row"><span>You answer</span><div class="track"><div class="bar" style="--c:var(--you);left:5%;width:40%;opacity:.55"></div></div><span class="t">your pace</span></div>
+      <div class="row"><span>Write the plan</span><div class="track"><div class="bar" style="--c:var(--accent);left:45%;width:13%"></div></div><span class="t">~15s</span></div>
+      <div class="row"><span>Agents' setup</span><div class="track"><div class="bar" style="--c:var(--pro);left:60%;width:22%"></div></div><span class="t">~35s</span></div>
+      <div class="row"><span>5 first deliverables</span><div class="track"><div class="bar" style="--c:var(--pro);left:82%;width:16%"></div></div><span class="t">~20s</span></div>
+    </div>
+  </section>
+
+  <!-- ---------- Storage and the demo pipeline ---------- -->
+  <section class="side">
+    <div class="box">
+      <h2>🗂 Where things live (all local)</h2>
+<pre class="tree"><b>spinup/library/</b>             private, never committed
+  profile.json              what you ☆ starred
+  leads/&lt;expert&gt;/           each Lead + a bench that grows
+  goals/                    repeat a goal instantly
+  projects/&lt;date-goal&gt;/     your projects: answers, plan,
+                            agents, first deliverables
+  demos/projects/           sample projects, kept apart
+  usage.jsonl               the token log
+<b>%LOCALAPPDATA%/SpinUp/</b>
+  work/                     empty folder for one-shot calls
+  pros/&lt;project&gt;/&lt;pro&gt;/     each Pro's folder: its chat,
+                            session id, documents
+<b>~/.claude/projects/</b>        Claude Code's own session files</pre>
+    </div>
+    <div class="box">
+      <h2>🎬 The public demo and videos</h2>
+      <p class="note" style="margin-bottom:8px">Built from real runs, so anyone can watch without an account.</p>
+      <div class="flow"><span>Recorder runs a goal through the helper</span><em>→</em><span>Claude role-plays the person answering</span><em>→</em><span>recordings/*.json</span><em>→</em><span>data.js</span><em>→</em><span>GitHub Pages</span></div>
+      <div class="flow" style="margin-top:10px"><span>The demo page in film mode</span><em>→</em><span>headless Edge, frame by frame</span><em>→</em><span>Microsoft neural voices</span><em>→</em><span>ffmpeg</span><em>→</em><span>MP4</span></div>
+      <p class="note" style="margin-top:10px">The video's timing comes from the real length of every spoken line, so picture and voice stay in sync.</p>
+    </div>
+  </section>
+
+  <!-- ---------- Guardrails ---------- -->
+  <section aria-labelledby="gh">
+    <h2 id="gh">🛡 Guardrails, by design</h2>
+    <div class="guards">
+      <div><b>Local first.</b> Pages, helper, library and Pro folders are all on your PC. Only the model is in the cloud.</div>
+      <div><b>Draft-only.</b> No Pro can send, buy, book or sign. It isn't just told not to; it has no tool that could.</div>
+      <div><b>Sandboxed Pros.</b> Each works in its own folder, with no shell, no email and no access to your other files.</div>
+      <div><b>Locked-down calls.</b> Staffing and planning calls get no tools at all, and their answers are validated before rendering.</div>
+      <div><b>This PC only.</b> The helper listens on 127.0.0.1 and refuses requests from other websites.</div>
+      <div><b>Every token logged.</b> Each call is logged with the step, model, tokens and cost.</div>
+    </div>
+  </section>
+
+  <p class="note">SpinUp is a prototype by Tai Nguyen, built with Claude Code. See the <a href="index.html">demo</a>, the <a href="README.md">README</a> and the <a href="CHANGELOG.md">changelog</a>.</p>
+</div>
+<script>
+(function () {
+  var r = document.documentElement, b = document.getElementById('theme');
+  function set(t) { r.setAttribute('data-theme', t); b.textContent = t === 'dark' ? 'Light' : 'Dark'; try { localStorage.setItem('theme', t); } catch (e) {} }
+  try { var s = localStorage.getItem('theme'); if (s) set(s); } catch (e) {}
+  b.onclick = function () { set(r.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); };
+})();
+</script>
+</body>
+</html>

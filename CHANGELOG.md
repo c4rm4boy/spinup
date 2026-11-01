@@ -6,6 +6,11 @@ SpinUp started on October 31, 2026 as "Cabinet Builder," a clickable mockup for 
 
 ---
 
+## v0.9.4 · Nov 1 · A clearer label
+
+- **The label at the top now says what SpinUp is: "An AI Staff for any goal."** It's on the demo, the project page and the videos.
+- **An architecture page** (`architecture.html`) shows how SpinUp is built on one page: the browser pages, the local helper and its endpoints, Claude Code in two modes (locked-down one-shot calls and sandboxed Pro sessions), Claude Opus, where everything lives, how the demo and videos are made, and the guardrails.
+
 ## v0.9.3 · Nov 1 · Chief reacts, and the plan keeps growing
 
 - **Chief reacts to your goal,** in a line that fits it, instead of always saying "Good one": "Your own coffee shop! Let's get you brewing," or, for something hard, "I'm so sorry. Let's get you real support, step by step." The line comes with the Lead, so it costs no extra call.
@@ -81,7 +86,7 @@ SpinUp started on October 31, 2026 as "Cabinet Builder," a clickable mockup for 
 - **A live "What we're doing" bar** that updates as the idea grows.
 - **A thinking indicator** for every wait: a small brain with sweeping light rays, a status line and a timer.
 - **Four fresh demo goals,** natural voices only.
-- **The bigger idea got a name: "You Inc."** You're the CEO, and a team of AI experts works for you.
+- **The bigger idea took shape:** you're the CEO, and a team of AI experts works for you.
 
 ## v0.4 · Oct 31 (morning) · Any goal
 
@@ -116,7 +121,7 @@ SpinUp started on October 31, 2026 as "Cabinet Builder," a clickable mockup for 
 - **SpinUp is an idea to share, not a product.** The goal is to show a new way to think about AI agents. Wiring agents together is the easy part; deciding who should be in the room is the hard part.
 - **Names:**
   - You (CEO) → Chief → Lead → Pros, and the Pros together are your Staff.
-  - "You Inc" is the bigger idea. "SpinUp" is the tool.
+  - SpinUp is the tool; the bigger idea is that you're the CEO of your own AI Staff.
 - **Claude Opus** runs it, with extended thinking off (just as fast, and tighter teams).
 - **Each Pro is a real, resumable session** rather than a fresh call each time. That's the honest version of "your Staff is working."
 - **Draft-only, always.** Nothing is sent, bought, booked or signed without the person.

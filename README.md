@@ -25,6 +25,8 @@ You (CEO) → Chief (your right hand) → Lead (the expert for this goal) → Pr
 5. **A plan:** each Pro adds what they'd tell you, with real rules of thumb, and the Lead lines up next steps.
 6. **Put your Staff to work:** each Pro becomes an agent (rules, watch list, a first deliverable: drafts and research only), and the project gets a home page: your Staff, your to-do list vs. theirs, their first work, a timeline, decisions and what the Staff knows.
 
+**[🏗 How it's built](https://c4rm4boy.github.io/spinup/architecture.html)**: one page with the whole architecture.
+
 In the full prototype, each Pro is a real, resumable Claude Code session you can chat with from the project page. Each one works only in its own folder, can search the web, and can't send email or run commands.
 
 It started as my own AI chief of staff: a "cabinet" of AI leads that runs my week. SpinUp is that idea generalized to any goal.
@@ -35,6 +37,7 @@ It started as my own AI chief of staff: a "cabinet" of AI leads that runs my wee
 |---|---|
 | `index.html` | The demo player (one self-contained page) |
 | `project.html` | The project home page (open it from the end of the taco-truck demo) |
+| `architecture.html` | How SpinUp is built: the pages, the local helper, Claude Code in two modes, storage and guardrails |
 | `data.js` | The four recorded runs, bundled for the pages |
 | `recordings/*.json` | The raw recordings: every line, every answer, the plan |
 | `spinup-taco-truck.mp4` | The full video (about 3 minutes) |
