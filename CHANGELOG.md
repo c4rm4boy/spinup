@@ -1,0 +1,130 @@
+# SpinUp changelog
+
+SpinUp started on October 31, 2026 as "Cabinet Builder," a clickable mockup for one office remodel. Two days later it builds a team for any goal, puts that team to work, and lets you talk to each member one on one. Newest changes first.
+
+**The chain today:** You (the CEO) → 🧭 Chief (your right hand) → Lead (the expert for this goal) → Pros (your Staff)
+
+---
+
+## v0.9.3 · Nov 1 · Chief reacts, and the plan keeps growing
+
+- **Chief reacts to your goal,** in a line that fits it, instead of always saying "Good one": "Your own coffee shop! Let's get you brewing," or, for something hard, "I'm so sorry. Let's get you real support, step by step." The line comes with the Lead, so it costs no extra call.
+- **You can still add things after the plan.** At "Want me to put your Staff to work?", typing something new ("I also want a home gym in the garage") no longer counts as "not now." The Lead works it in, new Pros join and ask their questions, the plan is rewritten, and then the offer comes back.
+- **The Chief page design is approved** (the org chart of all your projects, in the SOP). It gets built once there's a first real project.
+
+## v0.9.2 · Nov 1 · Token tracker and "Try again"
+
+- **A token tracker.** Every Claude call SpinUp makes is logged with its real token counts: finding the Lead, staffing, the plan, change orders, setup, each first deliverable, each chat message. Runs from before the tracker were filled in from Claude Code's saved transcripts.
+- **What it costs, on many models.** The tracker prices one full run (start to first work), one chat message and all the work so far at API rates for Claude, OpenAI and Google models. On today's setup a full run is about 31¢ and a chat message about 7¢ at API prices.
+- **Now on Claude Opus 5.5.** The tracker showed that "Opus" had been quietly running as Claude Opus 4.7, because the copy of Claude Code SpinUp used was too old for Opus 5.5. Claude Code is updated, so every call now runs on Opus 5.5, about 20% cheaper per run at API prices. The tracker marks whichever model the latest call actually used.
+- **"Try again" when setup fails.** If putting the Staff to work fails, for example because the helper restarted, SpinUp keeps your answers and plan and offers Try again instead of a dead end.
+
+## v0.9.1 · Nov 1 · Your words stay your words
+
+- **Typed answers are kept as typed.** Before, SpinUp tried to match what you typed to an answer button, and one shared word was enough. "I eat two meals and snack a lot" got turned into "Three meals, no snacks," and correcting it kept snapping back. Now a button is only used when what you typed *is* that button.
+- **Spoken answers need a real match:** at least half the button's key words. A "no," "not" or "never" on one side only rules a button out.
+- **Changing an answer to the same thing** now says "nothing changed" instead of showing a change.
+- **Plus the SOP:** a step-by-step map of how SpinUp works, with every piece marked built, partly built or not built yet, and a mockup of the Chief page (all your projects as an org chart).
+
+## v0.9 · Nov 1 · Chief, Lead, and "anything to change?"
+
+- **Chief greets you.** Chief is your right hand and the same in every run, with its own voice. Chief meets you, finds the right expert and introduces them: "Good one. Your Lead for this is Carlos Mendoza, food truck owner."
+- **"First Call" is now "Lead."** One syllable no one misreads. The Lead's card carries a LEAD badge.
+- **A check-in before the plan.** Once every Pro has asked their questions, the Lead asks: "Is there anything you'd like to change or add?"
+  - **Change an answer:** pick it from a list, and that Pro asks again. The Lead confirms ("Got it: Modern → Coastal") and the plan uses the new answer.
+  - **Add something:** the Lead works it in like a change order. New Pros can join if the goal grew.
+- **Videos re-rendered** with Chief and the Lead. The long cut (3:13) now ends on the chat panel, with real exchanges with the Lead and the finance Pro. The short cut is 2:11.
+- **Launcher fix.** Starting SpinUp twice no longer stacks up windows. If it's already running, it just opens the page.
+
+## v0.8 · Oct 31 (evening) · Talk to your Staff
+
+- **Every Pro is a real AI session you can talk to.** Each Pro, and the Lead, has its own Claude Code session that picks up where you left off each time you write. An idle Pro costs nothing.
+- **Chat tabs on the project page.** "💬 Talk to Priya" opens a panel with a tab for each Pro, like having several chats open.
+- **Pros write documents.** Ask for a budget or a checklist and the Pro saves it in its folder, ready to open from the chat.
+- **Locked down, and tested.** Each Pro can only read and write in its own folder and search the web. No email, no commands, no access to your other files. A test asking a Pro to read and write outside its folder was blocked by the tools themselves, not just by its instructions.
+- **A short cut for X** (under X's 2:20 limit).
+- **Name for the main consultant chosen:** Chief.
+
+## v0.7 · Oct 31 (afternoon) · Put your Staff to work
+
+- **After the plan, the Lead offers to put the Staff to work.** Say yes and:
+  - each Pro becomes an agent with what it knows, its rules (always including "draft-only"), a watch list and how it reports;
+  - each Pro does a first piece of real work: a menu spec, a truck comparison, a prospect list, a permit checklist, a budget.
+- **Every idea gets a project home page** with:
+  - your Staff as agents;
+  - Today: what's yours to do vs. what the Staff is handling;
+  - their first work, ready to open;
+  - a timeline by owner;
+  - decisions so far and how the idea grew;
+  - everything the Staff knows.
+- **Answers sound human.** In the demo, the person's spoken answers include natural thinking noises with real pauses ("Hmm, let me think… ah, personal savings"). The screen still shows the clean answer.
+- **Better voices.** Dropped a voice that sounded robotic; the most natural voices are used first.
+- **The video walks the project page,** narrated stop by stop.
+- **Fixes:**
+  - The setup step now sees the whole Staff, so each task goes to the right Pro.
+  - The demo no longer asks to put the Staff to work five times.
+  - The page fits a phone screen.
+
+## v0.6 · Oct 31 (midday) · A demo anyone can watch
+
+- **A zero-install demo.** Four real runs (a taco truck, a family trip to Japan, a surprise 50th, a backyard garden) replay in the browser with voices. No account, no install.
+- **The person gets a voice too:** the goal is typed out and answers are spoken, and the Lead reads the plan's next steps aloud.
+- **Videos rendered from the real runs:** a screen version and a laptop-mockup version with keys that light up as words are typed.
+- **Launch posts drafted** for LinkedIn and X.
+
+## v0.5 · Oct 31 (late morning) · Change orders
+
+- **Change direction mid-conversation.** Say "actually, I also want…" and the Lead issues a change order:
+  - new Pros join and speak next;
+  - Pros who aren't needed step out;
+  - only the answers the change affects get asked again.
+- **A live "What we're doing" bar** that updates as the idea grows.
+- **A thinking indicator** for every wait: a small brain with sweeping light rays, a status line and a timer.
+- **Four fresh demo goals,** natural voices only.
+- **The bigger idea got a name: "You Inc."** You're the CEO, and a team of AI experts works for you.
+
+## v0.4 · Oct 31 (morning) · Any goal
+
+- **SpinUp works for any goal,** not just the built-in examples. A small helper on your PC runs Claude to find the Lead, staff the team and write the plan.
+- **A library that learns:**
+  - experts it has used come back, with a growing bench of specialists;
+  - ☆ star an answer and SpinUp remembers it about you;
+  - every run is saved as its own project.
+- **Answer any way you like:** tap, type, or talk, with a microphone on the goal box and on every question.
+- **Click any message to hear it** from that point on.
+
+## v0.3 · Oct 31 · SpinUp is born
+
+- **Renamed from "Cabinet Builder" to SpinUp.**
+- **A library of leads.** Built-in teams for an office remodel and "become a doctor," plus a greeter that finds an expert for anything else.
+
+## v0.2 · Oct 31 · It talks
+
+- **Every person speaks in their own natural voice,** taking turns like a real conversation.
+- **Talk back:** answer out loud.
+- **A voice speed slider,** remembered between visits.
+- **The conversation scrolls in its own window,** so the page doesn't jump.
+
+## v0.1 · Oct 31 · Cabinet Builder
+
+- **A clickable mockup for remodeling an office.** A general contractor narrows the job, then brings in a designer, a permit expert, a carpenter, an electrician, a painter, flooring, furniture and an estimator. Each one asks their questions in the order the work happens, and it ends with a plan.
+
+---
+
+## Decisions along the way
+
+- **SpinUp is an idea to share, not a product.** The goal is to show a new way to think about AI agents. Wiring agents together is the easy part; deciding who should be in the room is the hard part.
+- **Names:**
+  - You (CEO) → Chief → Lead → Pros, and the Pros together are your Staff.
+  - "You Inc" is the bigger idea. "SpinUp" is the tool.
+- **Claude Opus** runs it, with extended thinking off (just as fast, and tighter teams).
+- **Each Pro is a real, resumable session** rather than a fresh call each time. That's the honest version of "your Staff is working."
+- **Draft-only, always.** Nothing is sent, bought, booked or signed without the person.
+
+## What's next
+
+- **Chief on Telegram:** one bot that answers you and passes "Priya, …" straight to that Pro.
+- **A "my projects" list** on the SpinUp page.
+- **The public repo and demo page** on GitHub.
+- **A short follow-up clip** showing the check-in before the plan.
+- **Later:** pros that cross-check each other's numbers, and options beyond Claude Code (an API key, or OpenRouter) so more people can try it.

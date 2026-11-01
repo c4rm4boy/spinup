@@ -1,0 +1,327 @@
+{
+  "slug": "japan-trip",
+  "goal": "We want to plan a two-week family trip to Japan",
+  "recorded": "2026-10-31T17:07:39.655Z",
+  "brief": "We want to plan a two-week family trip to Japan (cities, food, and culture, nature and hot springs)",
+  "briefs": [
+    "We want to plan a two-week family trip to Japan (cities, food, and culture, nature and hot springs)"
+  ],
+  "people": {
+    "lead": {
+      "name": "Yuki Tanaka",
+      "title": "Japan Travel Specialist",
+      "emoji": "🗾",
+      "voice": "female",
+      "color": "#f2c94c",
+      "role": "Designs custom Japan itineraries and coordinates lodging, rail, and local guides."
+    },
+    "itin": {
+      "name": "Hiroshi",
+      "title": "Itinerary & Logistics Planner",
+      "emoji": "🗺️",
+      "voice": "male",
+      "color": "#6f9bff",
+      "role": "Owns routing, pacing, and daily flow across regions."
+    },
+    "jr": {
+      "name": "Kenji",
+      "title": "JR Rail & Transit Expert",
+      "emoji": "🚅",
+      "voice": "male",
+      "color": "#3fd1c7",
+      "role": "Owns rail passes, shinkansen routing, and regional transit."
+    },
+    "fam": {
+      "name": "Mika",
+      "title": "Family Travel Coordinator",
+      "emoji": "👨‍👩‍👧",
+      "voice": "female",
+      "color": "#f2c94c",
+      "role": "Owns kid-friendly pacing, lodging type, and family needs."
+    },
+    "food": {
+      "name": "Aya",
+      "title": "Food & Dining Guide",
+      "emoji": "🍜",
+      "voice": "female",
+      "color": "#b28dff",
+      "role": "Owns reservations, dietary needs, and regional food plans."
+    },
+    "culture": {
+      "name": "Sana",
+      "title": "Cultural Experiences Curator",
+      "emoji": "⛩️",
+      "voice": "female",
+      "color": "#ff8a7a",
+      "role": "Owns tea, crafts, festivals, temples, and local experiences."
+    },
+    "budget": {
+      "name": "Ren",
+      "title": "Budget & Booking Strategist",
+      "emoji": "💴",
+      "voice": "male",
+      "color": "#6fd38c",
+      "role": "Owns total budget, flight timing, and booking windows."
+    }
+  },
+  "cast": [
+    "itin",
+    "jr",
+    "fam",
+    "food",
+    "culture",
+    "budget"
+  ],
+  "events": [
+    {
+      "t": "user",
+      "text": "We want to plan a two-week family trip to Japan"
+    },
+    {
+      "t": "think",
+      "text": "Finding the first contact a pro would call…",
+      "secs": 6
+    },
+    {
+      "t": "lead"
+    },
+    {
+      "t": "say",
+      "who": "lead",
+      "text": "Hi, I'm Yuki, a Japan travel specialist. A two-week family trip to Japan can go so many directions, from neon cities to quiet countryside temples. To shape the right route, what pulls your family most?"
+    },
+    {
+      "t": "answer",
+      "text": "Cities, food, and culture, Nature and hot springs"
+    },
+    {
+      "t": "brief",
+      "text": "We want to plan a two-week family trip to Japan (cities, food, and culture, nature and hot springs)"
+    },
+    {
+      "t": "say",
+      "who": "lead",
+      "text": "Got it. For that I'm bringing in 6 Pros. I shape the route first, then rail and family needs, then your focus specialist, and finally budget and booking windows seal it."
+    },
+    {
+      "t": "meet",
+      "who": "itin",
+      "text": "Hi, I'm Hiroshi, your itinerary & logistics planner. Owns routing, pacing, and daily flow across regions."
+    },
+    {
+      "t": "meet",
+      "who": "jr",
+      "text": "Hi, I'm Kenji, your jr rail & transit expert. Owns rail passes, shinkansen routing, and regional transit."
+    },
+    {
+      "t": "meet",
+      "who": "fam",
+      "text": "Hi, I'm Mika, your family travel coordinator. Owns kid-friendly pacing, lodging type, and family needs."
+    },
+    {
+      "t": "meet",
+      "who": "food",
+      "text": "Hi, I'm Aya, your food & dining guide. Owns reservations, dietary needs, and regional food plans."
+    },
+    {
+      "t": "meet",
+      "who": "culture",
+      "text": "Hi, I'm Sana, your cultural experiences curator. Owns tea, crafts, festivals, temples, and local experiences."
+    },
+    {
+      "t": "meet",
+      "who": "budget",
+      "text": "Hi, I'm Ren, your budget & booking strategist. Owns total budget, flight timing, and booking windows."
+    },
+    {
+      "t": "active",
+      "who": "itin"
+    },
+    {
+      "t": "say",
+      "who": "itin",
+      "text": "What daily pace fits your family best?"
+    },
+    {
+      "t": "answer",
+      "text": "Balanced with breaks"
+    },
+    {
+      "t": "say",
+      "who": "itin",
+      "text": "Prefer two home bases or move cities often?"
+    },
+    {
+      "t": "answer",
+      "text": "Three to four stops"
+    },
+    {
+      "t": "done",
+      "who": "itin"
+    },
+    {
+      "t": "active",
+      "who": "jr"
+    },
+    {
+      "t": "say",
+      "who": "jr",
+      "text": "Hiroshi has you at three to four stops. How do you want to handle luggage between stops?"
+    },
+    {
+      "t": "answer",
+      "text": "Forward ahead (takkyubin)"
+    },
+    {
+      "t": "done",
+      "who": "jr"
+    },
+    {
+      "t": "active",
+      "who": "fam"
+    },
+    {
+      "t": "say",
+      "who": "fam",
+      "text": "What ages are the kids traveling?"
+    },
+    {
+      "t": "answer",
+      "text": "11 to 15"
+    },
+    {
+      "t": "say",
+      "who": "fam",
+      "text": "Which lodging types interest you?"
+    },
+    {
+      "t": "answer",
+      "text": "Western hotels, Ryokan with onsen"
+    },
+    {
+      "t": "done",
+      "who": "fam"
+    },
+    {
+      "t": "active",
+      "who": "food"
+    },
+    {
+      "t": "say",
+      "who": "food",
+      "text": "Mika noted 11 to 15 in the group. Any dietary needs or restrictions?"
+    },
+    {
+      "t": "answer",
+      "text": "Picky eaters"
+    },
+    {
+      "t": "done",
+      "who": "food"
+    },
+    {
+      "t": "active",
+      "who": "culture"
+    },
+    {
+      "t": "say",
+      "who": "culture",
+      "text": "How hands-on do you want cultural activities?"
+    },
+    {
+      "t": "answer",
+      "text": "Try a few workshops"
+    },
+    {
+      "t": "done",
+      "who": "culture"
+    },
+    {
+      "t": "active",
+      "who": "budget"
+    },
+    {
+      "t": "say",
+      "who": "budget",
+      "text": "Rough total budget range for the family trip?"
+    },
+    {
+      "t": "answer",
+      "text": "$15k to $25k"
+    },
+    {
+      "t": "say",
+      "who": "budget",
+      "text": "Noting you want balanced with breaks. When are you hoping to travel?"
+    },
+    {
+      "t": "answer",
+      "text": "Spring (cherry blossoms)"
+    },
+    {
+      "t": "done",
+      "who": "budget"
+    },
+    {
+      "t": "say",
+      "who": "lead",
+      "text": "That's everything we need up front. Give us a moment while your Staff writes up your plan."
+    },
+    {
+      "t": "think",
+      "text": "Your Staff is writing your plan…",
+      "secs": 20
+    },
+    {
+      "t": "plan"
+    },
+    {
+      "t": "say",
+      "who": "lead",
+      "text": "Your plan is ready."
+    }
+  ],
+  "plan": {
+    "notes": {
+      "itin": [
+        "With kids 11-15 and three to four stops, plan 3-4 nights per base to avoid burnout.",
+        "Suggested flow: Tokyo 4N, Hakone 1-2N, Kyoto 4N, Hiroshima or Kanazawa 2-3N.",
+        "Build one full rest or pool day mid-trip; shinkansen transfers eat 3-5 hours door to door."
+      ],
+      "jr": [
+        "For 3-4 stops in two weeks, a 14-day JR Pass at around 80000 yen rarely beats point-to-point tickets now.",
+        "Set up Suica or Pasmo on phones before arrival for subways and convenience stores.",
+        "Takkyubin runs about 2000-3000 yen per bag and takes one night; pack an overnight bag for the gap."
+      ],
+      "fam": [
+        "Kids 11-15 handle ryokan etiquette well; book one or two nights, not the whole trip.",
+        "Choose a ryokan with private onsen or family bath if anyone has tattoos or shyness concerns.",
+        "Western hotels in Tokyo and Kyoto give beds, laundry, and space; book twin rooms or connecting."
+      ],
+      "food": [
+        "For picky eaters, lean on tonkatsu, ramen, yakitori, curry, conveyor sushi, and depachika food halls.",
+        "Skip kaiseki as a main meal; one ryokan dinner is plenty for the experience.",
+        "Book any marquee restaurants six to eight weeks out; most izakaya and chains walk in fine."
+      ],
+      "culture": [
+        "Spring workshop picks for teens: taiko drumming, soba making, samurai or ninja experience, Kyoto tea ceremony.",
+        "Cherry blossom peak shifts year to year, usually late March to early April in Tokyo and Kyoto.",
+        "Book workshops directly through shop sites or Klook rather than hotel concierges to avoid markups."
+      ],
+      "budget": [
+        "$15-25k for a family of four in cherry blossom season is realistic but tight if flights are premium.",
+        "Lock flights and ryokan by December 2025 for spring 2026; prices climb sharply after January.",
+        "Expect roughly 40 percent lodging, 25 percent flights, 20 percent food, 15 percent transit and activities."
+      ]
+    },
+    "steps": [
+      "Ren confirms family size, departure city, and locks the spring travel window within two weeks.",
+      "Hiroshi drafts a 14-day route with Tokyo, Hakone, Kyoto, and one western stop for review.",
+      "Kenji prices JR Pass versus point-to-point once the route is set and arranges takkyubin handoffs.",
+      "Mika books Western hotels in Tokyo and Kyoto plus one or two ryokan nights with family bath access.",
+      "Aya reserves two or three standout meals six to eight weeks out and lists picky-eater friendly spots per city.",
+      "Sana books two or three teen-friendly workshops and checks cherry blossom forecast updates in February."
+    ]
+  },
+  "note": "Recorded from a real SpinUp run. The person answering was role-played by Claude."
+}

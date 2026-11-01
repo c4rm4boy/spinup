@@ -1,0 +1,291 @@
+{
+  "slug": "vegetable-garden",
+  "goal": "I want to grow a backyard vegetable garden",
+  "recorded": "2026-10-31T17:07:37.258Z",
+  "brief": "I want to grow a backyard vegetable garden (raised beds in the yard)",
+  "briefs": [
+    "I want to grow a backyard vegetable garden (raised beds in the yard)"
+  ],
+  "people": {
+    "lead": {
+      "name": "Sarah Pennington",
+      "title": "Master Gardener & Edible Landscape Consultant",
+      "emoji": "🌱",
+      "voice": "female",
+      "color": "#f2c94c",
+      "role": "Guides home gardeners from soil prep through first harvest."
+    },
+    "sun": {
+      "name": "Diana",
+      "title": "Site & Sun Analyst",
+      "emoji": "☀️",
+      "voice": "female",
+      "color": "#3fd1c7",
+      "role": "Maps sunlight, microclimate, and site constraints."
+    },
+    "soil": {
+      "name": "Marcus",
+      "title": "Soil & Compost Specialist",
+      "emoji": "🌱",
+      "voice": "male",
+      "color": "#6f9bff",
+      "role": "Owns soil health, amendments, and drainage."
+    },
+    "veg": {
+      "name": "Priya",
+      "title": "Vegetable Varietal Curator",
+      "emoji": "🥕",
+      "voice": "female",
+      "color": "#f2c94c",
+      "role": "Picks crops matched to goals, climate, and skill."
+    },
+    "water": {
+      "name": "Jamal",
+      "title": "Irrigation Designer",
+      "emoji": "💧",
+      "voice": "male",
+      "color": "#b28dff",
+      "role": "Plans watering systems and water conservation."
+    },
+    "pest": {
+      "name": "Rachel",
+      "title": "Integrated Pest Manager",
+      "emoji": "🐛",
+      "voice": "female",
+      "color": "#ff8a7a",
+      "role": "Handles pest, disease, and wildlife defense."
+    }
+  },
+  "cast": [
+    "sun",
+    "soil",
+    "veg",
+    "water",
+    "pest"
+  ],
+  "events": [
+    {
+      "t": "user",
+      "text": "I want to grow a backyard vegetable garden"
+    },
+    {
+      "t": "think",
+      "text": "Finding the first contact a pro would call…",
+      "secs": 6
+    },
+    {
+      "t": "lead"
+    },
+    {
+      "t": "say",
+      "who": "lead",
+      "text": "Hi, I'm Sarah, a Master Gardener who helps folks start backyard vegetable gardens. 'Veggie garden' can mean a few raised beds, a full in-ground plot, or even containers on a patio. What's your situation looking like?"
+    },
+    {
+      "t": "answer",
+      "text": "Raised beds in the yard"
+    },
+    {
+      "t": "brief",
+      "text": "I want to grow a backyard vegetable garden (raised beds in the yard)"
+    },
+    {
+      "t": "say",
+      "who": "lead",
+      "text": "Got it. For that I'm bringing in 5 Pros. Sun and soil dictate what's possible, so Diana and Marcus go first; then Priya picks crops, Jamal waters them, Rachel protects them."
+    },
+    {
+      "t": "meet",
+      "who": "sun",
+      "text": "Hi, I'm Diana, your site & sun analyst. Maps sunlight, microclimate, and site constraints."
+    },
+    {
+      "t": "meet",
+      "who": "soil",
+      "text": "Hi, I'm Marcus, your soil & compost specialist. Owns soil health, amendments, and drainage."
+    },
+    {
+      "t": "meet",
+      "who": "veg",
+      "text": "Hi, I'm Priya, your vegetable varietal curator. Picks crops matched to goals, climate, and skill."
+    },
+    {
+      "t": "meet",
+      "who": "water",
+      "text": "Hi, I'm Jamal, your irrigation designer. Plans watering systems and water conservation."
+    },
+    {
+      "t": "meet",
+      "who": "pest",
+      "text": "Hi, I'm Rachel, your integrated pest manager. Handles pest, disease, and wildlife defense."
+    },
+    {
+      "t": "active",
+      "who": "sun"
+    },
+    {
+      "t": "say",
+      "who": "sun",
+      "text": "How many hours of direct sun does your spot get?"
+    },
+    {
+      "t": "answer",
+      "text": "8+ hours"
+    },
+    {
+      "t": "say",
+      "who": "sun",
+      "text": "How much growing space are you working with?"
+    },
+    {
+      "t": "answer",
+      "text": "100 to 400 sq ft"
+    },
+    {
+      "t": "done",
+      "who": "sun"
+    },
+    {
+      "t": "active",
+      "who": "soil"
+    },
+    {
+      "t": "say",
+      "who": "soil",
+      "text": "What do you know about your current soil quality?"
+    },
+    {
+      "t": "answer",
+      "text": "Totally unknown"
+    },
+    {
+      "t": "say",
+      "who": "soil",
+      "text": "Do you have access to compost or organic matter?"
+    },
+    {
+      "t": "answer",
+      "text": "Need to start"
+    },
+    {
+      "t": "done",
+      "who": "soil"
+    },
+    {
+      "t": "active",
+      "who": "veg"
+    },
+    {
+      "t": "say",
+      "who": "veg",
+      "text": "Diana noted you have 8+ hours of sun. Which vegetables matter most to you?"
+    },
+    {
+      "t": "answer",
+      "text": "Tomatoes & peppers, Herbs"
+    },
+    {
+      "t": "say",
+      "who": "veg",
+      "text": "How much gardening experience do you have?"
+    },
+    {
+      "t": "answer",
+      "text": "Killed a few plants"
+    },
+    {
+      "t": "done",
+      "who": "veg"
+    },
+    {
+      "t": "active",
+      "who": "water"
+    },
+    {
+      "t": "say",
+      "who": "water",
+      "text": "Priya's planning around your tomatoes & peppers, herbs picks. How do you want to handle watering?"
+    },
+    {
+      "t": "answer",
+      "text": "Soaker hoses"
+    },
+    {
+      "t": "done",
+      "who": "water"
+    },
+    {
+      "t": "active",
+      "who": "pest"
+    },
+    {
+      "t": "say",
+      "who": "pest",
+      "text": "Which critters visit your yard?"
+    },
+    {
+      "t": "answer",
+      "text": "Squirrels, Just bugs"
+    },
+    {
+      "t": "done",
+      "who": "pest"
+    },
+    {
+      "t": "say",
+      "who": "lead",
+      "text": "That's everything we need up front. Give us a moment while your Staff writes up your plan."
+    },
+    {
+      "t": "think",
+      "text": "Your Staff is writing your plan…",
+      "secs": 20
+    },
+    {
+      "t": "plan"
+    },
+    {
+      "t": "say",
+      "who": "lead",
+      "text": "Your plan is ready."
+    }
+  ],
+  "plan": {
+    "notes": {
+      "sun": [
+        "With 8+ hours sun, you can grow nearly any warm-season crop including tomatoes and peppers.",
+        "At 100 to 400 sq ft, plan 2 to 4 raised beds, each 4 ft wide max so you can reach the middle.",
+        "Watch afternoon shade from fences or neighbor's house in July; map shadows across one full day before building."
+      ],
+      "soil": [
+        "Since soil is unknown, send a sample to your county extension office for a $15 to $25 test before planting.",
+        "Fill raised beds with a 60/30/10 mix of topsoil, compost, and aeration like perlite, roughly 10 to 12 inches deep.",
+        "Start a compost pile now with browns and greens at a 3:1 ratio; finished compost takes 3 to 6 months."
+      ],
+      "veg": [
+        "For a beginner, stick to 2 or 3 determinate tomatoes like Celebrity or Roma and sweet peppers; skip hot peppers unless you love them.",
+        "Add basil, parsley, chives, and oregano; basil near tomatoes helps both flavor and pest control.",
+        "Buy transplants your first year instead of starting from seed; it cuts failure risk by half."
+      ],
+      "water": [
+        "Soaker hoses are perfect since they keep foliage dry and prevent fungal issues like blight on tomatoes.",
+        "Run hoses 30 to 45 minutes, 2 to 3 times weekly; aim for 1 to 1.5 inches of water per week total.",
+        "Mulch beds with 2 to 3 inches of straw or shredded leaves to cut watering needs by 30 to 50 percent."
+      ],
+      "pest": [
+        "Squirrels dig for the smell of fresh soil; cover beds with chicken wire or hardware cloth for the first 2 weeks after planting.",
+        "For bugs, scout weekly and hand-pick hornworms and aphids; reach for neem or insecticidal soap only if damage spreads.",
+        "Install a simple 2 ft chicken wire fence if rabbits appear; depends on your neighborhood pressure."
+      ]
+    },
+    "steps": [
+      "Sarah maps the sunniest 100 to 400 sq ft zone and sketches 2 or 3 raised bed locations by mid-November.",
+      "Diana walks the yard at 10am, 1pm, and 4pm on a clear day to confirm 8+ hours of direct sun.",
+      "Marcus mails a soil test to the county extension and starts a compost pile before winter sets in.",
+      "Sarah builds or orders 4x8 ft raised bed kits and fills them with the 60/30/10 mix by late March.",
+      "Priya buys 3 tomato and 2 pepper transplants plus herb starts after the last frost in May.",
+      "Jamal lays soaker hoses on a timer and tops beds with 2 to 3 inches of straw mulch at planting."
+    ]
+  },
+  "note": "Recorded from a real SpinUp run. The person answering was role-played by Claude."
+}

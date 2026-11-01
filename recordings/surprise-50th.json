@@ -1,0 +1,283 @@
+{
+  "slug": "surprise-50th",
+  "goal": "I want to throw a surprise 50th birthday party for my wife",
+  "recorded": "2026-10-31T17:07:39.940Z",
+  "brief": "I want to throw a surprise 50th birthday party for my wife (backyard party with family)",
+  "briefs": [
+    "I want to throw a surprise 50th birthday party for my wife (backyard party with family)"
+  ],
+  "people": {
+    "lead": {
+      "name": "Priya Chen",
+      "title": "Event Planner",
+      "emoji": "🎉",
+      "voice": "female",
+      "color": "#f2c94c",
+      "role": "Plans the party and coordinates vendors, venue, and surprise logistics."
+    },
+    "logistics": {
+      "name": "Dev",
+      "title": "Surprise Logistics Coordinator",
+      "emoji": "🤫",
+      "voice": "male",
+      "color": "#f2c94c",
+      "role": "Owns the decoy plan, arrival timing, and guest wrangling."
+    },
+    "caterer": {
+      "name": "Marco",
+      "title": "Private Chef & Caterer",
+      "emoji": "🍽️",
+      "voice": "male",
+      "color": "#6f9bff",
+      "role": "Owns menu design, dietary needs, and food service flow."
+    },
+    "stylist": {
+      "name": "Juno",
+      "title": "Event Designer & Florist",
+      "emoji": "🌸",
+      "voice": "female",
+      "color": "#3fd1c7",
+      "role": "Owns look, feel, florals, and tablescape."
+    },
+    "entertainment": {
+      "name": "Theo",
+      "title": "Entertainment & AV Lead",
+      "emoji": "🎶",
+      "voice": "male",
+      "color": "#ff8a7a",
+      "role": "Owns music, sound, speeches, and pacing."
+    },
+    "photographer": {
+      "name": "Ines",
+      "title": "Event Photographer",
+      "emoji": "📸",
+      "voice": "female",
+      "color": "#b28dff",
+      "role": "Owns the reveal shot and memory capture."
+    }
+  },
+  "cast": [
+    "logistics",
+    "caterer",
+    "stylist",
+    "entertainment",
+    "photographer"
+  ],
+  "events": [
+    {
+      "t": "user",
+      "text": "I want to throw a surprise 50th birthday party for my wife"
+    },
+    {
+      "t": "think",
+      "text": "Finding the first contact a pro would call…",
+      "secs": 6
+    },
+    {
+      "t": "lead"
+    },
+    {
+      "t": "say",
+      "who": "lead",
+      "text": "Hi, I'm Priya, an event planner. Surprise 50ths can look so many different ways, from an intimate dinner to a big bash. To steer this right, what kind of vibe are you picturing?"
+    },
+    {
+      "t": "answer",
+      "text": "Backyard party with family"
+    },
+    {
+      "t": "brief",
+      "text": "I want to throw a surprise 50th birthday party for my wife (backyard party with family)"
+    },
+    {
+      "t": "say",
+      "who": "lead",
+      "text": "Got it. For that I'm bringing in 5 Pros. Surprise logic locks first, then food and look, then entertainment pacing, and finally how we capture the reveal."
+    },
+    {
+      "t": "meet",
+      "who": "logistics",
+      "text": "Hi, I'm Dev, your surprise logistics coordinator. Owns the decoy plan, arrival timing, and guest wrangling."
+    },
+    {
+      "t": "meet",
+      "who": "caterer",
+      "text": "Hi, I'm Marco, your private chef & caterer. Owns menu design, dietary needs, and food service flow."
+    },
+    {
+      "t": "meet",
+      "who": "stylist",
+      "text": "Hi, I'm Juno, your event designer & florist. Owns look, feel, florals, and tablescape."
+    },
+    {
+      "t": "meet",
+      "who": "entertainment",
+      "text": "Hi, I'm Theo, your entertainment & av lead. Owns music, sound, speeches, and pacing."
+    },
+    {
+      "t": "meet",
+      "who": "photographer",
+      "text": "Hi, I'm Ines, your event photographer. Owns the reveal shot and memory capture."
+    },
+    {
+      "t": "active",
+      "who": "logistics"
+    },
+    {
+      "t": "say",
+      "who": "logistics",
+      "text": "Juno is building the reveal around her aesthetic. Who's getting her to the surprise location?"
+    },
+    {
+      "t": "answer",
+      "text": "A close friend"
+    },
+    {
+      "t": "say",
+      "who": "logistics",
+      "text": "Roughly how many guests are you picturing?"
+    },
+    {
+      "t": "answer",
+      "text": "20–40"
+    },
+    {
+      "t": "done",
+      "who": "logistics"
+    },
+    {
+      "t": "active",
+      "who": "caterer"
+    },
+    {
+      "t": "say",
+      "who": "caterer",
+      "text": "Any dietary restrictions among the guest list?"
+    },
+    {
+      "t": "answer",
+      "text": "Vegetarian, Gluten-free"
+    },
+    {
+      "t": "say",
+      "who": "caterer",
+      "text": "What food style fits her vibe best?"
+    },
+    {
+      "t": "answer",
+      "text": "Buffet stations"
+    },
+    {
+      "t": "done",
+      "who": "caterer"
+    },
+    {
+      "t": "active",
+      "who": "stylist"
+    },
+    {
+      "t": "say",
+      "who": "stylist",
+      "text": "Which aesthetic feels most like her?"
+    },
+    {
+      "t": "answer",
+      "text": "Nostalgic throwback"
+    },
+    {
+      "t": "done",
+      "who": "stylist"
+    },
+    {
+      "t": "active",
+      "who": "entertainment"
+    },
+    {
+      "t": "say",
+      "who": "entertainment",
+      "text": "Juno's aesthetic is set. What should the music do?"
+    },
+    {
+      "t": "answer",
+      "text": "Dance floor energy"
+    },
+    {
+      "t": "done",
+      "who": "entertainment"
+    },
+    {
+      "t": "active",
+      "who": "photographer"
+    },
+    {
+      "t": "say",
+      "who": "photographer",
+      "text": "Dev's wrangling about 20–40 guests in. What matters most to capture?"
+    },
+    {
+      "t": "answer",
+      "text": "The reveal reaction"
+    },
+    {
+      "t": "done",
+      "who": "photographer"
+    },
+    {
+      "t": "say",
+      "who": "lead",
+      "text": "That's everything we need up front. Give us a moment while your Staff writes up your plan."
+    },
+    {
+      "t": "think",
+      "text": "Your Staff is writing your plan…",
+      "secs": 20
+    },
+    {
+      "t": "plan"
+    },
+    {
+      "t": "say",
+      "who": "lead",
+      "text": "Your plan is ready."
+    }
+  ],
+  "plan": {
+    "notes": {
+      "logistics": [
+        "Brief the close friend with a decoy story like a dinner date; have her arrive 30 minutes after guests to allow setup buffer.",
+        "Set a guest arrival window 45–60 minutes before reveal; collect phones or ask for a social media blackout until after the surprise.",
+        "Park guest cars around the block or at a neighbor's to keep the driveway clean of spoilers.",
+        "Build a plan B indoor pivot if weather turns; confirm forecast 72 hours out."
+      ],
+      "caterer": [
+        "Plan 6–8 buffet items with clear vegetarian and gluten-free labels; aim for 1.5 lbs food per guest across stations.",
+        "Collect final RSVPs with allergy confirmations 10 days out; keep two sealed allergy-safe plates aside in case of surprises.",
+        "Choose dishes that hold 30–45 minutes at temp in case her arrival slips; skip delicate fried items."
+      ],
+      "stylist": [
+        "Lean into nostalgic throwback: decade she turned 20, framed photos, vinyl covers, and warm string lights for backyard dusk.",
+        "Skip lilies, hyacinth, and heavy jasmine near food; use low non-fragrant arrangements under 12 inches so sightlines stay open.",
+        "Keep signage warm, not roast-style; avoid 'Over the Hill' gags that could embarrass her in front of family."
+      ],
+      "entertainment": [
+        "Book a DJ or build a 4-hour playlist weighted to her era; confirm her top 10 songs with the close friend quietly.",
+        "Rent a wireless handheld mic plus a small powered speaker for toasts, separate from the dance system, so the emotional peak lands.",
+        "Set dance floor after cake; keep volume under 85 dB during dinner so conversation works."
+      ],
+      "photographer": [
+        "Pre-scout the reveal spot and mark two shooting positions covering her face and the crowd; have guests face the entry path.",
+        "Bring an on-camera flash with diffuser and a fast 35mm or 50mm lens for low light after sunset.",
+        "Shoot the first 15 minutes of reveal and hugs before any posed group photos."
+      ]
+    },
+    "steps": [
+      "Priya locks the date, backyard layout, and final guest count by November 14 and sends save-the-dates with a secrecy note.",
+      "Dev briefs the close friend on the decoy story and arrival timing, and sets the guest arrival window 45 minutes early.",
+      "Marco finalizes the buffet menu with vegetarian and gluten-free labeled stations once RSVPs and allergies are in by three weeks out.",
+      "Juno orders nostalgic throwback decor, non-fragrant low florals, and string lights two weeks before the party.",
+      "Theo confirms the playlist with the close friend, rents the mic and speakers, and tests AV the morning of.",
+      "Ines scouts the reveal sightlines the day before and preps low-light gear for the dusk timeline."
+    ]
+  },
+  "note": "Recorded from a real SpinUp run. The person answering was role-played by Claude."
+}

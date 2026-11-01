@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SpinUp project</title>
+<!-- SpinUp project home page (Tai Nguyen, 2026). One page per idea once "Put your Staff to work" runs: your Staff as agents,
+     today's tasks (yours vs theirs), each Pro's first deliverable, a timeline, decisions and what the Staff knows.
+     Data: ?demo=<slug> reads data.js (static demo); ?p=<project> fetches /project-data from the SpinUp helper. -->
+<style>
+/* A home page for one idea: summary tiles up top, then a section per tile. Dark by default. */
+:root {
+  --bg:#0e1522; --surface:#162033; --surface-2:#1c2840; --ink:#e8edf6; --ink-2:#b8c3d6; --muted:#8a97ad; --line:#2a3752; --focus:#7aa5ff;
+  --accent:#3fd1c7; --lead:#f2c94c; --good:#6fd38c; --you:#7aa5ff;
+  --f-display:"Segoe UI Variable Display","Segoe UI",system-ui,-apple-system,sans-serif; --f-body:"Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,sans-serif;
+  color-scheme:dark;
+}
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 var(--f-body); }
+.wrap { max-width:1180px; margin:0 auto; padding-inline:16px; padding-block:24px 56px; display:grid; gap:22px; }
+button { font:inherit; color:var(--ink); background:var(--surface); border:1px solid var(--line); border-radius:9px; padding:5px 12px; cursor:pointer; }
+button:hover { border-color:var(--accent); }
+button:focus-visible, a:focus-visible, input:focus-visible { outline:2px solid var(--focus); outline-offset:2px; }
+a { color:var(--focus); }
+.eyebrow { margin:0; font:700 13px var(--f-display); letter-spacing:.14em; text-transform:uppercase; color:var(--lead); }
+.eyebrow span { color:var(--muted); }
+h1 { margin:4px 0 0; font:750 clamp(28px,5vw,42px)/1.08 var(--f-display); text-wrap:balance; }
+.one { margin:6px 0 0; color:var(--ink-2); font-size:18px; max-width:70ch; }
+.meta { display:flex; flex-wrap:wrap; gap:8px 14px; align-items:center; margin-top:10px; color:var(--muted); font-size:14px; }
+.pill { display:inline-flex; gap:6px; align-items:center; padding:3px 10px; border-radius:999px; background:color-mix(in srgb, var(--good) 16%, transparent); color:var(--good); font:650 13px var(--f-display); }
+.pill::before { content:""; width:8px; height:8px; border-radius:50%; background:var(--good); box-shadow:0 0 8px var(--good); }
+.tiles { display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,165px),1fr)); gap:10px; }
+.tile { display:grid; gap:2px; text-decoration:none; color:inherit; background:var(--surface); border:1px solid var(--line); border-top:4px solid var(--c); border-radius:12px; padding:12px 14px; }
+.tile:hover { border-color:var(--c); }
+.tile b { font:700 26px/1.1 var(--f-display); font-variant-numeric:tabular-nums; }
+.tile span { color:var(--ink-2); font-size:14px; }
+section { display:grid; gap:12px; scroll-margin-top:12px; }
+/* Grid items default to min-width:auto, which lets the wide timeline push the whole page sideways on a phone. */
+.wrap > *, section > *, .grid > *, .cols > * { min-width:0; }
+.agent .ti, .deliv h3, .todo .t { overflow-wrap:anywhere; }
+h2 { margin:0; font:700 21px var(--f-display); display:flex; gap:10px; align-items:baseline; flex-wrap:wrap; }
+h2 small { font:400 14px var(--f-body); color:var(--muted); }
+.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr)); gap:12px; align-items:start; }
+.agent { background:var(--surface); border:1px solid var(--line); border-left:4px solid var(--c); border-radius:12px; padding:12px 14px; display:grid; gap:8px; }
+.agent .top { display:grid; grid-template-columns:40px 1fr auto; gap:10px; align-items:center; }
+.agent .av { width:40px; height:40px; border-radius:50%; display:grid; place-items:center; font-size:21px; background:var(--surface-2); border:2px solid var(--c); }
+.agent .nm { font:650 16px/1.2 var(--f-display); }
+.agent .ti { color:var(--ink-2); font-size:13.5px; }
+.badge { font:700 11px var(--f-display); letter-spacing:.08em; padding:3px 8px; border-radius:999px; color:#06231f; background:var(--accent); }
+.status { font-size:14.5px; }
+.status b { color:var(--accent); }
+.agent dl { margin:0; display:grid; gap:6px; font-size:14px; }
+.agent dt { font:650 12.5px var(--f-display); color:var(--muted); text-transform:uppercase; letter-spacing:.06em; }
+.agent dd { margin:0; color:var(--ink-2); }
+.agent dd ul { margin:2px 0 0; padding-left:18px; }
+details > summary { cursor:pointer; color:var(--ink-2); font-size:14px; }
+.cols { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:12px; }
+.box { background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:12px 14px; display:grid; gap:8px; align-content:start; }
+.box h3 { margin:0; font:650 16.5px var(--f-display); }
+.todo { list-style:none; margin:0; padding:0; display:grid; gap:6px; }
+.todo li { display:grid; grid-template-columns:22px 1fr auto; gap:8px; align-items:start; padding:6px 8px; border-radius:8px; background:var(--surface-2); }
+.todo input { width:18px; height:18px; margin-top:2px; accent-color:var(--accent); }
+.todo li.done span.t { text-decoration:line-through; color:var(--muted); }
+/* The Staff's finished work isn't crossed out; it's delivered. */
+.todo li.delivered > span:first-child { color:var(--good); font-weight:700; }
+.todo li.delivered .when { color:var(--good); }
+.todo .when { color:var(--muted); font-size:13px; white-space:nowrap; }
+.todo .who { font-size:13px; color:var(--c); font-weight:650; }
+.deliv { background:var(--surface); border:1px solid var(--line); border-top:4px solid var(--c); border-radius:12px; padding:12px 14px; display:grid; gap:8px; align-content:start; }
+.deliv .hd { display:flex; gap:8px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
+.deliv .kind { font:700 11px var(--f-display); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+.deliv h3 { margin:0; font:650 17px var(--f-display); }
+.deliv .sum { margin:0; color:var(--ink-2); font-size:14.5px; }
+.md { font-size:14.5px; border-top:1px solid var(--line); padding-top:8px; }
+.md h4 { margin:10px 0 4px; font:650 15px var(--f-display); }
+.md p { margin:6px 0; } .md ul { margin:4px 0; padding-left:20px; }
+.md table { border-collapse:collapse; font-size:13.5px; margin:6px 0; } .md td, .md th { border-bottom:1px solid var(--line); padding:4px 10px 4px 0; text-align:left; }
+.tablewrap { overflow-x:auto; }
+.gantt { display:grid; gap:6px; overflow-x:auto; background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:12px 14px; }
+.grow { display:grid; grid-template-columns:200px 1fr; gap:10px; align-items:center; min-width:640px; }
+.grow .lbl { font-size:14px; } .grow .lbl small { display:block; color:var(--muted); font-size:12.5px; }
+.track { position:relative; height:24px; background:repeating-linear-gradient(90deg, transparent 0, transparent calc(100% / var(--w) - 1px), var(--line) calc(100% / var(--w) - 1px), var(--line) calc(100% / var(--w))); border-radius:6px; }
+.bar { position:absolute; top:3px; bottom:3px; border-radius:6px; background:var(--c); opacity:.9; }
+.axis { color:var(--muted); font-size:12.5px; }
+.facts { display:flex; flex-wrap:wrap; gap:6px; }
+.facts span { font-size:14px; padding:4px 10px; border-radius:999px; background:var(--surface-2); border:1px solid var(--line); }
+.decisions { list-style:none; margin:0; padding:0; display:grid; gap:8px; }
+.decisions li { background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:8px 12px; }
+.decisions li span { color:var(--ink-2); font-size:14.5px; }
+.grew { color:var(--ink-2); font-size:14.5px; }
+.guard { border:1px dashed var(--good); border-radius:12px; padding:10px 14px; color:var(--ink-2); font-size:14.5px; }
+.guard b { color:var(--good); }
+.foot { color:var(--muted); font-size:13.5px; margin:0; }
+.empty { color:var(--muted); }
+/* Talk to your Staff: a chat drawer with a tab per Pro, each tab a real Claude Code session (needs the SpinUp helper). */
+.talk { justify-self:start; font-size:14px; }
+.agent .talk { margin-top:2px; }
+#chat { position:fixed; top:0; right:0; bottom:0; width:min(480px,100vw); z-index:20; display:grid; grid-template-rows:auto auto 1fr auto; background:var(--surface); border-left:1px solid var(--line); box-shadow:-12px 0 32px rgba(0,0,0,.35); padding-top:env(safe-area-inset-top,0px); }
+#chat[hidden] { display:none; }
+/* Video highlight: the Talk buttons and the chat panel glow so viewers see they can keep talking to each Pro. */
+.talk.hl { border-color:var(--accent); background:color-mix(in srgb, var(--accent) 22%, var(--surface)); box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 45%, transparent), 0 0 18px color-mix(in srgb, var(--accent) 55%, transparent); }
+#chat.hl { border-left:2px solid var(--accent); box-shadow:-12px 0 32px rgba(0,0,0,.35), inset 0 0 0 2px color-mix(in srgb, var(--accent) 55%, transparent); }
+#chat .chd { display:flex; align-items:center; gap:10px; padding:10px 14px; border-bottom:1px solid var(--line); }
+#chat .chd b { flex:1; font:650 16px var(--f-display); }
+#chat .tabs { display:flex; gap:6px; padding:8px 10px; overflow-x:auto; scrollbar-width:none; border-bottom:1px solid var(--line); }
+#chat .tabs button { white-space:nowrap; border-radius:999px; padding:4px 10px; font-size:13.5px; }
+#chat .tabs button[aria-selected="true"] { border-color:var(--c); background:color-mix(in srgb, var(--c) 18%, var(--surface)); }
+#chat .msgs { overflow-y:auto; padding:12px 14px; display:grid; gap:10px; align-content:start; }
+#chat .m { max-width:88%; padding:8px 12px; border-radius:14px; font-size:15px; }
+#chat .m.you { justify-self:end; background:#24407a; border-radius:14px 4px 14px 14px; white-space:pre-wrap; }
+#chat .m.pro { justify-self:start; background:var(--surface-2); border-left:3px solid var(--c); border-radius:4px 14px 14px 14px; }
+#chat .m.pro p { margin:4px 0; } #chat .m.pro ul { margin:4px 0; padding-left:20px; }
+#chat .m.err { justify-self:center; color:#ff9f8a; font-size:14px; background:none; }
+#chat .wait { color:var(--muted); font-size:14px; }
+#chat .files { display:flex; flex-wrap:wrap; gap:6px; padding:0 14px 6px; }
+#chat .files button { font-size:13px; padding:3px 9px; }
+#chat form { display:grid; grid-template-columns:1fr auto; gap:8px; padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px)); border-top:1px solid var(--line); }
+#chat textarea { font:inherit; color:var(--ink); background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:8px 10px; resize:none; min-height:44px; max-height:140px; }
+#chat .hint { grid-column:1/-1; color:var(--muted); font-size:12.5px; }
+#doc { position:fixed; inset:0; z-index:30; background:rgba(5,10,20,.7); display:grid; place-items:center; padding:16px; }
+#doc .sheet { width:min(820px,100%); max-height:88vh; overflow:auto; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:16px 20px; }
+#doc .sheet .top { display:flex; justify-content:space-between; gap:10px; align-items:center; }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"><p class="empty">Loading your project…</p></div>
+<script src="data.js"></script>
+<script>
+(function () {
+'use strict';
+var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+var q = new URLSearchParams(location.search);
+
+// Small, safe Markdown: everything is escaped first, then headings, bullets, tables and bold are formatted.
+function md(src) {
+  var lines = esc(src).split('\n'), out = '', list = false, table = [];
+  function flushTable() {
+    if (!table.length) return;
+    var rows = table.filter(function (r) { return !/^\s*\|?[\s:|-]+\|?\s*$/.test(r); });
+    out += '<div class="tablewrap"><table>' + rows.map(function (r, i) {
+      var cells = r.trim().replace(/^\||\|$/g, '').split('|');
+      return '<tr>' + cells.map(function (c) { return i === 0 ? '<th>' + c.trim() + '</th>' : '<td>' + c.trim() + '</td>'; }).join('') + '</tr>';
+    }).join('') + '</table></div>';
+    table = [];
+  }
+  lines.forEach(function (l) {
+    if (/^\s*\|/.test(l)) { if (list) { out += '</ul>'; list = false; } table.push(l); return; }
+    flushTable();
+    var h = l.match(/^#{1,6}\s+(.*)/), b = l.match(/^\s*(?:[-*]|\d+[.)])\s+(.*)/);
+    if (h) { if (list) { out += '</ul>'; list = false; } out += '<h4>' + h[1] + '</h4>'; }
+    else if (b) { if (!list) { out += '<ul>'; list = true; } out += '<li>' + b[1] + '</li>'; }
+    else if (!l.trim()) { if (list) { out += '</ul>'; list = false; } }
+    else { if (list) { out += '</ul>'; list = false; } out += '<p>' + l + '</p>'; }
+  });
+  flushTable(); if (list) out += '</ul>';
+  return out.replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
+}
+var KIND = { checklist: 'Checklist', email: 'Email draft', budget: 'Budget', research: 'Research', comparison: 'Comparison', script: 'Script' };
+
+function render(P) {
+  var M = P.manifest || {}, people = P.people || {}, cast = (P.cast || []).filter(function (k) { return people[k]; }), D = P.deliverables || {};
+  var lead = people.lead || { name: P.lead || 'Your Lead', emoji: '🧭', color: 'var(--lead)' };
+  // Chat only works on a real project opened through the SpinUp helper (not the static demo).
+  var LIVE = !!(P.dir && /^http/.test(location.protocol) && !q.get('demo'));
+  // In the video (&film=1) the chat shows real recorded exchanges (P.chats) and the video drives it through window.FILMCHAT.
+  var FILMCHAT = !!q.get('film') && !!P.chats, TALK = LIVE || FILMCHAT;
+  var pc = function (k) { return (people[k] && people[k].color) || 'var(--you)'; };
+  var nm = function (k) { return k === 'you' ? 'You' : k === 'lead' ? lead.name.split(' ')[0] : (people[k] ? people[k].name : k); };
+  document.title = '🚀 ' + (M.title || P.request || 'SpinUp project');
+  var storeKey = 'spinup-todo-' + (P.dir || P.slug || M.title);
+  var doneMap = {}; try { doneMap = JSON.parse(localStorage.getItem(storeKey) || '{}'); } catch (e) {}
+  var delivs = cast.filter(function (k) { return D[k]; });
+  var emails = delivs.filter(function (k) { return ((M.agents || {})[k] || {}).first && M.agents[k].first.kind === 'email'; });
+  var weeks = Math.max.apply(null, (M.timeline || []).map(function (p) { return p.start + p.weeks - 1; }).concat([4]));
+
+  var html = '<header><p class="eyebrow">You Inc <span>· SpinUp project</span></p><h1>' + esc(M.title || P.request) + '</h1>' +
+    '<p class="one">' + esc(M.oneLine || P.brief || P.request) + '</p>' +
+    '<div class="meta"><span class="pill">Your Staff is working</span><span>Your Lead: ' + esc(lead.emoji || '') + ' ' + esc(lead.name) + (lead.title ? ', ' + esc(lead.title) : '') + '</span>' +
+    '<span>Staff of ' + cast.length + ' Pros</span>' + (P.date ? '<span>Set up ' + esc(P.date) + '</span>' : '') +
+    (TALK ? '<button type="button" class="talk" data-talk="lead">💬 Talk to ' + esc(lead.name.split(' ')[0]) + '</button>' : '') + '</div></header>';
+
+  html += '<nav class="tiles" aria-label="Sections">' +
+    tile('#staff', 'var(--accent)', cast.length, 'Pros at work') +
+    tile('#today', 'var(--you)', (M.yours || []).length, 'for you to do') +
+    tile('#work', 'var(--good)', delivs.length, 'first deliverables done') +
+    tile('#timeline', 'var(--lead)', weeks, 'weeks on the timeline') +
+    (emails.length ? tile('#work', '#e88bd8', emails.length, 'email drafts waiting on you') : '') +
+    tile('#decisions', '#b28dff', (M.decisions || []).length, 'decisions made') +
+    tile('#knowledge', '#ff9f5a', (M.knowledge || []).length, 'things your Staff knows') + '</nav>';
+  function tile(href, c, n, label) { return '<a class="tile" href="' + href + '" style="--c:' + c + '"><b>' + n + '</b><span>' + esc(label) + '</span></a>'; }
+
+  // Your Staff, now agents.
+  html += '<section id="staff"><h2>👥 Your Staff <small>each Pro is now an agent with its own knowledge, rules and watch list</small></h2><div class="grid">' +
+    cast.map(function (k) {
+      var p = people[k], a = (M.agents || {})[k] || {};
+      return '<article class="agent" style="--c:' + pc(k) + '"><div class="top"><div class="av">' + esc(p.emoji) + '</div><div><div class="nm">' + esc(p.name) + '</div><div class="ti">' + esc(p.title) + '</div></div><span class="badge">AGENT · READY</span></div>' +
+        '<div class="status">' + (D[k] ? '<b>✓ Done:</b> ' + esc(D[k].title) : '<b>Working on:</b> ' + esc(a.status || '')) + '</div>' +
+        '<details><summary>What ' + esc(p.name) + ' knows, follows and watches</summary><dl>' +
+        dd('Knows', a.knows) + dd('Rules', a.rules) + dd('Watches for', a.watch) + (a.reports ? '<dt>Reports</dt><dd>' + esc(a.reports) + '</dd>' : '') + '</dl></details>' +
+        (TALK ? '<button type="button" class="talk" data-talk="' + k + '">💬 Talk to ' + esc(p.name) + '</button>' : '') + '</article>';
+    }).join('') + '</div></section>';
+  function dd(t, list) { return list && list.length ? '<dt>' + t + '</dt><dd><ul>' + list.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></dd>' : ''; }
+
+  // Today: yours vs your Staff's.
+  html += '<section id="today"><h2>✅ Today <small>you do what only a person can; your Staff does the rest</small></h2><div class="cols">' +
+    '<div class="box"><h3>Yours</h3><ul class="todo">' + (M.yours || []).map(function (t, i) {
+      var id = 'y' + i, done = !!doneMap[id];
+      return '<li class="' + (done ? 'done' : '') + '"><input type="checkbox" data-id="' + id + '"' + (done ? ' checked' : '') + ' aria-label="Done"><span class="t">' + esc(t.task) + '</span><span class="when">' + esc(t.when) + '</span></li>';
+    }).join('') + '</ul></div>' +
+    '<div class="box"><h3>Your Staff\'s</h3><ul class="todo">' + delivs.map(function (k) {
+      return '<li class="delivered"><span>✓</span><span class="t"><span class="who" style="--c:' + pc(k) + '">' + esc(nm(k)) + '</span> ' + esc(D[k].title) + '</span><span class="when">Done</span></li>';
+    }).join('') + (M.staff || []).map(function (t) {
+      return '<li><span>•</span><span><span class="who" style="--c:' + pc(t.who) + '">' + esc(nm(t.who)) + '</span> ' + esc(t.task) + '</span><span class="when">' + esc(t.when) + '</span></li>';
+    }).join('') + '</ul></div></div></section>';
+
+  // First deliverables: the proof that the Staff is working.
+  html += '<section id="work"><h2>📄 Your Staff\'s first work <small>drafts and research, ready for you to use</small></h2><div class="grid">' +
+    delivs.map(function (k) {
+      var p = people[k], a = (M.agents || {})[k] || {}, d = D[k], kind = (a.first && a.first.kind) || 'research';
+      return '<article class="deliv" style="--c:' + pc(k) + '"><div class="hd"><span class="kind">' + esc(KIND[kind] || kind) + ' · ' + esc(p.emoji) + ' ' + esc(p.name) + '</span>' +
+        (kind === 'email' ? '<button type="button" data-copy="' + k + '">Copy draft</button>' : '') + '</div><h3>' + esc(d.title) + '</h3><p class="sum">' + esc(d.summary) + '</p>' +
+        '<details' + (kind === 'email' ? '' : '') + '><summary>Open</summary><div class="md">' + md(d.body) + '</div></details></article>';
+    }).join('') + '</div></section>';
+
+  // Timeline.
+  html += '<section id="timeline"><h2>📅 Timeline <small>' + weeks + ' weeks, by owner</small></h2><div class="gantt" style="--w:' + weeks + '">' +
+    '<div class="grow"><span></span><span class="axis">Week 1' + (weeks > 1 ? ' → week ' + weeks : '') + '</span></div>' +
+    (M.timeline || []).map(function (ph) {
+      return '<div class="grow"><span class="lbl">' + esc(ph.phase) + '<small>' + esc(nm(ph.owner)) + ' · weeks ' + ph.start + (ph.weeks > 1 ? '–' + (ph.start + ph.weeks - 1) : '') + '</small></span>' +
+        '<div class="track" style="--w:' + weeks + '"><div class="bar" style="--c:' + pc(ph.owner) + ';left:' + ((ph.start - 1) / weeks * 100) + '%;width:' + (ph.weeks / weeks * 100) + '%"></div></div></div>';
+    }).join('') + '</div></section>';
+
+  // Decisions and how the idea grew.
+  var briefs = P.briefs || P.howItGrew || [];
+  html += '<section id="decisions"><h2>🧭 Decisions &amp; changes</h2>' +
+    (briefs.length > 1 ? '<p class="grew"><b>How the idea grew:</b> ' + briefs.map(esc).join(' → ') + '</p>' : '') +
+    '<ul class="decisions">' + (M.decisions || []).map(function (d) { return '<li><b>' + esc(d.what) + '</b><br><span>' + esc(d.why) + '</span></li>'; }).join('') + '</ul></section>';
+
+  // What the Staff knows.
+  html += '<section id="knowledge"><h2>📚 What your Staff knows</h2><div class="facts">' + (M.knowledge || []).map(function (f) { return '<span>' + esc(f) + '</span>'; }).join('') + '</div>' +
+    (P.plan && P.plan.steps ? '<details><summary>The original plan from ' + esc(lead.name) + '</summary><ol>' + P.plan.steps.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ol></details>' : '') + '</section>';
+
+  html += '<p class="guard"><b>Your Staff drafts; you decide.</b> Nothing is sent, bought, booked or signed without your OK. Every Pro follows that rule, plus the rules on its card.</p>' +
+    '<p class="foot">Set up with SpinUp, a prototype by Tai Nguyen built with Claude Code. General guidance only, not professional advice.</p>';
+  var app = document.getElementById('app'); app.innerHTML = html;
+  // In the video (&film=1): no scrollbar, and one agent card and one first deliverable are already open, as if clicked.
+  if (q.get('film')) {
+    document.documentElement.style.scrollbarWidth = 'none';
+    var ag = app.querySelector('#staff details'); if (ag) ag.open = true;
+    var dl = app.querySelector('#work details'); if (dl) dl.open = true;
+  }
+
+  // ---------- Talk to your Staff ----------
+  // One tab per Pro (and the Lead). Each message resumes that Pro's own Claude Code session on this PC.
+  var CH = { who: null, busy: {} };
+  function chatOpen(who) {
+    var box = document.getElementById('chat');
+    if (!box) {
+      box = document.createElement('aside'); box.id = 'chat'; box.setAttribute('aria-label', 'Talk to your Staff');
+      var tabs = ['lead'].concat(cast).map(function (k) { var p = k === 'lead' ? lead : people[k];
+        return '<button type="button" role="tab" data-tab="' + k + '" style="--c:' + (k === 'lead' ? 'var(--lead)' : pc(k)) + '">' + esc(p.emoji || '') + ' ' + esc(p.name.split(' ')[0]) + '</button>'; }).join('');
+      box.innerHTML = '<div class="chd"><b>💬 Talk to your Staff</b><button type="button" id="chatX" aria-label="Close">✕</button></div>' +
+        '<div class="tabs" role="tablist">' + tabs + '</div><div class="msgs" id="msgs" aria-live="polite"></div>' +
+        '<div><div class="files" id="files"></div><form id="chatF"><textarea id="chatT" rows="2" aria-label="Your message"></textarea>' +
+        '<button type="submit" class="send">Send</button><span class="hint">Enter sends · Shift+Enter for a new line · each Pro remembers your conversation · drafts only</span></form></div>';
+      document.body.appendChild(box);
+      box.querySelector('.tabs').addEventListener('click', function (e) { var b = e.target.closest('[data-tab]'); if (b) chatTab(b.dataset.tab); });
+      document.getElementById('chatX').onclick = function () { box.hidden = true; };
+      document.getElementById('chatF').addEventListener('submit', function (e) { e.preventDefault(); chatSend(); });
+      document.getElementById('chatT').addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); chatSend(); } });
+      document.getElementById('files').addEventListener('click', function (e) { var b = e.target.closest('[data-file]'); if (b) openDoc(CH.who, b.dataset.file); });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { var d = document.getElementById('doc'); if (d) d.remove(); else box.hidden = true; } });
+    }
+    box.hidden = false; chatTab(who);
+  }
+  function proOf(k) { return k === 'lead' ? lead : people[k]; }
+  function chatTab(who) {
+    CH.who = who;
+    document.querySelectorAll('#chat [data-tab]').forEach(function (b) {
+      b.setAttribute('aria-selected', String(b.dataset.tab === who));
+      if (b.dataset.tab === who) { var row = b.parentNode; if (b.offsetLeft + b.offsetWidth > row.scrollLeft + row.clientWidth || b.offsetLeft < row.scrollLeft) row.scrollLeft = b.offsetLeft - 10; }
+    });
+    document.getElementById('chatT').placeholder = 'Message ' + proOf(who).name.split(' ')[0] + '…';
+    if (FILMCHAT) { drawMsgs(who, (P.chats || {})[who] || []); drawFiles([]); return; }
+    document.getElementById('msgs').innerHTML = '<p class="wait">Loading…</p>';
+    fetch('/pro/history?p=' + encodeURIComponent(P.dir) + '&who=' + who).then(function (r) { return r.json(); }).then(function (h) {
+      if (CH.who !== who) return;
+      drawMsgs(who, h.messages || []); drawFiles(h.files || []);
+      if (CH.busy[who] || h.busy) waitRow(who);
+      document.getElementById('chatT').focus();
+    });
+  }
+  function bubble(who, m) {
+    var mine = m.from === 'you', c = who === 'lead' ? 'var(--lead)' : pc(who);
+    return '<div class="m ' + (mine ? 'you' : 'pro') + '" style="--c:' + c + '">' + (mine ? esc(m.text) : md(m.text)) + '</div>';
+  }
+  function drawMsgs(who, list) {
+    var el = document.getElementById('msgs'), p = proOf(who);
+    el.innerHTML = list.length ? list.map(function (m) { return bubble(who, m); }).join('') :
+      '<p class="wait">Say hi to ' + esc(p.name) + '. ' + (who === 'lead' ? 'Ask about the plan, the timeline or what to do next.' : 'Ask about their first work, or for a new draft.') + '</p>';
+    el.scrollTop = el.scrollHeight;
+  }
+  function drawFiles(files) {
+    document.getElementById('files').innerHTML = files.map(function (f) { return '<button type="button" data-file="' + esc(f) + '">📄 ' + esc(f) + '</button>'; }).join('');
+  }
+  function waitRow(who) {
+    var el = document.getElementById('msgs'), w = document.createElement('p'), t0 = Date.now();
+    w.className = 'wait'; w.id = 'waitrow'; el.appendChild(w); el.scrollTop = el.scrollHeight;
+    (function tick() { if (!w.isConnected) return; w.textContent = proOf(who).name.split(' ')[0] + ' is thinking… ' + Math.round((Date.now() - t0) / 1000) + 's'; setTimeout(tick, 1000); })();
+  }
+  function chatSend() {
+    var ta = document.getElementById('chatT'), text = ta.value.trim(), who = CH.who;
+    if (!text || CH.busy[who]) return;
+    ta.value = ''; CH.busy[who] = true;
+    var el = document.getElementById('msgs'); if (el.querySelector('.wait')) el.innerHTML = '';
+    el.insertAdjacentHTML('beforeend', bubble(who, { from: 'you', text: text })); waitRow(who);
+    fetch('/pro/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ p: P.dir, who: who, text: text }) })
+      .then(function (r) { return r.json(); })
+      .then(function (r) {
+        CH.busy[who] = false; if (CH.who !== who) return;
+        var w = document.getElementById('waitrow'); if (w) w.remove();
+        el.insertAdjacentHTML('beforeend', r.error ? '<div class="m err">' + esc(r.error) + '</div>' : bubble(who, { from: who, text: r.reply }));
+        if (r.files) drawFiles(r.files); el.scrollTop = el.scrollHeight;
+      })
+      .catch(function () { CH.busy[who] = false; var w = document.getElementById('waitrow'); if (w) w.remove(); el.insertAdjacentHTML('beforeend', '<div class="m err">Couldn\'t reach the SpinUp helper. Is it running?</div>'); });
+  }
+  function openDoc(who, f) {
+    fetch('/pro/file?p=' + encodeURIComponent(P.dir) + '&who=' + who + '&f=' + encodeURIComponent(f)).then(function (r) { return r.json(); }).then(function (d) {
+      var o = document.createElement('div'); o.id = 'doc';
+      o.innerHTML = '<div class="sheet" role="dialog" aria-label="' + esc(f) + '"><div class="top"><b>📄 ' + esc(f) + ' · ' + esc(proOf(who).name) + '</b><button type="button">Close</button></div><div class="md">' + md(d.text || d.error || '') + '</div></div>';
+      o.addEventListener('click', function (e) { if (e.target === o || e.target.tagName === 'BUTTON') o.remove(); });
+      document.body.appendChild(o);
+    });
+  }
+  app.addEventListener('click', function (e) { var b = e.target.closest('[data-talk]'); if (b) chatOpen(b.dataset.talk); });
+  if (FILMCHAT) window.FILMCHAT = {
+    glow: function (on) { document.querySelectorAll('.talk').forEach(function (b) { b.classList.toggle('hl', on); }); },
+    open: function (who) { chatOpen(who); document.getElementById('chat').classList.add('hl'); },
+    tab: function (who) { chatTab(who); }
+  };
+
+  app.addEventListener('change', function (e) {
+    var c = e.target.closest('input[data-id]'); if (!c) return;
+    doneMap[c.dataset.id] = c.checked; c.closest('li').classList.toggle('done', c.checked);
+    try { localStorage.setItem(storeKey, JSON.stringify(doneMap)); } catch (er) {}
+  });
+  app.addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-copy]'); if (!b) return;
+    var text = D[b.dataset.copy].body.replace(/\*\*/g, '');
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () { b.textContent = 'Copied'; }, function () { b.textContent = 'Select and copy below'; });
+  });
+}
+
+var demo = q.get('demo'), dir = q.get('p');
+if (demo && window.SPINUP_PROJECTS && window.SPINUP_PROJECTS[demo]) render(window.SPINUP_PROJECTS[demo]);
+else if (dir) fetch('/project-data?p=' + encodeURIComponent(dir)).then(function (r) { return r.json(); }).then(render)
+  .catch(function () { document.getElementById('app').innerHTML = '<p class="empty">This project page needs the SpinUp helper running.</p>'; });
+else document.getElementById('app').innerHTML = '<p class="empty">No project chosen.</p>';
+})();
+</script>
+</body>
+</html>

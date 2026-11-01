@@ -1,0 +1,697 @@
+{
+  "slug": "taco-truck",
+  "goal": "I want to start a taco food truck",
+  "recorded": "2026-10-31T17:07:03.196Z",
+  "brief": "Launch a birria taco truck with weekday office lunch catering.",
+  "briefs": [
+    "I want to start a taco food truck (ready to buy a truck)",
+    "Launch a birria taco truck with weekday office lunch catering."
+  ],
+  "people": {
+    "lead": {
+      "name": "Carlos Mendoza",
+      "title": "Food Truck Owner & Mobile Food Consultant",
+      "emoji": "🌮",
+      "voice": "male",
+      "color": "#f2c94c",
+      "role": "Guides new operators from concept to curbside taco sales."
+    },
+    "chef": {
+      "name": "Marisol",
+      "title": "Taco Chef & Menu Developer",
+      "emoji": "🌮",
+      "voice": "female",
+      "color": "#6f9bff",
+      "role": "Owns menu design, recipes, and food cost margins"
+    },
+    "truck_builder": {
+      "name": "Diego",
+      "title": "Food Truck Fabricator",
+      "emoji": "🚚",
+      "voice": "male",
+      "color": "#3fd1c7",
+      "role": "Owns truck build-out, equipment layout, and health code compliance"
+    },
+    "permits": {
+      "name": "Yolanda",
+      "title": "Mobile Food Permit Specialist",
+      "emoji": "📋",
+      "voice": "female",
+      "color": "#f2c94c",
+      "role": "Owns licensing, commissary agreements, and health inspections"
+    },
+    "finance": {
+      "name": "Priya",
+      "title": "Small Business Finance Advisor",
+      "emoji": "💰",
+      "voice": "female",
+      "color": "#ff8a7a",
+      "role": "Owns startup capital, cash flow, and break-even math"
+    },
+    "catering": {
+      "name": "Renee",
+      "title": "Corporate Catering Sales Lead",
+      "emoji": "🥡",
+      "voice": "female",
+      "color": "#ff8a7a",
+      "role": "Owns office catering sales, packaging, and delivery logistics"
+    }
+  },
+  "cast": [
+    "chef",
+    "truck_builder",
+    "catering",
+    "permits",
+    "finance"
+  ],
+  "events": [
+    {
+      "t": "user",
+      "text": "I want to start a taco food truck"
+    },
+    {
+      "t": "think",
+      "text": "Finding the first contact a pro would call…",
+      "secs": 6
+    },
+    {
+      "t": "lead"
+    },
+    {
+      "t": "say",
+      "who": "lead",
+      "text": "Hey, I'm Carlos. I've run tacos out of a truck for twelve years. 'Taco truck' can mean a lot of things, from weekend festivals to a full daily route. Where are you right now with this?"
+    },
+    {
+      "t": "answer",
+      "text": "Ready to buy a truck"
+    },
+    {
+      "t": "brief",
+      "text": "I want to start a taco food truck (ready to buy a truck)"
+    },
+    {
+      "t": "say",
+      "who": "lead",
+      "text": "Got it. For that I'm bringing in 4 Pros. Menu drives the build, build drives permits, then we brand it and pencil the numbers."
+    },
+    {
+      "t": "meet",
+      "who": "chef",
+      "text": "Hi, I'm Marisol, your taco chef & menu developer. Owns menu design, recipes, and food cost margins"
+    },
+    {
+      "t": "meet",
+      "who": "truck_builder",
+      "text": "Hi, I'm Diego, your food truck fabricator. Owns truck build-out, equipment layout, and health code compliance"
+    },
+    {
+      "t": "meet",
+      "who": "permits",
+      "text": "Hi, I'm Yolanda, your mobile food permit specialist. Owns licensing, commissary agreements, and health inspections"
+    },
+    {
+      "t": "meet",
+      "who": "finance",
+      "text": "Hi, I'm Priya, your small business finance advisor. Owns startup capital, cash flow, and break-even math"
+    },
+    {
+      "t": "active",
+      "who": "chef"
+    },
+    {
+      "t": "say",
+      "who": "chef",
+      "text": "Which taco tradition anchors your menu?"
+    },
+    {
+      "t": "answer",
+      "text": "Birria"
+    },
+    {
+      "t": "say",
+      "who": "chef",
+      "text": "For a birria program, prep load matters. How many menu items feel right at launch?"
+    },
+    {
+      "t": "answer",
+      "text": "3-4 tight"
+    },
+    {
+      "t": "done",
+      "who": "chef"
+    },
+    {
+      "t": "active",
+      "who": "truck_builder"
+    },
+    {
+      "t": "say",
+      "who": "truck_builder",
+      "text": "What's your realistic truck budget?"
+    },
+    {
+      "t": "answer",
+      "text": "$30-60k"
+    },
+    {
+      "t": "change",
+      "text": "Actually, I also want to cater office lunches on weekdays."
+    },
+    {
+      "t": "think",
+      "text": "Carlos is working out the change order…",
+      "secs": 9
+    },
+    {
+      "t": "brief",
+      "text": "Launch a birria taco truck with weekday office lunch catering.",
+      "changed": 1
+    },
+    {
+      "t": "say",
+      "who": "lead",
+      "text": "Nice pivot—office catering changes order flow and pricing. I'm bringing in a catering sales pro to lock down corporate accounts and pre-order logistics alongside the truck."
+    },
+    {
+      "t": "meet",
+      "who": "catering",
+      "text": "Hi, I'm Renee, your corporate catering sales lead. Owns office catering sales, packaging, and delivery logistics"
+    },
+    {
+      "t": "say",
+      "who": "truck_builder",
+      "text": "To cook birria right, we need specific gear. Which cooking equipment is non-negotiable?"
+    },
+    {
+      "t": "answer",
+      "text": "Flat-top plancha, Trompo/vertical spit"
+    },
+    {
+      "t": "done",
+      "who": "truck_builder"
+    },
+    {
+      "t": "active",
+      "who": "catering"
+    },
+    {
+      "t": "say",
+      "who": "catering",
+      "text": "How will office lunches be served?"
+    },
+    {
+      "t": "answer",
+      "text": "Mix of all three"
+    },
+    {
+      "t": "say",
+      "who": "catering",
+      "text": "Which office types are you targeting?"
+    },
+    {
+      "t": "answer",
+      "text": "Tech startups, Coworking spaces, Law/finance firms"
+    },
+    {
+      "t": "done",
+      "who": "catering"
+    },
+    {
+      "t": "active",
+      "who": "permits"
+    },
+    {
+      "t": "say",
+      "who": "permits",
+      "text": "Where will you primarily operate?"
+    },
+    {
+      "t": "answer",
+      "text": "Events/festivals"
+    },
+    {
+      "t": "done",
+      "who": "permits"
+    },
+    {
+      "t": "active",
+      "who": "finance"
+    },
+    {
+      "t": "say",
+      "who": "finance",
+      "text": "How are you funding this?"
+    },
+    {
+      "t": "answer",
+      "text": "Personal savings"
+    },
+    {
+      "t": "say",
+      "who": "finance",
+      "text": "With a $30-60k build, break-even timing shifts. What monthly take-home do you need?"
+    },
+    {
+      "t": "answer",
+      "text": "Reinvesting everything"
+    },
+    {
+      "t": "done",
+      "who": "finance"
+    },
+    {
+      "t": "say",
+      "who": "lead",
+      "text": "That's everything we need up front. Give us a moment while your Staff writes up your plan."
+    },
+    {
+      "t": "think",
+      "text": "Your Staff is writing your plan…",
+      "secs": 20
+    },
+    {
+      "t": "plan"
+    },
+    {
+      "t": "say",
+      "who": "lead",
+      "text": "Want me to put your Staff to work? Each Pro gets their rules, their watch list and a first assignment."
+    },
+    {
+      "t": "answer",
+      "text": "Yes, put them to work"
+    },
+    {
+      "t": "m-setup",
+      "text": "Setting up your Staff…"
+    },
+    {
+      "t": "m-agent",
+      "who": "chef",
+      "status": "Drafting 3-item birria menu with food costs"
+    },
+    {
+      "t": "m-agent",
+      "who": "truck_builder",
+      "status": "Sourcing NSF-certified used trucks $30-60k"
+    },
+    {
+      "t": "m-agent",
+      "who": "catering",
+      "status": "Building 50-office contact list across target segments"
+    },
+    {
+      "t": "m-agent",
+      "who": "permits",
+      "status": "Confirming city mobile vendor rules and commissary options"
+    },
+    {
+      "t": "m-agent",
+      "who": "finance",
+      "status": "Modeling startup budget and 3-month reserve"
+    },
+    {
+      "t": "m-deliver",
+      "who": "chef",
+      "title": "Three-Item Birria Menu Spec",
+      "text": "Done. Three-Item Birria Menu Spec is ready for you."
+    },
+    {
+      "t": "m-deliver",
+      "who": "truck_builder",
+      "title": "Three-Truck Comparison Sheet: Birria Build Options",
+      "text": "Done. Three-Truck Comparison Sheet: Birria Build Options is ready for you."
+    },
+    {
+      "t": "m-deliver",
+      "who": "catering",
+      "title": "50-Office Prospect List: Weekday Lunch Catering Targets",
+      "text": "Done. 50-Office Prospect List: Weekday Lunch Catering Targets is ready for you."
+    },
+    {
+      "t": "m-deliver",
+      "who": "permits",
+      "title": "Permit and Commissary Checklist — Birria Taco Truck Launch",
+      "text": "Done. Permit and Commissary Checklist — Birria Taco Truck Launch is ready for you."
+    },
+    {
+      "t": "m-deliver",
+      "who": "finance",
+      "title": "Startup Budget and Break-Even Model: Birria Truck Launch",
+      "text": "Done. Startup Budget and Break-Even Model: Birria Truck Launch is ready for you."
+    },
+    {
+      "t": "say",
+      "who": "lead",
+      "text": "Your Staff is set up and already working. You have 6 things on your list; they're handling the rest. Your project page is ready."
+    },
+    {
+      "t": "m-project"
+    }
+  ],
+  "plan": {
+    "notes": {
+      "chef": [
+        "Lock birria recipe with chuck roast and consomé, 36-hour marinade standard. Build 3 items: quesabirria, regular taco, mulita.",
+        "Pre-braise meat at commissary in 20-pound batches so truck service stays under 90 seconds per order.",
+        "Add one salsa verde and one salsa roja; skip extras until volume proves demand."
+      ],
+      "truck_builder": [
+        "At $30-60k budget, used step van with NSF-certified build fits; new builds run $75k+. Verify NSF trail before wiring money.",
+        "Trompo plus plancha pulls serious amperage; spec a 7-8kW diesel generator minimum, not the common 3.5kW units.",
+        "Confirm propane layout meets NFPA 58 and local fire marshal rules before fabrication starts."
+      ],
+      "catering": [
+        "Build a 50-contact outreach list across tech, coworking, and law firms before truck delivery. Cold email open rates run 20-30 percent.",
+        "Offer three serve styles: truck pull-up, drop-off trays, and build-your-own bar. Price drop-off at $18-22 per head.",
+        "Include one vegetarian option like mushroom or jackfruit birria; law and finance firms ask about it most."
+      ],
+      "permits": [
+        "Events and festivals still require a commissary contract in most cities, typically $400-900 monthly. Line this up before truck purchase.",
+        "Depends on your city, but most require mobile food vendor permit, health permit, and seller's permit. Budget 4-8 weeks for approvals.",
+        "Get fire suppression (Ansul) inspected and tagged; festival organizers will ask for the certificate."
+      ],
+      "finance": [
+        "Hold 3 months of fixed costs in reserve, roughly $8-12k covering commissary, insurance, fuel, and propane before opening.",
+        "Reinvesting everything is fine short-term, but pay yourself $500 weekly by month 4 to avoid burnout decisions.",
+        "Track food cost under 32 percent and labor under 25 percent; birria meat yield after braising runs about 55 percent."
+      ]
+    },
+    "steps": [
+      "Yolanda confirms city mobile vendor rules and secures a commissary contract before any truck deposit.",
+      "Diego sources two or three NSF-certified used trucks in the $30-60k range and schedules inspections.",
+      "Marisol finalizes the 3-item birria menu and tests batch braising at a rented commissary kitchen.",
+      "Priya opens a business bank account and sets aside the 3-month operating reserve from savings.",
+      "Renee builds the 50-office contact list and drafts the catering one-pager with three serve styles.",
+      "Carlos books a food truck insurance quote and a licensed accountant to confirm entity setup and tax structure."
+    ]
+  },
+  "note": "Recorded from a real SpinUp run. The person answering was role-played by Claude.",
+  "manifest": {
+    "title": "Birria Truck Launch Plan",
+    "oneLine": "Launching a birria taco truck with weekday office catering for tech, coworking, and professional firms.",
+    "agents": {
+      "chef": {
+        "status": "Drafting 3-item birria menu with food costs",
+        "knows": [
+          "Birria-anchored, 3-4 tight items at launch",
+          "Plancha and trompo are non-negotiable gear",
+          "Batch braising needed at commissary"
+        ],
+        "rules": [
+          "Draft-only: never sends, buys, books or signs anything without your OK",
+          "Target 28-32% food cost per item",
+          "Spec every ingredient by yield and vendor"
+        ],
+        "watch": [
+          "Consomé holding temp and quality",
+          "Masa and tortilla supplier consistency"
+        ],
+        "reports": "Weekly with recipe and cost updates",
+        "first": {
+          "title": "Three-item birria menu spec",
+          "kind": "research"
+        }
+      },
+      "truck_builder": {
+        "status": "Sourcing NSF-certified used trucks $30-60k",
+        "knows": [
+          "Budget ceiling is $60k for truck",
+          "Must fit plancha and vertical trompo",
+          "Health code compliance required pre-purchase"
+        ],
+        "rules": [
+          "Draft-only: never sends, buys, books or signs anything without your OK",
+          "Only NSF-certified equipment on build list",
+          "No deposit until Yolanda clears commissary"
+        ],
+        "watch": [
+          "Generator capacity for trompo and plancha",
+          "Hood/fire suppression sizing for open flame"
+        ],
+        "reports": "Weekly with truck shortlist updates",
+        "first": {
+          "title": "Three-truck comparison sheet",
+          "kind": "comparison"
+        }
+      },
+      "catering": {
+        "status": "Building 50-office contact list across target segments",
+        "knows": [
+          "Targets: tech, coworking, law/finance",
+          "Serve styles: trays, boxes, on-site truck",
+          "Weekday office lunch is primary channel"
+        ],
+        "rules": [
+          "Draft-only: never sends, buys, books or signs anything without your OK",
+          "Only pitch offices within 20-minute drive radius",
+          "Lead with sampler before quoting large orders"
+        ],
+        "watch": [
+          "Office headcount thresholds for truck visits",
+          "Repeat-order cadence per account"
+        ],
+        "reports": "Weekly with pipeline and outreach metrics",
+        "first": {
+          "title": "50-office prospect list",
+          "kind": "research"
+        }
+      },
+      "permits": {
+        "status": "Confirming city mobile vendor rules and commissary options",
+        "knows": [
+          "Commissary required before truck deposit",
+          "Operating primarily at events/festivals",
+          "Open-flame trompo adds inspection complexity"
+        ],
+        "rules": [
+          "Draft-only: never sends, buys, books or signs anything without your OK",
+          "Verify every requirement against city code in writing",
+          "No truck purchase before commissary contract exists"
+        ],
+        "watch": [
+          "Event permit lead times",
+          "Health inspection scheduling windows"
+        ],
+        "reports": "Weekly with permit status tracker",
+        "first": {
+          "title": "Permit and commissary checklist",
+          "kind": "checklist"
+        }
+      },
+      "finance": {
+        "status": "Modeling startup budget and 3-month reserve",
+        "knows": [
+          "Funded entirely from personal savings",
+          "Owner reinvesting, no take-home needed yet",
+          "Truck budget $30-60k is largest line item"
+        ],
+        "rules": [
+          "Draft-only: never sends, buys, books or signs anything without your OK",
+          "Hold 3-month operating reserve untouched",
+          "Flag any single expense over 10% of budget"
+        ],
+        "watch": [
+          "Cash runway versus revenue ramp",
+          "Fixed costs creeping past plan"
+        ],
+        "reports": "Weekly with cash position snapshot",
+        "first": {
+          "title": "Startup budget and break-even model",
+          "kind": "budget"
+        }
+      }
+    },
+    "yours": [
+      {
+        "task": "Call city clerk to confirm mobile vendor permit path",
+        "when": "This week"
+      },
+      {
+        "task": "Tour two commissary kitchens and sign one contract",
+        "when": "Week 2"
+      },
+      {
+        "task": "Inspect and test-drive shortlisted trucks in person",
+        "when": "Week 3"
+      },
+      {
+        "task": "Taste-test final birria recipes at commissary",
+        "when": "Week 4"
+      },
+      {
+        "task": "Open business bank account and move reserve",
+        "when": "This week"
+      },
+      {
+        "task": "Sign insurance policy and accountant engagement",
+        "when": "Week 2"
+      }
+    ],
+    "staff": [
+      {
+        "who": "permits",
+        "task": "Draft commissary contract comparison with two local options",
+        "when": "This week"
+      },
+      {
+        "who": "truck_builder",
+        "task": "Schedule inspections for top two truck candidates",
+        "when": "Week 2"
+      },
+      {
+        "who": "chef",
+        "task": "Build commissary batch-braise prep schedule and yields",
+        "when": "Week 2"
+      },
+      {
+        "who": "catering",
+        "task": "Draft catering one-pager with three serve styles",
+        "when": "This week"
+      },
+      {
+        "who": "finance",
+        "task": "Set up bookkeeping system and chart of accounts",
+        "when": "Week 2"
+      },
+      {
+        "who": "lead",
+        "task": "Line up insurance quote and accountant intros",
+        "when": "This week"
+      },
+      {
+        "who": "catering",
+        "task": "Draft intro email sequence for 50 target offices",
+        "when": "Week 3"
+      },
+      {
+        "who": "chef",
+        "task": "Source tortilla and meat vendors with sample orders",
+        "when": "Week 3"
+      }
+    ],
+    "timeline": [
+      {
+        "phase": "Permits and commissary",
+        "owner": "permits",
+        "start": 1,
+        "weeks": 3
+      },
+      {
+        "phase": "Truck sourcing and inspection",
+        "owner": "truck_builder",
+        "start": 2,
+        "weeks": 4
+      },
+      {
+        "phase": "Menu and recipe lock",
+        "owner": "chef",
+        "start": 2,
+        "weeks": 4
+      },
+      {
+        "phase": "Finance setup and reserve",
+        "owner": "finance",
+        "start": 1,
+        "weeks": 2
+      },
+      {
+        "phase": "Catering pipeline build",
+        "owner": "catering",
+        "start": 3,
+        "weeks": 6
+      },
+      {
+        "phase": "Soft launch at events",
+        "owner": "you",
+        "start": 9,
+        "weeks": 4
+      },
+      {
+        "phase": "Office catering ramp",
+        "owner": "catering",
+        "start": 13,
+        "weeks": 14
+      }
+    ],
+    "decisions": [
+      {
+        "what": "Anchor menu on birria with 3 tight items",
+        "why": "Keeps prep load manageable and sharpens brand identity at launch"
+      },
+      {
+        "what": "Buy NSF-certified used truck in $30-60k range",
+        "why": "Preserves cash from personal savings and shortens path to revenue"
+      },
+      {
+        "what": "Lead with events plus weekday office catering",
+        "why": "Diversifies revenue while building brand before fixed route commitment"
+      },
+      {
+        "what": "Reinvest all early profit, no owner draw",
+        "why": "Extends runway and funds commissary, inventory, and marketing growth"
+      }
+    ],
+    "knowledge": [
+      "Funding is 100% personal savings, no outside capital",
+      "Owner takes no draw early; reinvesting everything",
+      "Plancha and vertical trompo are required equipment",
+      "Target offices: tech startups, coworking, law and finance",
+      "Primary operating venue is events and festivals",
+      "Commissary contract must precede any truck deposit",
+      "Three-month operating reserve set aside from savings",
+      "Launch menu capped at 3-4 birria-focused items"
+    ]
+  },
+  "deliverables": {
+    "catering": {
+      "title": "50-Office Prospect List: Weekday Lunch Catering Targets",
+      "summary": "Framework and sample prospect list structure to identify 50 offices for birria catering outreach, since specific companies depend on your city.",
+      "body": "## How to Use This List\n\nSince I don't know your operating city, I've built this as a **targeting framework** plus columns to fill. Pull names from LinkedIn Sales Navigator, local Business Journal \"Best Places to Work,\" coworking directories (WeWork, Industrious, Regus), and your Chamber of Commerce.\n\n## Ideal Prospect Profile\n\n- **Headcount:** 25–150 employees (sweet spot for 1-truck catering)\n- **Lunch budget signals:** catered Friday lunches, free snacks, Zerocater/EzCater users\n- **Location:** within 15 min of your commissary/park spot\n\n## Target Mix (aim for ~50)\n\n| Segment | Target Count | Why They Buy |\n|---|---|---|\n| Tech startups (Series A–C) | 20 | Perk culture, recurring Friday lunches |\n| Coworking spaces | 10 | Member events, tenant appreciation days |\n| Law firms (mid-size) | 10 | Client lunches, long-hours associate meals |\n| Finance/wealth management | 10 | Client entertainment, quarterly team lunches |\n\n## Columns to Build in Your Sheet\n\n- Company name\n- Office address + # of employees\n- Office/EA/People Ops contact (name, email, LinkedIn)\n- Current catering vendor (if visible)\n- Likely weekly budget — **typically $12–20/head** in most US markets, higher in NYC/SF\n- Preferred service style (truck pull-up, drop-off, individual boxes)\n- Last touch date + next action\n\n## Quick Sourcing Tips\n\n- Search LinkedIn: \"Office Manager\" + your city\n- Walk coworking lobbies — ask for the community manager\n- Offer a **free 10-person tasting** to anchor the first 5 accounts\n\n— Renee"
+    },
+    "truck_builder": {
+      "title": "Three-Truck Comparison Sheet: Birria Build Options",
+      "summary": "Side-by-side look at three realistic truck paths for your birria + plancha + trompo program at $30-60k.",
+      "body": "## Three-Truck Comparison for a Birria + Trompo Build\n\nAll prices are **typical ranges** — final cost depends on your city's permitting, inspector, and local upfitter. Verify with 2-3 local fabricators before committing.\n\n| Factor | A) Used Step Van Rebuild | B) Mid-Grade Turnkey Used Truck | C) New Concession Trailer |\n|---|---|---|---|\n| **Typical all-in cost** | $28-45k | $45-60k | $35-55k |\n| **Base vehicle** | 14-18ft used step van | 16-22ft used food truck | Pull-behind trailer (needs tow vehicle) |\n| **Fits plancha + trompo?** | Tight — custom layout required | Usually yes, may need swap-outs | Yes, easiest to design around |\n| **Festival/event friendly** | Strong — self-propelled | Strongest — plug and go | Depends on event tow/parking rules |\n| **Office lot access** | Good | Good | Harder — tow + unhook time |\n| **Timeline to serve** | 10-16 weeks | 2-6 weeks | 8-14 weeks |\n| **Hidden risk** | Engine/transmission on old chassis | Prior owner's shortcuts, hood/suppression age | Need reliable tow vehicle + storage |\n\n## My Recommendation for Your Mix\n\n- **Festivals-first + reinvesting everything** → Option **B** gets you earning fastest, which matters when you're self-funding.\n- Confirm the **Ansul hood** covers both plancha and trompo flame load — this is the single most common failure point on resale trucks.\n- Budget **$3-5k reserve** outside the build for health dept., commissary deposit, and first fire inspection re-visit.\n\n– Diego"
+    },
+    "chef": {
+      "title": "Three-Item Birria Menu Spec",
+      "summary": "A tight launch menu built for plancha + trompo workflow, event lines, and office catering repeatability.",
+      "body": "## Core Philosophy\nThree items, one braise, one trompo cut. Everything shares the consommé and adobo so prep stays sane and food cost drops.\n\n## The Three Items\n\n| Item | Build | Role |\n|---|---|---|\n| **Quesabirria** | Plancha-dipped tortilla, Oaxaca cheese, shredded birria, onion/cilantro, consommé cup | Hero item, 55-65% of mix |\n| **Birria Trompo Taco** | Marinated beef (or beef/lamb blend) shaved off vertical spit onto fresh corn tortilla, salsa verde cruda | Visual theater, premium price |\n| **Mulita** | Two plancha tortillas, double cheese, birria, grilled onion | Catering workhorse — holds 20+ min in warmer |\n\n## Why This Trio Works for You\n- **Shared mise:** one adobo (guajillo, ancho, chile de árbol, tomato, garlic, cumin, clove, cinnamon) feeds all three.\n- **Plancha + trompo both earn their keep** — the trompo is your festival magnet; plancha handles catering volume.\n- **Office catering fit:** quesabirria and mulitas travel well in insulated pans; consommé goes in 4oz portion cups.\n\n## Pricing Guardrails (verify locally)\nTypical urban truck pricing runs roughly **$5–7 quesabirria, $4–5 trompo taco, $7–9 mulita**, with consommé **$2–3**. Your city's beef chuck/shank cost and permit load will shift this — price-test at your first three events before locking a catering sheet.\n\n## Next Steps\n- Lock adobo recipe over 2 test batches\n- Decide beef-only vs. beef/lamb trompo (lamb raises cost ~20–35%)\n- Build a per-item cost card once your meat vendor is chosen\n\n— Marisol"
+    },
+    "permits": {
+      "title": "Permit and Commissary Checklist — Birria Taco Truck Launch",
+      "summary": "A sequenced checklist of permits, inspections, and commissary setup you need before serving your first birria taco.",
+      "body": "## 1. Business Foundation\n- **Form LLC** with your state (typical filing: $50–$500)\n- **EIN** from IRS (free, same day online)\n- **Business license** from your city (typical: $50–$400/year)\n- **Sales tax permit** from state revenue dept\n- **DBA filing** if operating under a trade name\n\n## 2. Food Safety Certifications\n- **Food Handler Card** for every employee (varies by state; often $10–$25)\n- **Food Protection Manager** (ServSafe or equivalent) — usually required for the owner/operator\n- **Allergen training** — required in some states; confirm with your local health dept\n\n## 3. Mobile Food Vendor Permits\n- **Mobile Food Facility (MFF) permit** from county health dept (ranges widely, often $400–$1,500/year)\n- **Truck plan review** before build-out — submit layout, equipment specs, plumbing\n- **Fire marshal inspection** — critical for your **trompo/vertical spit** (propane use triggers extra scrutiny)\n- **Health inspection** post-build before first service\n- **Event/festival vendor permits** — many festivals require separate temporary event permits\n\n## 4. Commissary Kitchen (Legally Required in Most Jurisdictions)\n| Need | Why |\n|---|---|\n| Signed commissary agreement | Required by health dept for permit approval |\n| Overnight truck parking | Many codes prohibit storing trucks at home |\n| Prep space for birria braise | Long-cook consomé is easier off-truck |\n| Potable water fill / graywater disposal | Daily servicing required |\n\n- Typical commissary cost: **$400–$1,200/month**\n- Confirm it's **health-dept approved** in your jurisdiction\n\n## 5. Insurance\n- **General liability** ($1M typical minimum for events)\n- **Commercial auto** on the truck\n- **Workers' comp** once you hire\n\n## 6. Before First Service\n- Weights & Measures seal on any scales\n- Propane tank certification\n- Final health inspection sign-off\n- Festival-specific COI with organizer named as additional insured\n\n*Permit names, fees, and sequence vary by city and county — verify every item with your local health department before paying.*"
+    },
+    "finance": {
+      "title": "Startup Budget and Break-Even Model: Birria Truck Launch",
+      "summary": "A realistic cost build and sales-per-day target so you know what the truck must do to sustain itself.",
+      "body": "## Startup Costs (Typical Ranges)\n\n| Category | Low | High | Notes |\n|---|---|---|---|\n| Used truck + build-out (plancha + trompo) | $30,000 | $60,000 | Trompo adds $1.5–3k; verify hood/fire suppression |\n| Permits, LLC, health cert, commissary | $1,500 | $5,000 | Varies heavily by city/state |\n| Insurance (annual, paid upfront) | $2,500 | $5,000 | GL + auto + workers' comp if hiring |\n| Smallwares, pans, consomé cups | $1,500 | $3,000 | |\n| POS, Square/Toast hardware | $500 | $1,500 | |\n| Initial inventory (chuck, chilies, tortillas) | $1,500 | $3,000 | |\n| Branding, wrap, website | $2,000 | $6,000 | |\n| **Working capital buffer (2 mo)** | $8,000 | $12,000 | Non-negotiable |\n| **Total** | **~$47k** | **~$95k** | |\n\nSavings-funded means **cap total at the low end** and keep that buffer intact.\n\n## Break-Even Math (Monthly)\n\n- Fixed costs: commissary, insurance, permits, phone, software ≈ **$2,000–3,500/mo**\n- Variable: food + packaging ≈ **30–35%** of revenue\n- Fuel/propane: **$400–800/mo**\n\n**Break-even revenue ≈ $4,500–6,500/mo**, roughly **$225–325/day** over 20 service days.\n\n## What That Looks Like\n\n- At a **$14 avg ticket**, break-even = **16–23 tacos/plates per day**\n- Festival days should clear **$1,500–3,000** gross — these fund slow weeks\n- Office catering trays at **$180–280 each** — two bookings/week covers fixed costs alone\n\nSince you're reinvesting everything, treat months 1–6 as **data collection**: track food cost %, labor hours, and catering-vs-event margin weekly.\n\n**Next:** confirm your city's commissary and permit fees before locking the truck purchase.\n\n[Your name]"
+    }
+  },
+  "chats": {
+    "lead": [
+      {
+        "from": "you",
+        "text": "Carlos, what should I focus on this week? Keep it short."
+      },
+      {
+        "from": "lead",
+        "text": "This week, lock in two things:\n\n1. **Open the business bank account** with your EIN and move your savings in — nothing else can move until money has a home.\n2. **Call the three commissaries Yolanda shortlists and tour one.** Everything (permits, prep, insurance) hinges on having a commissary address.\n\nIf you have time left, skim Yolanda's commissary contract checklist before your tour so you walk in knowing what to ask."
+      }
+    ],
+    "finance": [
+      {
+        "from": "you",
+        "text": "Priya, quick one: with $7 tacos and two $350 catering gigs a week, about how many tacos a day do I need to break even? Two or three sentences."
+      },
+      {
+        "from": "finance",
+        "text": "With $3,600/month in fixed costs and catering throwing off ~$2,170/month in gross profit, you only need to clear about **$1,430 from truck tacos** — roughly **13 tacos/day** across 22 operating days. Without the catering, that jumps to ~33/day. Catering is quietly carrying the model, so protecting those 2 gigs/week matters a lot."
+      }
+    ]
+  },
+  "chatNote": "Real chats with the Lead and Priya through their own Claude Code sessions (2026-11-01)."
+}
