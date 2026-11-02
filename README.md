@@ -2,6 +2,8 @@
 
 **You're the CEO. Spin up a team for anything.**
 
+*Created by **Tai Nguyen** · © 2026 Tai Nguyen · [MIT License](LICENSE)*
+
 Say what you want to do. Your **Chief** (your right hand, the same every time) finds the right **Lead**: the pro a friend would tell you to call first. The Lead narrows the goal and staffs your **Staff of Pros**. Each Pro asks only what they need, in the order the work happens, building on earlier answers. Change direction halfway and the Lead issues a **change order**: new Pros join, and only what changed gets re-asked. Then the Staff goes to work: each Pro becomes an agent with its own rules and watch list, does a first piece of work, and the idea gets its own project page.
 
 **[▶ Try the demo](https://c4rm4boy.github.io/spinup/)**: four real runs, replayed in your browser with voices. No install, no account. Voices sound best in Microsoft Edge.
@@ -49,4 +51,8 @@ It started as my own AI chief of staff: a "cabinet" of AI leads that runs my wee
 
 A prototype for exploring an idea, not a product. General guidance only, not professional advice.
 
-Built by Tai Nguyen with Claude Code.
+## Author
+
+**SpinUp was conceived, designed and built by Tai Nguyen.** The idea (staffing the graph: deciding *who* should be in the room before wiring agents together), the Chief → Lead → Pros design and every product decision are his. It was built with Claude Code as the engineering partner, with Claude Opus doing the thinking inside the product.
+
+© 2026 Tai Nguyen. Released under the [MIT License](LICENSE): reuse it freely, keeping the copyright notice.
