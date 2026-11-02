@@ -53,8 +53,13 @@ h1 { font:700 clamp(28px,5vw,40px)/1.1 var(--f-display); margin:0; }
 .brief { background:var(--surface); border:1px solid var(--line); border-left:4px solid var(--lead); border-radius:12px; padding:10px 14px; display:flex; flex-wrap:wrap; gap:6px 10px; align-items:center; }
 .brief .bl { font:650 14.5px var(--f-display); color:var(--lead); }
 .brief b { font:600 16px var(--f-display); }
-.room { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(0,1fr); gap:16px; align-items:start; }
-@media (max-width:820px) { .room { grid-template-columns:1fr; } .staffcol { order:-1; } }
+/* Side by side, the conversation stretches to the Staff panel's height, so there's no blank space as the Staff grows (Tai, 11-02).
+   Film mode keeps its fixed 520px log (body.film .log below), so the videos don't change. */
+.room { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(0,1fr); gap:16px; align-items:stretch; }
+.room > .panel:first-child { display:flex; flex-direction:column; }
+body:not(.film) .room > .panel:first-child .log { flex:1 1 0; height:auto; min-height:min(52vh,460px); }
+.room > .staffcol { align-self:start; }
+@media (max-width:820px) { .room { grid-template-columns:1fr; } .staffcol { order:-1; } body:not(.film) .room > .panel:first-child .log { flex:none; height:min(52vh,460px); } }
 .panel { background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:14px; min-width:0; }
 .panel h2 { margin:0 0 10px; font:650 14px/1.2 var(--f-display); color:var(--muted); text-transform:uppercase; letter-spacing:.06em; }
 .log { display:grid; gap:10px; align-content:start; height:min(52vh,460px); overflow-y:auto; border:1px solid var(--line); border-radius:12px; padding:10px; background:var(--bg); }
