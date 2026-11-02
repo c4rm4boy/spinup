@@ -173,7 +173,8 @@ function render(P) {
   var emails = delivs.filter(function (k) { return ((M.agents || {})[k] || {}).first && M.agents[k].first.kind === 'email'; });
   var weeks = Math.max.apply(null, (M.timeline || []).map(function (p) { return p.start + p.weeks - 1; }).concat([4]));
 
-  var html = '<header><p class="eyebrow">An AI Staff for any goal <span>· SpinUp project</span></p><h1>' + esc(M.title || P.request) + '</h1>' +
+  var html = '<header>' + (LIVE ? '<p style="margin:0 0 6px"><a href="SpinUp%20Chief.html">← 🧭 Chief: all your projects</a></p>' : '') +
+    '<p class="eyebrow">An AI Staff for any goal <span>· SpinUp project</span></p><h1>' + esc(M.title || P.request) + '</h1>' +
     '<p class="one">' + esc(M.oneLine || P.brief || P.request) + '</p>' +
     '<div class="meta"><span class="pill">Your Staff is working</span><span>Your Lead: ' + esc(lead.emoji || '') + ' ' + esc(lead.name) + (lead.title ? ', ' + esc(lead.title) : '') + '</span>' +
     '<span>Staff of ' + cast.length + ' Pros</span>' + (P.date ? '<span>Set up ' + esc(P.date) + '</span>' : '') +

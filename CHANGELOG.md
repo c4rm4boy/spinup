@@ -6,6 +6,18 @@ SpinUp started on October 31, 2026 as "Cabinet Builder," a clickable mockup for 
 
 ---
 
+## v0.9.5 · Nov 2 · The Chief page
+
+- **All your projects on one page** (in the full prototype). Chief's page puts you at the top, then a card for every project with:
+  - its Lead and Pros;
+  - what's waiting on you;
+  - what the Staff does next;
+  - how many files they've written.
+
+  Chief's one-line read tells you which project needs you most.
+- **Archive, restore and delete.** Archiving is one click and fully reversible. Deleting is permanent and asks you to type the project's name first. Demo projects stay apart and can't be deleted.
+- **Linked everywhere:** from the SpinUp start page, and back from every project page.
+
 ## v0.9.4 · Nov 1 · A clearer label
 
 - **The label at the top now says what SpinUp is: "An AI Staff for any goal."** It's on the demo, the project page and the videos.
