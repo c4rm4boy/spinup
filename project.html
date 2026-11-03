@@ -215,6 +215,7 @@ function render(P) {
   document.title = '🚀 ' + (M.title || P.request || 'SpinUp project');
   var storeKey = 'spinup-todo-' + (P.dir || P.slug || M.title);
   var doneMap = {}; try { doneMap = JSON.parse(localStorage.getItem(storeKey) || '{}'); } catch (e) {}
+  if (P.done) Object.keys(P.done).forEach(function (k) { if (P.done[k]) doneMap[k] = true; });   // ticks saved on the PC (Chief and Telegram see these)
   var delivs = cast.filter(function (k) { return D[k]; });
   var emails = delivs.filter(function (k) { return ((M.agents || {})[k] || {}).first && M.agents[k].first.kind === 'email'; });
   var weeks = Math.max.apply(null, (M.timeline || []).map(function (p) { return p.start + p.weeks - 1; }).concat([4]));
@@ -424,6 +425,7 @@ function render(P) {
     var c = e.target.closest('input[data-id]'); if (!c) return;
     doneMap[c.dataset.id] = c.checked; c.closest('li').classList.toggle('done', c.checked);
     try { localStorage.setItem(storeKey, JSON.stringify(doneMap)); } catch (er) {}
+    if (LIVE) fetch('/project/ticks', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ p: P.dir, done: doneMap }) }).catch(function () {});
   });
   app.addEventListener('click', function (e) {
     var b = e.target.closest('button[data-copy]'); if (!b) return;
