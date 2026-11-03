@@ -99,6 +99,17 @@ details > summary { cursor:pointer; color:var(--ink-2); font-size:14px; }
 .agent .talk { margin-top:2px; }
 #chat { position:fixed; top:0; right:0; bottom:0; width:min(480px,100vw); z-index:20; display:grid; grid-template-rows:auto auto 1fr auto; background:var(--surface); border-left:1px solid var(--line); box-shadow:-12px 0 32px rgba(0,0,0,.35); padding-top:env(safe-area-inset-top,0px); }
 #chat[hidden] { display:none; }
+/* 🔊 read aloud and ✏️ rename (Tai, 11-02) */
+.say { font-size:13px; min-height:28px; padding:2px 10px; }
+.say.on { border-color:var(--accent); color:var(--accent); }
+.say.mini { display:block; margin:6px 0 0 auto; padding:1px 8px; font-size:12.5px; background:transparent; }
+.hdb { display:flex; gap:6px; align-items:center; }
+.ren { background:none; border:0; padding:0 4px; font-size:13px; cursor:pointer; opacity:.6; }
+.ren:hover, .ren:focus-visible { opacity:1; }
+.renbox { display:inline-flex; flex-wrap:wrap; gap:4px; align-items:center; margin-left:4px; }
+.renbox input { font:inherit; font-size:14px; color:var(--ink); background:var(--surface-2); border:1px solid var(--line); border-radius:7px; padding:2px 6px; width:11em; }
+.renbox button { font-size:13px; padding:2px 8px; }
+.renbox .err { color:#ff8a7a; font-size:12.5px; }
 /* Video highlight: the Talk buttons and the chat panel glow so viewers see they can keep talking to each Pro. */
 .talk.hl { border-color:var(--accent); background:color-mix(in srgb, var(--accent) 22%, var(--surface)); box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 45%, transparent), 0 0 18px color-mix(in srgb, var(--accent) 55%, transparent); }
 #chat.hl { border-left:2px solid var(--accent); box-shadow:-12px 0 32px rgba(0,0,0,.35), inset 0 0 0 2px color-mix(in srgb, var(--accent) 55%, transparent); }
@@ -157,6 +168,39 @@ function md(src) {
   flushTable(); if (list) out += '</ul>';
   return out.replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
 }
+// ---------- Read aloud (Tai, 11-02): the browser's own text-to-speech, so any text can be spoken ----------
+// Natural voices only (never the robotic desktop ones); each person keeps one voice; 🔊 again stops.
+var synth = window.speechSynthesis || null, VMAP = {}, SAYING = null;
+var VLIST = { female: ['Ava', 'Emma', 'Aria', 'Sonia', 'Libby', 'Natasha', 'Jenny', 'Samantha', 'Google UK English Female', 'Google US English'],
+              male: ['Andrew', 'Brian', 'Christopher', 'Guy', 'Eric', 'Roger', 'Steffan', 'Ryan', 'William', 'Daniel', 'Google UK English Male'] };
+function goodVoices() { return synth ? synth.getVoices().filter(function (v) { return /^en/i.test(v.lang) && /Natural|Google|Samantha|Daniel/i.test(v.name); }) : []; }
+function voiceFor(key, gender) {
+  if (VMAP[key]) return VMAP[key];
+  var pool = goodVoices(); if (!pool.length) return null;
+  var used = Object.keys(VMAP).map(function (k) { return VMAP[k]; }), names = VLIST[gender] || VLIST.female;
+  for (var i = 0; i < names.length; i++) { var hit = pool.filter(function (v) { return v.name.indexOf(names[i]) >= 0 && used.indexOf(v) < 0; })[0]; if (hit) return (VMAP[key] = hit); }
+  return (VMAP[key] = pool.filter(function (v) { return used.indexOf(v) < 0; })[0] || pool[0]);
+}
+if (synth) synth.addEventListener && synth.addEventListener('voiceschanged', function () {});
+// Markdown → something worth hearing: tables and symbols are skipped, bullets become sentences.
+function plainForSpeech(src) {
+  return String(src || '').split('\n').filter(function (l) { return !/^\s*\|/.test(l); }).map(function (l) {
+    return l.replace(/^#{1,6}\s+/, '').replace(/^\s*(?:[-*]|\d+[.)])\s+/, '').replace(/\*\*|__|`/g, '').trim();
+  }).filter(Boolean).map(function (l) { return /[.!?:]$/.test(l) ? l : l + '.'; }).join(' ');
+}
+function stopSaying() { if (synth) synth.cancel(); if (SAYING) { SAYING.classList.remove('on'); SAYING.textContent = SAYING.dataset.label || '🔊'; } SAYING = null; }
+function say(btn, text, key, gender) {
+  if (!synth) { btn.title = 'This browser can\'t read aloud. Try Microsoft Edge.'; return; }
+  var again = SAYING === btn; stopSaying(); if (again) return;
+  SAYING = btn; btn.dataset.label = btn.dataset.label || btn.textContent; btn.classList.add('on'); btn.textContent = '■ Stop';
+  // Speak in short pieces: long single utterances can stall in some browsers.
+  var parts = (text.match(/[^.!?]+[.!?]+["')]*\s*|[^.!?]+$/g) || [text]).map(function (s) { return s.trim(); }).filter(Boolean), v = voiceFor(key, gender);
+  parts.forEach(function (p, i) {
+    var u = new SpeechSynthesisUtterance(p); if (v) { u.voice = v; u.lang = v.lang; } u.rate = 1.05;
+    if (i === parts.length - 1) u.onend = u.onerror = function () { if (SAYING === btn) stopSaying(); };
+    synth.speak(u);
+  });
+}
 var KIND = { checklist: 'Checklist', email: 'Email draft', budget: 'Budget', research: 'Research', comparison: 'Comparison', script: 'Script' };
 
 function render(P) {
@@ -178,7 +222,7 @@ function render(P) {
   var html = '<header>' + (LIVE ? '<p style="margin:0 0 6px"><a href="SpinUp%20Chief.html">← 🧭 Chief: all your projects</a></p>' : '') +
     '<p class="eyebrow">An AI Staff for any goal <span>· SpinUp project</span></p><h1>' + esc(M.title || P.request) + '</h1>' +
     '<p class="one">' + esc(M.oneLine || P.brief || P.request) + '</p>' +
-    '<div class="meta"><span class="pill">Your Staff is working</span><span>Your Lead: ' + esc(lead.emoji || '') + ' ' + esc(lead.name) + (lead.title ? ', ' + esc(lead.title) : '') + '</span>' +
+    '<div class="meta"><span class="pill">Your Staff is working</span><span>Your Lead: ' + esc(lead.emoji || '') + ' ' + esc(lead.name) + (LIVE ? ' <button type="button" class="ren" data-ren="lead" title="Rename your Lead" aria-label="Rename your Lead">✏️</button>' : '') + (lead.title ? ', ' + esc(lead.title) : '') + '</span>' +
     '<span>Staff of ' + cast.length + ' Pros</span>' + (P.date ? '<span>Set up ' + esc(P.date) + '</span>' : '') +
     (TALK ? '<button type="button" class="talk" data-talk="lead">💬 Talk to ' + esc(lead.name.split(' ')[0]) + '</button>' : '') + '</div></header>';
 
@@ -196,7 +240,7 @@ function render(P) {
   html += '<section id="staff"><h2>👥 Your Staff <small>each Pro is now an agent with its own knowledge, rules and watch list</small></h2><div class="grid">' +
     cast.map(function (k) {
       var p = people[k], a = (M.agents || {})[k] || {};
-      return '<article class="agent" style="--c:' + pc(k) + '"><div class="top"><div class="av">' + esc(p.emoji) + '</div><div><div class="nm">' + esc(p.name) + '</div><div class="ti">' + esc(p.title) + '</div></div><span class="badge">AGENT · READY</span></div>' +
+      return '<article class="agent" style="--c:' + pc(k) + '"><div class="top"><div class="av">' + esc(p.emoji) + '</div><div><div class="nm">' + esc(p.name) + (LIVE ? ' <button type="button" class="ren" data-ren="' + k + '" title="Rename ' + esc(p.name) + '" aria-label="Rename ' + esc(p.name) + '">✏️</button>' : '') + '</div><div class="ti">' + esc(p.title) + '</div></div><span class="badge">AGENT · READY</span></div>' +
         '<div class="status">' + (D[k] ? '<b>✓ Done:</b> ' + esc(D[k].title) : '<b>Working on:</b> ' + esc(a.status || '')) + '</div>' +
         '<details><summary>What ' + esc(p.name) + ' knows, follows and watches</summary><dl>' +
         dd('Knows', a.knows) + dd('Rules', a.rules) + dd('Watches for', a.watch) + (a.reports ? '<dt>Reports</dt><dd>' + esc(a.reports) + '</dd>' : '') + '</dl></details>' +
@@ -221,7 +265,8 @@ function render(P) {
     delivs.map(function (k) {
       var p = people[k], a = (M.agents || {})[k] || {}, d = D[k], kind = (a.first && a.first.kind) || 'research';
       return '<article class="deliv" style="--c:' + pc(k) + '"><div class="hd"><span class="kind">' + esc(KIND[kind] || kind) + ' · ' + esc(p.emoji) + ' ' + esc(p.name) + '</span>' +
-        (kind === 'email' ? '<button type="button" data-copy="' + k + '">Copy draft</button>' : '') + '</div><h3>' + esc(d.title) + '</h3><p class="sum">' + esc(d.summary) + '</p>' +
+        '<span class="hdb"><button type="button" class="say" data-sayd="' + k + '" title="Read it aloud">🔊 Listen</button>' +
+        (kind === 'email' ? '<button type="button" data-copy="' + k + '">Copy draft</button>' : '') + '</span></div><h3>' + esc(d.title) + '</h3><p class="sum">' + esc(d.summary) + '</p>' +
         '<details' + (kind === 'email' ? '' : '') + '><summary>Open</summary><div class="md">' + md(d.body) + '</div></details></article>';
     }).join('') + '</div></section>';
 
@@ -295,7 +340,8 @@ function render(P) {
   }
   function bubble(who, m) {
     var mine = m.from === 'you', c = who === 'lead' ? 'var(--lead)' : pc(who);
-    return '<div class="m ' + (mine ? 'you' : 'pro') + '" style="--c:' + c + '">' + (mine ? esc(m.text) : md(m.text)) + '</div>';
+    return '<div class="m ' + (mine ? 'you' : 'pro') + '" style="--c:' + c + '">' + (mine ? esc(m.text) : md(m.text) +
+      '<button type="button" class="say mini" data-sayb="' + esc(who) + '" title="Read aloud" aria-label="Read aloud">🔊</button>') + '</div>';
   }
   function drawMsgs(who, list) {
     var el = document.getElementById('msgs'), p = proOf(who);
@@ -330,12 +376,44 @@ function render(P) {
   function openDoc(who, f) {
     fetch('/pro/file?p=' + encodeURIComponent(P.dir) + '&who=' + who + '&f=' + encodeURIComponent(f)).then(function (r) { return r.json(); }).then(function (d) {
       var o = document.createElement('div'); o.id = 'doc';
-      o.innerHTML = '<div class="sheet" role="dialog" aria-label="' + esc(f) + '"><div class="top"><b>📄 ' + esc(f) + ' · ' + esc(proOf(who).name) + '</b><button type="button">Close</button></div><div class="md">' + md(d.text || d.error || '') + '</div></div>';
-      o.addEventListener('click', function (e) { if (e.target === o || e.target.tagName === 'BUTTON') o.remove(); });
+      o.innerHTML = '<div class="sheet" role="dialog" aria-label="' + esc(f) + '"><div class="top"><b>📄 ' + esc(f) + ' · ' + esc(proOf(who).name) + '</b><span class="hdb">' +
+        '<button type="button" class="say" data-sayf="' + esc(who) + '">🔊 Read it</button><button type="button" data-close>Close</button></span></div><div class="md">' + md(d.text || d.error || '') + '</div></div>';
+      o.querySelector('[data-sayf]').dataset.text = plainForSpeech(d.text || '');
+      o.addEventListener('click', function (e) { if (e.target === o || e.target.closest('[data-close]')) { stopSaying(); o.remove(); } });
       document.body.appendChild(o);
     });
   }
   app.addEventListener('click', function (e) { var b = e.target.closest('[data-talk]'); if (b) chatOpen(b.dataset.talk); });
+  // 🔊 anywhere on the page: a first deliverable, a Pro's chat reply, or a document in the reader. Each in that person's voice.
+  var genderOf = function (k) { var p = proOf(k) || {}; return p.voice === 'male' || p.voice === 'female' ? p.voice : (String(k).length % 2 ? 'male' : 'female'); };
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-sayd],[data-sayb],[data-sayf]'); if (!b) return;
+    var who, text;
+    if (b.dataset.sayd) { who = b.dataset.sayd; var d = D[who]; text = d.title + '. ' + (d.summary || '') + ' ' + plainForSpeech(d.body); }
+    else if (b.dataset.sayf) { who = b.dataset.sayf; text = b.dataset.text || ''; }
+    else { who = b.dataset.sayb; var m = b.closest('.m').cloneNode(true); m.querySelectorAll('table, button').forEach(function (x) { x.remove(); }); text = m.textContent.replace(/\s+/g, ' ').trim(); }
+    say(b, text, who, genderOf(who));
+  });
+  // ✏️ Rename a Pro or the Lead (live projects only). Their instructions are rebuilt from the project on every message,
+  // so the new name takes effect from their next reply.
+  app.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-ren]'); if (!b || b.dataset.busy) return;
+    var who = b.dataset.ren, cur = proOf(who).name;
+    var f = document.createElement('span'); f.className = 'renbox';
+    f.innerHTML = '<input type="text" maxlength="30" aria-label="New name" value="' + esc(cur) + '"><button type="button" data-ok>Save</button><button type="button" data-no>Cancel</button><span class="err"></span>';
+    b.dataset.busy = '1'; b.hidden = true; b.parentNode.insertBefore(f, b.nextSibling);
+    var inp = f.querySelector('input'); inp.focus(); inp.select();
+    var close = function () { f.remove(); b.hidden = false; delete b.dataset.busy; };
+    f.querySelector('[data-no]').onclick = close;
+    var save = function () {
+      var name = inp.value.trim(); if (!name || name === cur) return close();
+      fetch('/project/rename', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ p: P.dir, who: who, name: name }) })
+        .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error); location.reload(); }); })
+        .catch(function (er) { f.querySelector('.err').textContent = er.message || 'Couldn\'t rename just now.'; });
+    };
+    f.querySelector('[data-ok]').onclick = save;
+    inp.onkeydown = function (ev) { if (ev.key === 'Enter') save(); if (ev.key === 'Escape') close(); };
+  });
   if (FILMCHAT) window.FILMCHAT = {
     glow: function (on) { document.querySelectorAll('.talk').forEach(function (b) { b.classList.toggle('hl', on); }); },
     open: function (who) { chatOpen(who); document.getElementById('chat').classList.add('hl'); },

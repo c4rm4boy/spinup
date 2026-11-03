@@ -6,6 +6,11 @@ SpinUp started on October 31, 2026 as "Cabinet Builder," a clickable mockup for 
 
 ---
 
+## v0.9.6 · Nov 2 · Listen, and name your Staff
+
+- **🔊 Read aloud on the project page,** in each person's voice. Click 🔊 to hear any Pro's chat reply, any first deliverable, or any document a Pro wrote; click again to stop. It uses the browser's own natural voices and skips tables and symbols. The public demo's project page has it too.
+- **✏️ Rename anyone** (in the full prototype): click ✏️ next to a Pro's or the Lead's name. The new name takes effect from their very next reply ("I'm Bubba, your Rural Land & Site Evaluator…").
+
 ## v0.9.5 · Nov 2 · The Chief page
 
 - **All your projects on one page** (in the full prototype). Chief's page puts you at the top, then a card for every project with:
