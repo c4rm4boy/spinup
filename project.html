@@ -683,6 +683,8 @@ else document.getElementById('app').innerHTML = '<p class="empty">No project cho
 (function () {
   var btn = document.getElementById('fbBtn'), box = document.getElementById('fbBox'), ta = document.getElementById('fbText'), msg = document.getElementById('fbMsg'), kind = 'bug';
   var BASE = location.protocol === 'http:' ? '' : 'http://127.0.0.1:8787';
+  btn.hidden = true;   // only where the helper can save it (not the public demo)
+  fetch(BASE + '/health').then(function (r) { if (r.ok) btn.hidden = false; }).catch(function () {});
   var open = function (on) { box.hidden = !on; if (on) { msg.textContent = ''; ta.focus(); } };
   btn.onclick = function () { open(box.hidden); };
   document.getElementById('fbCancel').onclick = function () { open(false); };
