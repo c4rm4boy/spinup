@@ -6,6 +6,10 @@ SpinUp started on October 31, 2026 as "Cabinet Builder," a clickable mockup for 
 
 ---
 
+## v0.9.7 · Nov 2 · The right Lead, every time
+
+- **Fixed: "I want to become independently wealthy" got a general contractor.** The built-in remodel team was triggered by the word "den" hidden inside "indepen**den**tly". The built-in teams now match whole words only: the remodel team needs a space *and* a remodel word, and the doctor team needs "become a doctor", not "find a doctor". Everything else goes to Claude, which now picks a Certified Financial Planner for that goal.
+
 ## v0.9.6 · Nov 2 · Listen, and name your Staff
 
 - **🔊 Read aloud on the project page,** in each person's voice. Click 🔊 to hear any Pro's chat reply, any first deliverable, or any document a Pro wrote; click again to stop. It uses the browser's own natural voices and skips tables and symbols. The public demo's project page has it too.
