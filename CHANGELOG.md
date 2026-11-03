@@ -8,6 +8,7 @@ SpinUp started on October 31, 2026 as "Cabinet Builder," a clickable mockup for 
 
 ## v0.9.13 · Nov 3 · Your own words always get a team
 
+- **Pick and add.** Tap options *and* type in the box, and both count. Tick "Credit cards", type "brokerage loan", press Continue or Send, and your answer is "Credit cards, Brokerage loan". On a single-choice question, type first and then tap: "Yes · but only the margin part". Your added words go to the Pros and into the plan.
 - **Fix:** when you typed your own answer to the Lead's first question instead of picking a button (for example "Brokerage loan" for "What makes up most of your debt?"), SpinUp staffed 0 Pros and stopped. Now your words go into the goal, every Pro sees them, and the Lead brings in the whole team.
 
 ## v0.9.12 · Nov 3 · Real people on your Staff
