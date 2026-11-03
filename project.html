@@ -263,7 +263,7 @@ function render(P) {
   var emails = delivs.filter(function (k) { return ((M.agents || {})[k] || {}).first && M.agents[k].first.kind === 'email'; });
   var weeks = Math.max.apply(null, (M.timeline || []).map(function (p) { return p.start + p.weeks - 1; }).concat([4]));
 
-  var html = '<header>' + (LIVE ? '<p style="margin:0 0 6px"><a href="SpinUp%20Chief.html">← 🧭 Chief: all your projects</a></p>' : '') +
+  var html = '<header>' + (LIVE ? '<p style="margin:0 0 6px"><a href="SpinUp%20Chief.html">← 🏠 SpinUp Home: all your projects</a></p>' : '') +
     '<p class="eyebrow">An AI Staff for any goal <span>· SpinUp project</span></p><h1>' + esc(M.title || P.request) + '</h1>' +
     '<p class="one">' + esc(M.oneLine || P.brief || P.request) + '</p>' +
     (P.schedule && P.schedule.label ? '<p class="sched">⏱ ' + esc(P.schedule.label) + ' · <b>' + esc(P.schedule.priority) + ' priority</b>' +
@@ -772,7 +772,7 @@ else document.getElementById('app').innerHTML = '<p class="empty">No project cho
   // Which page, without the page title (a project's title is its goal, which can be personal).
   var where = function () {
     var f = location.pathname.split('/').pop() || 'index.html';
-    return /Chief/i.test(decodeURIComponent(f)) ? 'Chief page' : /^project\.html/.test(f) ? 'Project page' : /^SpinUp\.html/.test(f) ? 'Start page' :
+    return /Chief/i.test(decodeURIComponent(f)) ? 'SpinUp Home' : /^project\.html/.test(f) ? 'Project page' : /^SpinUp\.html/.test(f) ? 'Start page' :
       location.protocol === 'https:' ? 'Public demo' : decodeURIComponent(f);
   };
   var browser = function () { var u = navigator.userAgent, m = u.match(/Edg\/(\d+)/) || u.match(/Chrome\/(\d+)/) || u.match(/Firefox\/(\d+)/) || u.match(/Version\/(\d+).*Safari/);

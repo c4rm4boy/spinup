@@ -748,7 +748,7 @@ function projScroll(y) { PROJ.y = y; var d = projDoc(); if (d && d.defaultView) 
   // Which page, without the page title (a project's title is its goal, which can be personal).
   var where = function () {
     var f = location.pathname.split('/').pop() || 'index.html';
-    return /Chief/i.test(decodeURIComponent(f)) ? 'Chief page' : /^project\.html/.test(f) ? 'Project page' : /^SpinUp\.html/.test(f) ? 'Start page' :
+    return /Chief/i.test(decodeURIComponent(f)) ? 'SpinUp Home' : /^project\.html/.test(f) ? 'Project page' : /^SpinUp\.html/.test(f) ? 'Start page' :
       location.protocol === 'https:' ? 'Public demo' : decodeURIComponent(f);
   };
   var browser = function () { var u = navigator.userAgent, m = u.match(/Edg\/(\d+)/) || u.match(/Chrome\/(\d+)/) || u.match(/Firefox\/(\d+)/) || u.match(/Version\/(\d+).*Safari/);
