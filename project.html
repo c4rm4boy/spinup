@@ -150,6 +150,18 @@ button.primary { background:var(--accent); color:#06231f; border-color:var(--acc
 #chat .act .actdone { color:var(--muted); font-size:13.5px; }
 #chat .act .err { display:block; color:#ff8a7a; font-size:12.5px; }
 #chat .act .clash, .renbox .clash { color:#f2c94c; font-size:13px; }
+/* Google for this project (Tai, 11-03): a G badge like Chief's ✈️; gray when off. */
+.gbadge { display:inline-flex; align-items:center; gap:6px; border-radius:999px; padding:3px 10px 3px 4px; font-size:13.5px; }
+.gbadge .g { display:inline-grid; place-items:center; width:22px; height:22px; border-radius:50%; font:700 14px/1 var(--f-display, sans-serif);
+             background:var(--surface-2); color:var(--muted); border:1px solid var(--line); }
+.gbadge.on { border-color:#4285f4; }
+.gbadge.on .g { background:#fff; color:#4285f4; border-color:#4285f4; }
+.gpanel { margin-top:10px; padding:12px; border:1px solid var(--line); border-radius:12px; background:var(--surface); display:grid; gap:8px; max-width:640px; }
+.gpanel[hidden] { display:none; }
+.gpanel .gwho { display:flex; flex-wrap:wrap; gap:6px 14px; }
+.gpanel label { display:inline-flex; gap:6px; align-items:center; }
+.gpanel .note { color:var(--muted); font-size:13px; }
+.gpanel .row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
 #chat .wait { color:var(--muted); font-size:14px; }
 #chat .files { display:flex; flex-wrap:wrap; gap:6px; padding:0 14px 6px; }
 #chat .files button { font-size:13px; padding:3px 9px; }
@@ -256,7 +268,11 @@ function render(P) {
       (P.schedule.deadline && !/not sure|no rush/i.test(P.schedule.deadline) ? ' · you asked for ' + esc(P.schedule.deadline.toLowerCase()) : '') + '</p>' : '') +
     '<div class="meta"><span class="pill">Your Staff is working</span><span>Your Lead: ' + esc(lead.emoji || '') + ' ' + esc(lead.name) + (LIVE ? ' <button type="button" class="ren" data-ren="lead" title="Rename your Lead" aria-label="Rename your Lead">✏️</button>' : '') + (lead.title ? ', ' + esc(lead.title) : '') + '</span>' +
     '<span>Staff of ' + cast.length + ' Pros</span>' + (P.date ? '<span>Set up ' + esc(P.date) + '</span>' : '') +
-    (TALK ? '<button type="button" class="talk" data-talk="lead">💬 Talk to ' + esc(lead.name.split(' ')[0]) + '</button>' : '') + '</div></header>';
+    (TALK ? '<button type="button" class="talk" data-talk="lead">💬 Talk to ' + esc(lead.name.split(' ')[0]) + '</button>' : '') +
+    (LIVE ? '<button type="button" class="gbadge' + (P.google && P.google.on ? ' on' : '') + '" id="gBadge" aria-expanded="false" title="' +
+      (P.google && P.google.on ? 'Connected to Google (read and draft only). Click to change.' : 'Not connected to Google. Click to connect.') + '"><span class="g">G</span>' +
+      (P.google && P.google.on ? ' Google' : '') + '</button>' : '') + '</div>' +
+    (LIVE ? '<div id="gpanel" class="gpanel" hidden role="region" aria-label="Google for this project"></div>' : '') + '</header>';
 
   html += '<nav class="tiles" aria-label="Sections">' +
     tile('#staff', 'var(--accent)', cast.length, 'Pros at work') +
@@ -612,6 +628,46 @@ function render(P) {
       inp.onkeydown = function (ev) { if (ev.key === 'Enter') save(false); if (ev.key === 'Escape') close(); };
     };
     wire();
+  });
+  // G: connect this project to Google through the person's own Claude (no new sign-in). Read and draft only; you pick the Pros.
+  app.addEventListener('click', function (e) {
+    var b = e.target.closest('#gBadge'); if (!b) return;
+    var panel = document.getElementById('gpanel');
+    if (!panel.hidden) { panel.hidden = true; b.setAttribute('aria-expanded', 'false'); return; }
+    panel.hidden = false; b.setAttribute('aria-expanded', 'true');
+    panel.innerHTML = '<span class="note">Checking whether your Claude is connected to Google… (a few seconds the first time)</span>';
+    var post = function (u, body) { return fetch(u, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error); return j; }); }); };
+    var draw = function (s) {
+      var cur = s.project || { on: false, who: [] };
+      var people = ['lead'].concat(cast).map(function (k) { var p = k === 'lead' ? lead : proOf(k);
+        return '<label><input type="checkbox" value="' + esc(k) + '"' + ((cur.who || []).indexOf(k) >= 0 ? ' checked' : '') + '> ' + esc(p.emoji || '') + ' ' + esc(p.name) + '</label>'; }).join('');
+      if (!s.available) {
+        panel.innerHTML = '<b><span class="g" style="display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;border:1px solid var(--line)">G</span> Google isn\'t connected to your Claude yet</b>' +
+          '<span class="note">Connect it once in Claude: claude.ai → Settings → Connectors → Gmail and Google Calendar. SpinUp then uses that same connection; no new sign-in or key.</span>' +
+          '<div class="row"><button type="button" data-g="recheck">I\'ve connected it, check again</button><button type="button" data-g="close">Close</button></div>';
+        return;
+      }
+      panel.innerHTML = '<b>Google for this project</b>' +
+        '<span class="note">Uses the Google connection your Claude already has (' + [s.gmail ? 'Gmail' : '', s.calendar ? 'Calendar' : ''].filter(Boolean).join(' and ') + '). ' +
+        'The Pros you tick can <b>search and read email, look at your calendar, and write Gmail drafts</b>. They can never send, reply, forward, delete, label or add events: SpinUp blocks those, and you send every draft yourself.</span>' +
+        '<div class="gwho" role="group" aria-label="Which Pros">' + people + '</div>' +
+        '<div class="row"><button type="button" class="primary" data-g="save">' + (cur.on ? 'Save' : 'Connect') + '</button>' +
+        (cur.on ? '<button type="button" data-g="off">Disconnect</button>' : '') + '<button type="button" data-g="close">Close</button><span class="note" id="gmsg"></span></div>';
+    };
+    var load = function (refresh) { post('/google/status', { p: P.dir, refresh: !!refresh }).then(draw)
+      .catch(function (er) { panel.innerHTML = '<span class="note">Couldn\'t check just now: ' + esc(er.message) + '</span>'; }); };
+    panel.onclick = function (ev) {
+      var a = ev.target.closest('[data-g]'); if (!a) return;
+      if (a.dataset.g === 'close') { panel.hidden = true; b.setAttribute('aria-expanded', 'false'); return; }
+      if (a.dataset.g === 'recheck') { panel.innerHTML = '<span class="note">Checking…</span>'; load(true); return; }
+      var who = [].slice.call(panel.querySelectorAll('.gwho input:checked')).map(function (x) { return x.value; });
+      var on = a.dataset.g === 'save';
+      if (on && !who.length) { document.getElementById('gmsg').textContent = 'Tick at least one Pro.'; return; }
+      post('/project/google', { p: P.dir, on: on, who: on ? who : [] }).then(function () { location.reload(); })
+        .catch(function (er) { document.getElementById('gmsg').textContent = er.message; });
+    };
+    load(false);
   });
   // Apply / Not now on the Lead's proposed Staff change (the chat panel sits outside #app).
   document.addEventListener('click', function (e) {
