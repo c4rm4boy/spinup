@@ -6,6 +6,11 @@ SpinUp started on October 31, 2026 as "Cabinet Builder," a clickable mockup for 
 
 ---
 
+## v0.9.11 · Nov 3 · Suspend, archive, delete
+
+- **⏸ Suspend a project** (in the full prototype): it stays in your list but goes on hold. It isn't counted as waiting on you, and your Chief won't push it. Resume anytime.
+- **Safer deletes:** type **Delete** to confirm. If the project has anything worth keeping (first deliverables, documents, chats, checked-off tasks), Chief says so and recommends **Archive instead**, which keeps everything but hides it.
+
 ## v0.9.10 · Nov 3 · Honest timelines
 
 - **"Is there a deadline on this?"** Chief asks up front: within 6 months, a year, 2 years, as soon as possible, no rush, or a date you type.
