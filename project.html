@@ -99,6 +99,24 @@ details > summary { cursor:pointer; color:var(--ink-2); font-size:14px; }
 .agent .talk { margin-top:2px; }
 #chat { position:fixed; top:0; right:0; bottom:0; width:min(480px,100vw); z-index:20; display:grid; grid-template-rows:auto auto 1fr auto; background:var(--surface); border-left:1px solid var(--line); box-shadow:-12px 0 32px rgba(0,0,0,.35); padding-top:env(safe-area-inset-top,0px); }
 #chat[hidden] { display:none; }
+/* Real people (step 13a) and the timeline review */
+.realbar { display:flex; gap:8px; flex-wrap:wrap; }
+.agent.real { border-left-style:solid; }
+.badge.real { background:#e8916b; color:#2a1206; }
+.contact { font-size:14px; color:var(--ink-2); } .private { font-size:11.5px; color:var(--muted); }
+.hlog { margin:4px 0 0; padding-left:18px; font-size:13.5px; color:var(--ink-2); }
+.hact { display:flex; gap:6px; flex-wrap:wrap; } .hact button { font-size:13px; padding:3px 9px; } .hact .del, .hconfirm .del { color:#ff8a7a; }
+.hconfirm, .hlogform { display:grid; gap:6px; font-size:13.5px; border-top:1px dashed var(--line); padding-top:8px; }
+.hlogform input, .hlogform select, .hform input, .hform select, .hform textarea { font:inherit; font-size:14px; color:var(--ink); background:var(--surface-2); border:1px solid var(--line); border-radius:8px; padding:6px 8px; width:100%; }
+.hform { display:grid; gap:10px; max-width:640px; } .hform label { display:grid; gap:3px; font-size:13px; color:var(--ink-2); }
+.fgrid { display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap:10px; }
+.hform .row, .tlr .row, .hlogform .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; } .hform .err { color:#ff8a7a; font-size:13.5px; }
+button.primary { background:var(--accent); color:#06231f; border-color:var(--accent); font-weight:650; }
+.needs { display:grid; gap:6px; background:var(--surface); border:1px dashed #e8916b; border-radius:12px; padding:10px 12px; font-size:14px; }
+.need { display:flex; gap:10px; align-items:center; justify-content:space-between; } .need i { color:var(--muted); }
+.tlr { display:grid; gap:8px; background:var(--surface); border:1px solid var(--line); border-left:4px solid var(--lead); border-radius:12px; padding:12px 14px; font-size:14.5px; }
+.tlr ul { margin:0; padding-left:18px; } .tlr .err { color:#ff8a7a; }
+.tlbtn { margin-left:auto; font:inherit; font-size:13.5px; }
 .sched { margin:6px 0 0; color:var(--ink-2); font-size:15px; } .sched b { color:var(--lead); }
 /* 🔊 read aloud and ✏️ rename (Tai, 11-02) */
 .say { font-size:13px; min-height:28px; padding:2px 10px; }
@@ -211,8 +229,11 @@ function render(P) {
   var LIVE = !!(P.dir && /^http/.test(location.protocol) && !q.get('demo'));
   // In the video (&film=1) the chat shows real recorded exchanges (P.chats) and the video drives it through window.FILMCHAT.
   var FILMCHAT = !!q.get('film') && !!P.chats, TALK = LIVE || FILMCHAT;
-  var pc = function (k) { return (people[k] && people[k].color) || 'var(--you)'; };
-  var nm = function (k) { return k === 'you' ? 'You' : k === 'lead' ? lead.name.split(' ')[0] : (people[k] ? people[k].name : k); };
+  // Real people on the project (step 13a) and the Lead's suggestions for who's needed.
+  var REAL = P.realPros || [], NEED = P.needsHuman || [];
+  var human = function (k) { return REAL.filter(function (h) { return h.id === k; })[0]; };
+  var pc = function (k) { return (people[k] && people[k].color) || (human(k) ? '#e8916b' : 'var(--you)'); };
+  var nm = function (k) { return k === 'you' ? 'You' : k === 'lead' ? lead.name.split(' ')[0] : people[k] ? people[k].name : human(k) ? '👤 ' + human(k).name : k; };
   document.title = '🚀 ' + (M.title || P.request || 'SpinUp project');
   var storeKey = 'spinup-todo-' + (P.dir || P.slug || M.title);
   var doneMap = {}; try { doneMap = JSON.parse(localStorage.getItem(storeKey) || '{}'); } catch (e) {}
@@ -250,6 +271,31 @@ function render(P) {
         dd('Knows', a.knows) + dd('Rules', a.rules) + dd('Watches for', a.watch) + (a.reports ? '<dt>Reports</dt><dd>' + esc(a.reports) + '</dd>' : '') + '</dl></details>' +
         (TALK ? '<button type="button" class="talk" data-talk="' + k + '">💬 Talk to ' + esc(p.name) + '</button>' : '') + '</article>';
     }).join('') + '</div></section>';
+
+  // Real people on your Staff (step 13a): mentors, hired pros, anyone you work with. Your AI Pros prepare for them.
+  html += '<section id="real"><h2>👤 Real people on your Staff <small>mentors, hired pros and anyone you work with; your AI Pros prepare for them</small></h2>' +
+    (LIVE ? '<div class="realbar"><button type="button" data-human="add">＋ Add a real Pro</button><button type="button" data-human="suggest">💡 Who do I need?</button></div>' : '') +
+    '<div id="needs">' + needsHtml(NEED) + '</div>' +
+    '<div class="grid">' + (REAL.length ? REAL.map(realCard).join('') : '<p class="empty">No real people yet.' + (LIVE ? ' Add your mentor, CPA or contractor, or tap "Who do I need?" and ' + esc(lead.name.split(' ')[0]) + ' will suggest who this project needs.' : '') + '</p>') + '</div>' +
+    '<div id="tlreview"></div></section>';
+  function realCard(h) {
+    var log = (h.log || []).slice(-3).reverse();
+    return '<article class="agent real" data-hid="' + esc(h.id) + '" style="--c:#e8916b"><div class="top"><div class="av">👤</div><div><div class="nm">' + esc(h.name) + '</div>' +
+      '<div class="ti">' + esc(h.role) + (h.company ? ' · ' + esc(h.company) : '') + '</div></div><span class="badge real">REAL · ' + esc(String(h.relation).toUpperCase()) + '</span></div>' +
+      (h.phone || h.email ? '<div class="contact">' + (h.phone ? '📞 ' + esc(h.phone) : '') + (h.phone && h.email ? ' · ' : '') + (h.email ? '✉️ ' + esc(h.email) : '') + ' <span class="private" title="Only you see this; your AI Pros never do">🔒 private</span></div>' : '') +
+      (h.rate ? '<div class="status"><b>Cost:</b> ' + esc(h.rate) + '</div>' : '') +
+      (h.next ? '<div class="status"><b>Next:</b> ' + esc(h.next) + '</div>' : '') +
+      (h.notes ? '<div class="status">' + esc(h.notes) + '</div>' : '') +
+      (log.length ? '<details><summary>Log (' + (h.log || []).length + ')</summary><ul class="hlog">' + log.map(function (e) { return '<li><b>' + esc(e.date) + ' · ' + esc(e.kind) + ':</b> ' + esc(e.text) + '</li>'; }).join('') + '</ul></details>' : '') +
+      (LIVE ? '<div class="hact"><button type="button" data-hact="log">📝 Log</button><button type="button" data-hact="prep" title="Have your Lead draft an agenda and questions">🗓 Prep a meeting</button>' +
+        '<button type="button" data-hact="edit">Edit</button><button type="button" data-hact="remove" class="del">Remove</button></div>' : '') + '</article>';
+  }
+  function needsHtml(list) {
+    return (list || []).length ? '<div class="needs"><b>' + esc(lead.name.split(' ')[0]) + ' suggests real people for:</b>' + list.map(function (n) {
+      return '<div class="need"><span><b>' + esc(n.role) + '</b>: ' + esc(n.why) + (n.when ? ' <i>(' + esc(n.when) + ')</i>' : '') + '</span>' +
+        (LIVE ? '<button type="button" data-human="addfrom" data-role="' + esc(n.role) + '" data-rel="' + esc(n.relation) + '">＋ Add</button>' : '') + '</div>';
+    }).join('') + '</div>' : '';
+  }
   function dd(t, list) { return list && list.length ? '<dt>' + t + '</dt><dd><ul>' + list.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></dd>' : ''; }
 
   // Today: yours vs your Staff's.
@@ -275,7 +321,8 @@ function render(P) {
     }).join('') + '</div></section>';
 
   // Timeline.
-  html += '<section id="timeline"><h2>📅 Timeline <small>' + weeks + ' weeks, by owner</small></h2><div class="gantt" style="--w:' + weeks + '">' +
+  html += '<section id="timeline"><h2>📅 Timeline <small>' + weeks + ' weeks, by owner</small>' +
+    (LIVE ? '<button type="button" class="tlbtn" data-tl="review">🔄 Ask ' + esc(lead.name.split(' ')[0]) + ' to review it</button>' : '') + '</h2><div class="gantt" style="--w:' + weeks + '">' +
     '<div class="grow"><span></span><span class="axis">Week 1' + (weeks > 1 ? ' → week ' + weeks : '') + '</span></div>' +
     (M.timeline || []).map(function (ph) {
       return '<div class="grow"><span class="lbl">' + esc(ph.phase) + '<small>' + esc(nm(ph.owner)) + ' · weeks ' + ph.start + (ph.weeks > 1 ? '–' + (ph.start + ph.weeks - 1) : '') + '</small></span>' +
@@ -398,6 +445,101 @@ function render(P) {
     else { who = b.dataset.sayb; var m = b.closest('.m').cloneNode(true); m.querySelectorAll('table, button').forEach(function (x) { x.remove(); }); text = m.textContent.replace(/\s+/g, ' ').trim(); }
     say(b, text, who, genderOf(who));
   });
+  // ---------- Real people (step 13a) and the timeline review ----------
+  var api = function (path, body) {
+    return fetch(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || 'Something went wrong.'); return j; }); });
+  };
+  var LEADFIRST = lead.name.split(' ')[0];
+  function humanForm(h, preset) {
+    h = h || {}; preset = preset || {};
+    var o = document.createElement('div'); o.id = 'doc';
+    var rel = h.relation || preset.relation || 'hired', f = function (k, label, ph, type) {
+      return '<label>' + label + '<input name="' + k + '" type="' + (type || 'text') + '" value="' + esc(h[k] || preset[k] || '') + '" placeholder="' + esc(ph || '') + '"></label>'; };
+    o.innerHTML = '<div class="sheet hform" role="dialog" aria-label="Real Pro"><div class="top"><b>👤 ' + (h.id ? 'Edit ' + esc(h.name) : 'Add a real Pro') + '</b><button type="button" data-close>Close</button></div>' +
+      '<div class="fgrid">' + f('name', 'Name *', 'Dr. Amy Chen') + f('role', 'Role *', 'Mentor, CPA, General contractor…') + f('company', 'Company', '') +
+      '<label>How you know them<select name="relation">' + ['mentor', 'hired', 'friend', 'family', 'other'].map(function (r) { return '<option' + (r === rel ? ' selected' : '') + '>' + r + '</option>'; }).join('') + '</select></label>' +
+      f('phone', 'Phone 🔒', '', 'tel') + f('email', 'Email 🔒', '', 'email') + f('rate', 'Rate or cost', '$150/hour, $2,000 flat…') + f('next', 'Next touchpoint', 'Coffee Thu Nov 12') + '</div>' +
+      '<label>Notes<textarea name="notes" rows="3" placeholder="What they help with, what they said, anything your Staff should know">' + esc(h.notes || '') + '</textarea></label>' +
+      '<p class="note">🔒 Phone and email stay on your PC and are never shown to your AI Pros. They see the name, role, notes and log.</p>' +
+      '<div class="row"><button type="button" class="primary" data-save>' + (h.id ? 'Save' : 'Add to the Staff') + '</button><span class="err"></span></div></div>';
+    document.body.appendChild(o); o.querySelector('input[name="' + (preset.role && !h.id ? 'name' : 'name') + '"]').focus();
+    o.addEventListener('click', function (e) {
+      if (e.target === o || e.target.closest('[data-close]')) { o.remove(); return; }
+      if (!e.target.closest('[data-save]')) return;
+      var data = {}; o.querySelectorAll('[name]').forEach(function (i) { data[i.name] = i.value.trim(); });
+      api('/project/humans', { p: P.dir, op: h.id ? 'update' : 'add', id: h.id, human: data }).then(function () {
+        o.remove();
+        if (h.id) location.reload(); else offerReview('Added a real person: ' + data.name + ', ' + data.role + (data.next ? ' (next touchpoint: ' + data.next + ')' : ''), '👤 ' + data.name + ' is on your Staff.');
+      }, function (er) { o.querySelector('.err').textContent = er.message; });
+    });
+  }
+  // Adding a real person usually moves the schedule (availability, lead times), so offer the Lead's review (Tai, 11-03).
+  function offerReview(reason, headline) {
+    var box = document.getElementById('tlreview');
+    box.innerHTML = '<div class="tlr"><b>' + esc(headline || 'Timeline check') + '</b> Real people can change the schedule: their availability, lead times and when they can meet. ' +
+      '<div class="row"><button type="button" class="primary" data-tl="go">🔄 Ask ' + esc(LEADFIRST) + ' to review the timeline</button><button type="button" data-tl="later">Not now</button></div></div>';
+    box.dataset.reason = reason; box.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }
+  function runReview(reason) {
+    var box = document.getElementById('tlreview'); box.dataset.reason = reason;
+    box.innerHTML = '<div class="tlr"><span class="wait">🔄 ' + esc(LEADFIRST) + ' is reviewing the timeline…</span></div>'; box.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    api('/project/timeline-review', { p: P.dir, reason: reason }).then(function (j) {
+      var r = j.review, diff = r.endWeeks - r.beforeWeeks;
+      box.innerHTML = '<div class="tlr"><b>' + esc(lead.emoji || '') + ' ' + esc(LEADFIRST) + ':</b> ' + esc(r.leadSays) +
+        (r.changes.length ? '<ul>' + r.changes.map(function (c) { return '<li><b>' + esc(c.phase) + ':</b> ' + esc(c.why) + '</li>'; }).join('') + '</ul>' : '') +
+        '<p class="note">' + (r.fits && !r.changes.length ? 'The timeline still fits.' : 'New end: week ' + r.endWeeks + (diff ? ' (' + (diff > 0 ? '+' : '') + diff + ' weeks)' : ' (no change to the end date)')) + '</p>' +
+        (r.changes.length ? '<div class="row"><button type="button" class="primary" data-tl="apply">Apply the new timeline</button><button type="button" data-tl="keep">Keep the current one</button></div>'
+          : '<div class="row"><button type="button" data-tl="keep">OK</button></div>') + '</div>';
+    }, function (er) { box.innerHTML = '<div class="tlr"><span class="err">' + esc(er.message) + '</span></div>'; });
+  }
+  app.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-tl]');
+    if (t) {
+      var act = t.dataset.tl, box = document.getElementById('tlreview');
+      if (act === 'review') runReview('The person asked for a timeline check');
+      else if (act === 'go') runReview(box.dataset.reason || 'A check-in');
+      else if (act === 'apply') api('/project/timeline-apply', { p: P.dir }).then(function () { location.reload(); }, function (er) { alert(er.message); });
+      else location.reload();
+      return;
+    }
+    var b = e.target.closest('[data-human]');
+    if (b) {
+      if (b.dataset.human === 'add') humanForm();
+      else if (b.dataset.human === 'addfrom') humanForm(null, { role: b.dataset.role, relation: b.dataset.rel });
+      else if (b.dataset.human === 'suggest') {
+        b.disabled = true; b.textContent = '💡 ' + LEADFIRST + ' is thinking…';
+        api('/project/human-suggestions', { p: P.dir }).then(function (j) { NEED = j.needs; document.getElementById('needs').innerHTML = needsHtml(NEED); b.disabled = false; b.textContent = '💡 Who do I need?'; },
+          function (er) { b.disabled = false; b.textContent = '💡 Who do I need?'; alert(er.message); });
+      }
+      return;
+    }
+    var a = e.target.closest('[data-hact]'); if (!a) return;
+    var card = a.closest('[data-hid]'), h = human(card.dataset.hid);
+    if (a.dataset.hact === 'edit') humanForm(h);
+    else if (a.dataset.hact === 'prep') {
+      // The Lead drafts the agenda and questions in its chat tab.
+      chatOpen('lead');
+      var ta = document.getElementById('chatT');
+      ta.value = 'Help me prepare for my meeting with ' + h.name + ' (' + h.role + (h.company ? ', ' + h.company : '') + '): a short agenda, the questions I should ask, and what to bring.' + (h.next ? ' The meeting: ' + h.next + '.' : '');
+      ta.focus();
+    } else if (a.dataset.hact === 'remove' && !card.querySelector('.hconfirm')) {
+      card.insertAdjacentHTML('beforeend', '<div class="hconfirm">Remove ' + esc(h.name) + ' from this project, with their log? <button type="button" class="del" data-hrm>Remove</button> <button type="button" data-hno>Cancel</button></div>');
+      card.querySelector('[data-hno]').onclick = function () { card.querySelector('.hconfirm').remove(); };
+      card.querySelector('[data-hrm]').onclick = function () { api('/project/humans', { p: P.dir, op: 'remove', id: h.id }).then(function () { location.reload(); }); };
+    } else if (a.dataset.hact === 'log' && !card.querySelector('.hlogform')) {
+      card.insertAdjacentHTML('beforeend', '<div class="hlogform"><select aria-label="What happened">' + ['meeting', 'advice', 'document', 'cost', 'note'].map(function (k) { return '<option>' + k + '</option>'; }).join('') + '</select>' +
+        '<input type="text" placeholder="What happened? e.g. Met for coffee; she said apply to 12 schools" aria-label="What happened"><input type="text" placeholder="Next touchpoint (optional)" aria-label="Next touchpoint" value="' + esc(h.next || '') + '">' +
+        '<div class="row"><button type="button" class="primary" data-lsave>Save to log</button><button type="button" data-lno>Cancel</button></div></div>');
+      var lf = card.querySelector('.hlogform'); lf.querySelector('input').focus();
+      lf.querySelector('[data-lno]').onclick = function () { lf.remove(); };
+      lf.querySelector('[data-lsave]').onclick = function () {
+        var ins = lf.querySelectorAll('input');
+        api('/project/humans', { p: P.dir, op: 'log', id: h.id, entry: { kind: lf.querySelector('select').value, text: ins[0].value, next: ins[1].value } }).then(function () { location.reload(); }, function (er) { alert(er.message); });
+      };
+    }
+  });
+
   // ✏️ Rename a Pro or the Lead (live projects only). Their instructions are rebuilt from the project on every message,
   // so the new name takes effect from their next reply.
   app.addEventListener('click', function (e) {

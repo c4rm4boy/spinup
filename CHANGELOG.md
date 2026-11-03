@@ -6,6 +6,13 @@ SpinUp started on October 31, 2026 as "Cabinet Builder," a clickable mockup for 
 
 ---
 
+## v0.9.12 · Nov 3 · Real people on your Staff
+
+- **Add the real people you work with** (in the full prototype): a mentor, your CPA, a contractor. They sit next to your AI Pros as **👤 REAL** cards, with role, company, how you know them, cost, notes, a log (meetings, advice, documents, costs) and the next touchpoint. Phone and email stay private: your AI Pros never see them.
+- **💡 Who do I need?** Your Lead names the roles that genuinely need a human, and when. For a timber-frame home: a structural engineer, a soils firm for the karst, the county septic evaluator and a construction lender.
+- **🗓 Prep a meeting:** one click asks your Lead for an agenda and the questions to ask.
+- **The timeline adjusts for real people.** Adding someone usually moves the schedule, so your Lead reviews it against their availability and lead times and proposes changes you apply or keep: *"Bob can't get out to the land until about week 7… I'm pushing final plans and bids back one week… we still break ground on time."* You can also ask for a review anytime from the timeline.
+
 ## v0.9.11 · Nov 3 · Suspend, archive, delete
 
 - **⏸ Suspend a project** (in the full prototype): it stays in your list but goes on hold. It isn't counted as waiting on you, and your Chief won't push it. Resume anytime.
