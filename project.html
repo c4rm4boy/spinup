@@ -405,8 +405,10 @@ function render(P) {
     var a = m.action; if (!a || a.type !== 'rename') return '';
     var rows = a.changes.map(function (c) { return '<li>' + esc(c.from) + ' → <b>' + esc(c.name) + '</b></li>'; }).join('');
     return '<div class="act"><b>✏️ Rename ' + a.changes.length + (a.changes.length === 1 ? ' person' : ' people') + '</b><ul>' + rows + '</ul>' +
-      (a.done ? '<span class="actdone">' + (a.done === 'applied' ? '✓ Applied' : 'Not applied') + '</span>'
-        : '<span class="actbtns"><button type="button" class="primary" data-apply="' + esc(m.at) + '">Apply</button><button type="button" data-decline="' + esc(m.at) + '">Not now</button></span><span class="err"></span>') + '</div>';
+      (a.done ? '<span class="actdone">' + (a.done === 'applied everywhere' ? '✓ Applied everywhere' : a.done === 'applied' ? '✓ Applied to this project' : 'Not applied') + '</span>'
+        : '<span class="actbtns"><button type="button" class="primary" data-apply="' + esc(m.at) + '" title="Only on this project">Apply to this project</button>' +
+          '<button type="button" data-apply="' + esc(m.at) + '" data-all="1" title="This project and every future project">Apply everywhere</button>' +
+          '<button type="button" data-decline="' + esc(m.at) + '">Not now</button></span><span class="err"></span>') + '</div>';
   }
   function drawMsgs(who, list) {
     var el = document.getElementById('msgs'), p = proOf(who);
@@ -560,18 +562,36 @@ function render(P) {
     var b = e.target.closest('[data-ren]'); if (!b || b.dataset.busy) return;
     var who = b.dataset.ren, cur = proOf(who).name;
     var f = document.createElement('span'); f.className = 'renbox';
-    f.innerHTML = '<input type="text" maxlength="30" aria-label="New name" value="' + esc(cur) + '"><button type="button" data-ok>Save</button><button type="button" data-no>Cancel</button><span class="err"></span>';
+    // This project only (the default, Enter) or everywhere: your library too, so future projects use the new name (Tai, 11-03).
+    f.innerHTML = '<input type="text" maxlength="30" aria-label="New name" value="' + esc(cur) + '"><button type="button" data-ok title="Only on this project">Save: this project</button>' +
+      '<button type="button" data-all title="This project, every future project, and you can update your other projects too">Everywhere</button><button type="button" data-no>Cancel</button><span class="err"></span>';
     b.dataset.busy = '1'; b.hidden = true; b.parentNode.insertBefore(f, b.nextSibling);
     var inp = f.querySelector('input'); inp.focus(); inp.select();
     var close = function () { f.remove(); b.hidden = false; delete b.dataset.busy; };
     f.querySelector('[data-no]').onclick = close;
-    var save = function () {
-      var name = inp.value.trim(); if (!name || name === cur) return close();
-      fetch('/project/rename', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ p: P.dir, who: who, name: name }) })
-        .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error); location.reload(); }); })
+    var post = function (u, body) { return fetch(u, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error); return j; }); }); };
+    var save = function (everywhere) {
+      var name = inp.value.trim(); if (!name || (name === cur && !everywhere)) return close();
+      post('/project/rename', { p: P.dir, who: who, name: name, scope: everywhere ? 'everywhere' : 'project' })
+        .then(function (j) {
+          if (!everywhere || !j.others || !j.others.length) { location.reload(); return; }
+          // The same person on your other projects, still under the old name: rename there too?
+          var title = proOf(who).title;
+          f.innerHTML = '<span>' + esc(j.old) + ' is also on ' + j.others.length + (j.others.length === 1 ? ' other project' : ' other projects') + ': ' +
+            j.others.map(function (o) { return '<i>' + esc(o.goal || o.p) + '</i>'; }).join(', ') + '. Rename there too?</span>' +
+            '<button type="button" data-yes>Yes, rename there too</button><button type="button" data-skip>No, just here and future projects</button><span class="err"></span>';
+          f.querySelector('[data-skip]').onclick = function () { location.reload(); };
+          f.querySelector('[data-yes]').onclick = function () {
+            post('/project/rename-others', { who: who, name: name, from: j.old, title: title, projects: j.others.map(function (o) { return o.p; }) })
+              .then(function () { location.reload(); })
+              .catch(function (er) { f.querySelector('.err').textContent = er.message || 'Couldn\'t rename there just now.'; });
+          };
+        })
         .catch(function (er) { f.querySelector('.err').textContent = er.message || 'Couldn\'t rename just now.'; });
     };
-    f.querySelector('[data-ok]').onclick = save;
+    f.querySelector('[data-ok]').onclick = function () { save(false); };
+    f.querySelector('[data-all]').onclick = function () { save(true); };
     inp.onkeydown = function (ev) { if (ev.key === 'Enter') save(); if (ev.key === 'Escape') close(); };
   });
   // Apply / Not now on the Lead's proposed Staff change (the chat panel sits outside #app).
@@ -579,7 +599,7 @@ function render(P) {
     var b = e.target.closest('[data-apply],[data-decline]'); if (!b || b.disabled) return;
     var card = b.closest('.act'), decline = !!b.dataset.decline;
     card.querySelectorAll('button').forEach(function (x) { x.disabled = true; });
-    fetch('/project/staff-apply', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ p: P.dir, at: b.dataset.apply || b.dataset.decline, decline: decline }) })
+    fetch('/project/staff-apply', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ p: P.dir, at: b.dataset.apply || b.dataset.decline, decline: decline, scope: b.dataset.all ? 'everywhere' : 'project' }) })
       .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error); return j; }); })
       .then(function () {
         if (!decline) { location.reload(); return; }
