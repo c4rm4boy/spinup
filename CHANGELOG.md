@@ -6,6 +6,10 @@ SpinUp started on October 31, 2026 as "Cabinet Builder," a clickable mockup for 
 
 ---
 
+## v0.9.13 · Nov 3 · Your own words always get a team
+
+- **Fix:** when you typed your own answer to the Lead's first question instead of picking a button (for example "Brokerage loan" for "What makes up most of your debt?"), SpinUp staffed 0 Pros and stopped. Now your words go into the goal, every Pro sees them, and the Lead brings in the whole team.
+
 ## v0.9.12 · Nov 3 · Real people on your Staff
 
 - **Add the real people you work with** (in the full prototype): a mentor, your CPA, a contractor. They sit next to your AI Pros as **👤 REAL** cards, with role, company, how you know them, cost, notes, a log (meetings, advice, documents, costs) and the next touchpoint. Phone and email stay private: your AI Pros never see them.
