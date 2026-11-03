@@ -652,5 +652,66 @@ else if (dir) fetch('/project-data?p=' + encodeURIComponent(dir)).then(function 
 else document.getElementById('app').innerHTML = '<p class="empty">No project chosen.</p>';
 })();
 </script>
+<!-- 🐞 Feedback: bottom-left on every SpinUp page, clear of the chat panel and Skip voice (Tai, 11-03). Saved on this PC only. -->
+<style>
+#fbBtn { position:fixed; left:14px; bottom:calc(14px + env(safe-area-inset-bottom, 0px)); z-index:40; border-radius:999px; padding:6px 12px; font-size:13.5px;
+         background:var(--surface, #16213a); color:var(--ink, #e8eefc); border:1px solid var(--line, #2a3a5c); box-shadow:0 2px 10px rgba(0,0,0,.35); cursor:pointer; opacity:.9; }
+#fbBtn:hover { opacity:1; border-color:var(--accent, #3fd1c7); }
+#fbBox { position:fixed; left:14px; bottom:calc(58px + env(safe-area-inset-bottom, 0px)); z-index:41; width:min(360px, calc(100vw - 28px)); display:grid; gap:8px; padding:12px;
+         background:var(--surface, #16213a); color:var(--ink, #e8eefc); border:1px solid var(--line, #2a3a5c); border-radius:12px; box-shadow:0 8px 28px rgba(0,0,0,.45); font-size:14px; }
+#fbBox b { font-size:15px; }
+#fbBox .fbk { display:flex; flex-wrap:wrap; gap:6px; }
+#fbBox .fbk button { border-radius:999px; padding:4px 10px; font-size:13.5px; }
+#fbBox .fbk button[aria-pressed="true"] { border-color:var(--accent, #3fd1c7); background:color-mix(in srgb, var(--accent, #3fd1c7) 22%, transparent); }
+#fbBox textarea { font:inherit; color:inherit; background:var(--bg, #0d1424); border:1px solid var(--line, #2a3a5c); border-radius:8px; padding:8px; min-height:90px; resize:vertical; }
+#fbBox .fbnote { color:var(--muted, #9aa8c2); font-size:12.5px; }
+#fbBox .fbrow { display:flex; gap:6px; justify-content:flex-end; align-items:center; }
+#fbBox .fbmsg { color:var(--muted, #9aa8c2); font-size:13px; margin-right:auto; }
+</style>
+<button type="button" id="fbBtn" title="Report a bug or share an idea">🐞 Feedback</button>
+<div id="fbBox" role="dialog" aria-label="Send feedback" hidden>
+  <b>🐞 Bug or idea?</b>
+  <div class="fbk" role="group" aria-label="What kind">
+    <button type="button" data-k="bug" aria-pressed="true">🐞 Bug</button><button type="button" data-k="idea" aria-pressed="false">💡 Idea</button>
+    <button type="button" data-k="confusing" aria-pressed="false">🤔 Confusing</button><button type="button" data-k="praise" aria-pressed="false">👍 Works great</button>
+  </div>
+  <textarea id="fbText" aria-label="What happened" placeholder="What happened, or what would make this better? (Windows+H to dictate)"></textarea>
+  <span class="fbnote">Saved on this PC with this page, the project and the last few messages, so it can be reproduced.</span>
+  <div class="fbrow"><span class="fbmsg" id="fbMsg" aria-live="polite"></span><button type="button" id="fbCancel">Cancel</button><button type="button" class="primary" id="fbSend">Send</button></div>
+</div>
+<script>
+(function () {
+  var btn = document.getElementById('fbBtn'), box = document.getElementById('fbBox'), ta = document.getElementById('fbText'), msg = document.getElementById('fbMsg'), kind = 'bug';
+  var BASE = location.protocol === 'http:' ? '' : 'http://127.0.0.1:8787';
+  var open = function (on) { box.hidden = !on; if (on) { msg.textContent = ''; ta.focus(); } };
+  btn.onclick = function () { open(box.hidden); };
+  document.getElementById('fbCancel').onclick = function () { open(false); };
+  box.querySelector('.fbk').onclick = function (e) { var b = e.target.closest('[data-k]'); if (!b) return; kind = b.dataset.k;
+    box.querySelectorAll('[data-k]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); }); };
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !box.hidden) { e.stopPropagation(); open(false); } }, true);
+  // What was on screen: the last few lines of the conversation or the open chat, and which project.
+  var context = function () {
+    var lines = [].slice.call(document.querySelectorAll('#log .msg, #msgs .m')).slice(-8).map(function (m) {
+      var who = m.querySelector('.who'); return (who ? who.textContent.split('·')[0].trim() + ': ' : (m.classList.contains('me') || m.classList.contains('you') ? 'You: ' : '')) +
+        (m.querySelector('.txt') || m).textContent.replace(/\s+/g, ' ').trim().slice(0, 280); });
+    return lines;
+  };
+  var project = function () {
+    var p = new URLSearchParams(location.search).get('p'); if (p) return p;
+    var bt = document.getElementById('briefText'); if (bt && bt.textContent.trim()) return bt.textContent.trim();
+    var a = document.getElementById('askInput'); return a && a.value ? a.value : '';
+  };
+  document.getElementById('fbSend').onclick = function () {
+    var text = ta.value.trim(); if (!text) { ta.focus(); return; }
+    var send = document.getElementById('fbSend'); send.disabled = true; msg.textContent = 'Saving…';
+    fetch(BASE + '/feedback', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ kind: kind, text: text, page: document.title, project: project(), version: 'v0.9.13', context: context() }) })
+      .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error); }); })
+      .then(function () { ta.value = ''; msg.textContent = 'Thanks, it\'s saved.'; setTimeout(function () { open(false); }, 1400); })
+      .catch(function (e) { msg.textContent = e.message && e.message !== 'Failed to fetch' ? e.message : 'The SpinUp helper isn\'t running, so it couldn\'t be saved.'; })
+      .then(function () { send.disabled = false; });
+  };
+})();
+</script>
 </body>
 </html>
