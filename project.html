@@ -252,7 +252,9 @@ function render(P) {
   var REAL = P.realPros || [], NEED = P.needsHuman || [];
   var human = function (k) { return REAL.filter(function (h) { return h.id === k; })[0]; };
   var pc = function (k) { return (people[k] && people[k].color) || (human(k) ? '#e8916b' : 'var(--you)'); };
-  var nm = function (k) { return k === 'you' ? 'You' : k === 'lead' ? lead.name.split(' ')[0] : people[k] ? people[k].name : human(k) ? '👤 ' + human(k).name : k; };
+  // "You" becomes your name once your CEO profile has one (Tai, 11-03).
+  var ME = P.meName || '';
+  var nm = function (k) { return k === 'you' ? (ME || 'You') : k === 'lead' ? lead.name.split(' ')[0] : people[k] ? people[k].name : human(k) ? '👤 ' + human(k).name : k; };
   document.title = '🚀 ' + (M.title || P.request || 'SpinUp project');
   var storeKey = 'spinup-todo-' + (P.dir || P.slug || M.title);
   var doneMap = {}; try { doneMap = JSON.parse(localStorage.getItem(storeKey) || '{}'); } catch (e) {}
@@ -323,7 +325,7 @@ function render(P) {
 
   // Today: yours vs your Staff's.
   html += '<section id="today"><h2>✅ Today <small>you do what only a person can; your Staff does the rest</small></h2><div class="cols">' +
-    '<div class="box"><h3>Yours</h3><ul class="todo">' + (M.yours || []).map(function (t, i) {
+    '<div class="box"><h3>' + (ME ? esc(ME) + '\'s' : 'Yours') + '</h3><ul class="todo">' + (M.yours || []).map(function (t, i) {
       var id = 'y' + i, done = !!doneMap[id];
       return '<li class="' + (done ? 'done' : '') + '"><input type="checkbox" data-id="' + id + '"' + (done ? ' checked' : '') + ' aria-label="Done"><span class="t">' + esc(t.task) + '</span><span class="when">' + esc(t.when) + '</span></li>';
     }).join('') + '</ul></div>' +
