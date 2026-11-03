@@ -583,7 +583,7 @@ function render(P) {
             '<button type="button" data-yes>Yes, rename there too</button><button type="button" data-skip>No, just here and future projects</button><span class="err"></span>';
           f.querySelector('[data-skip]').onclick = function () { location.reload(); };
           f.querySelector('[data-yes]').onclick = function () {
-            post('/project/rename-others', { who: who, name: name, from: j.old, title: title, projects: j.others.map(function (o) { return o.p; }) })
+            post('/project/rename-others', { p: P.dir, who: who, name: name, from: j.old, title: title, projects: j.others.map(function (o) { return o.p; }) })
               .then(function () { location.reload(); })
               .catch(function (er) { f.querySelector('.err').textContent = er.message || 'Couldn\'t rename there just now.'; });
           };
