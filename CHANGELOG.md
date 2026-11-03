@@ -6,6 +6,15 @@ SpinUp started on October 31, 2026 as "Cabinet Builder," a clickable mockup for 
 
 ---
 
+## v0.9.8 · Nov 2 · Chief thinks before it picks
+
+- **No more keyword shortcuts.** Every goal now goes to Claude, and the built-in teams (office remodel, becoming a doctor) are just options Chief may choose when the goal truly fits. It judges meaning, not words:
+  - "Become a pediatrician" gets the doctor team, though no keyword list had it.
+  - "Find a good doctor for my dad" gets a Patient Advocate.
+  - "Study for the AIGP exam" gets an AI governance certification coach.
+- **"Right person for this?"** After introducing your Lead, Chief checks. Tap **Someone else**, or just type who you'd rather talk to ("an interior designer"), and Chief finds a different kind of expert. You get up to three tries.
+- Without the helper running, SpinUp still uses its strict keyword check for the built-in teams.
+
 ## v0.9.7 · Nov 2 · The right Lead, every time
 
 - **Fixed: "I want to become independently wealthy" got a general contractor.** The built-in remodel team was triggered by the word "den" hidden inside "indepen**den**tly". The built-in teams now match whole words only: the remodel team needs a space *and* a remodel word, and the doctor team needs "become a doctor", not "find a doctor". Everything else goes to Claude, which now picks a Certified Financial Planner for that goal.
