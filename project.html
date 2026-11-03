@@ -657,6 +657,7 @@ else document.getElementById('app').innerHTML = '<p class="empty">No project cho
 #fbBtn { position:fixed; left:14px; bottom:calc(14px + env(safe-area-inset-bottom, 0px)); z-index:40; border-radius:999px; padding:6px 12px; font-size:13.5px;
          background:var(--surface, #16213a); color:var(--ink, #e8eefc); border:1px solid var(--line, #2a3a5c); box-shadow:0 2px 10px rgba(0,0,0,.35); cursor:pointer; opacity:.9; }
 #fbBtn:hover { opacity:1; border-color:var(--accent, #3fd1c7); }
+#fbBtn[hidden], #fbBox[hidden] { display:none !important; }   /* pages without a global [hidden] rule (the Chief page) */
 #fbBox { position:fixed; left:14px; bottom:calc(58px + env(safe-area-inset-bottom, 0px)); z-index:41; width:min(360px, calc(100vw - 28px)); display:grid; gap:8px; padding:12px;
          background:var(--surface, #16213a); color:var(--ink, #e8eefc); border:1px solid var(--line, #2a3a5c); border-radius:12px; box-shadow:0 8px 28px rgba(0,0,0,.45); font-size:14px; }
 #fbBox b { font-size:15px; }
