@@ -149,6 +149,7 @@ button.primary { background:var(--accent); color:#06231f; border-color:var(--acc
 #chat .act .actbtns { display:inline-flex; gap:6px; }
 #chat .act .actdone { color:var(--muted); font-size:13.5px; }
 #chat .act .err { display:block; color:#ff8a7a; font-size:12.5px; }
+#chat .act .clash, .renbox .clash { color:#f2c94c; font-size:13px; }
 #chat .wait { color:var(--muted); font-size:14px; }
 #chat .files { display:flex; flex-wrap:wrap; gap:6px; padding:0 14px 6px; }
 #chat .files button { font-size:13px; padding:3px 9px; }
@@ -403,7 +404,7 @@ function render(P) {
   // A Staff change the Lead proposed (renames): Apply or Not now. Nothing changes until you press Apply (Tai, 11-03).
   function actCard(m) {
     var a = m.action; if (!a || a.type !== 'rename') return '';
-    var rows = a.changes.map(function (c) { return '<li>' + esc(c.from) + ' → <b>' + esc(c.name) + '</b></li>'; }).join('');
+    var rows = a.changes.map(function (c) { return '<li>' + esc(c.from) + ' → <b>' + esc(c.name) + '</b>' + (c.clash && !a.done ? '<br><span class="clash">⚠️ ' + esc(c.clash) + '</span>' : '') + '</li>'; }).join('');
     return '<div class="act"><b>✏️ Rename ' + a.changes.length + (a.changes.length === 1 ? ' person' : ' people') + '</b><ul>' + rows + '</ul>' +
       (a.done ? '<span class="actdone">' + (a.done === 'applied everywhere' ? '✓ Applied everywhere' : a.done === 'applied' ? '✓ Applied to this project' : 'Not applied') + '</span>'
         : '<span class="actbtns"><button type="button" class="primary" data-apply="' + esc(m.at) + '" title="Only on this project">Apply to this project</button>' +
@@ -571,8 +572,22 @@ function render(P) {
     f.querySelector('[data-no]').onclick = close;
     var post = function (u, body) { return fetch(u, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
       .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error); return j; }); }); };
-    var save = function (everywhere) {
+    // Name already someone else's? Say so first: "There's already a Steve (Electrician) on ... Use it anyway?"
+    var save = function (everywhere, sure) {
       var name = inp.value.trim(); if (!name || (name === cur && !everywhere)) return close();
+      if (!sure && name.toLowerCase() !== cur.toLowerCase()) {
+        post('/project/name-check', { p: P.dir, who: who, name: name }).then(function (c) {
+          if (!c.clashes || !c.clashes.length) { save(everywhere, true); return; }
+          var keep = f.innerHTML;
+          f.innerHTML = '<span class="clash">⚠️ There\'s already ' + c.clashes.map(function (x) { return 'a ' + esc(x.text); }).join(', and ') + '. Use "' + esc(name) + '" anyway?</span>' +
+            '<button type="button" data-go>Use it anyway</button><button type="button" data-back>Pick another name</button><span class="err"></span>';
+          f.querySelector('[data-go]').onclick = function () { save(everywhere, true); };
+          f.querySelector('[data-back]').onclick = function () {
+            f.innerHTML = keep; inp = f.querySelector('input'); inp.value = name; inp.focus(); inp.select(); wire();
+          };
+        }).catch(function () { save(everywhere, true); });
+        return;
+      }
       post('/project/rename', { p: P.dir, who: who, name: name, scope: everywhere ? 'everywhere' : 'project' })
         .then(function (j) {
           if (!everywhere || !j.others || !j.others.length) { location.reload(); return; }
@@ -590,9 +605,13 @@ function render(P) {
         })
         .catch(function (er) { f.querySelector('.err').textContent = er.message || 'Couldn\'t rename just now.'; });
     };
-    f.querySelector('[data-ok]').onclick = function () { save(false); };
-    f.querySelector('[data-all]').onclick = function () { save(true); };
-    inp.onkeydown = function (ev) { if (ev.key === 'Enter') save(); if (ev.key === 'Escape') close(); };
+    var wire = function () {
+      f.querySelector('[data-ok]').onclick = function () { save(false); };
+      f.querySelector('[data-all]').onclick = function () { save(true); };
+      f.querySelector('[data-no]').onclick = close;
+      inp.onkeydown = function (ev) { if (ev.key === 'Enter') save(false); if (ev.key === 'Escape') close(); };
+    };
+    wire();
   });
   // Apply / Not now on the Lead's proposed Staff change (the chat panel sits outside #app).
   document.addEventListener('click', function (e) {
