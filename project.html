@@ -143,6 +143,11 @@ button.primary { background:var(--accent); color:#06231f; border-color:var(--acc
 #chat .m.pro { justify-self:start; background:var(--surface-2); border-left:3px solid var(--c); border-radius:4px 14px 14px 14px; }
 #chat .m.pro p { margin:4px 0; } #chat .m.pro ul { margin:4px 0; padding-left:20px; }
 #chat .m.err { justify-self:center; color:#ff9f8a; font-size:14px; background:none; }
+#chat .act { margin-top:8px; padding:8px 10px; border:1px dashed var(--c); border-radius:10px; background:var(--bg); }
+#chat .act ul { margin:4px 0 8px; padding-left:20px; }
+#chat .act .actbtns { display:inline-flex; gap:6px; }
+#chat .act .actdone { color:var(--muted); font-size:13.5px; }
+#chat .act .err { display:block; color:#ff8a7a; font-size:12.5px; }
 #chat .wait { color:var(--muted); font-size:14px; }
 #chat .files { display:flex; flex-wrap:wrap; gap:6px; padding:0 14px 6px; }
 #chat .files button { font-size:13px; padding:3px 9px; }
@@ -392,7 +397,15 @@ function render(P) {
   function bubble(who, m) {
     var mine = m.from === 'you', c = who === 'lead' ? 'var(--lead)' : pc(who);
     return '<div class="m ' + (mine ? 'you' : 'pro') + '" style="--c:' + c + '">' + (mine ? esc(m.text) : md(m.text) +
-      '<button type="button" class="say mini" data-sayb="' + esc(who) + '" title="Read aloud" aria-label="Read aloud">🔊</button>') + '</div>';
+      '<button type="button" class="say mini" data-sayb="' + esc(who) + '" title="Read aloud" aria-label="Read aloud">🔊</button>' + actCard(m)) + '</div>';
+  }
+  // A Staff change the Lead proposed (renames): Apply or Not now. Nothing changes until you press Apply (Tai, 11-03).
+  function actCard(m) {
+    var a = m.action; if (!a || a.type !== 'rename') return '';
+    var rows = a.changes.map(function (c) { return '<li>' + esc(c.from) + ' → <b>' + esc(c.name) + '</b></li>'; }).join('');
+    return '<div class="act"><b>✏️ Rename ' + a.changes.length + (a.changes.length === 1 ? ' person' : ' people') + '</b><ul>' + rows + '</ul>' +
+      (a.done ? '<span class="actdone">' + (a.done === 'applied' ? '✓ Applied' : 'Not applied') + '</span>'
+        : '<span class="actbtns"><button type="button" class="primary" data-apply="' + esc(m.at) + '">Apply</button><button type="button" data-decline="' + esc(m.at) + '">Not now</button></span><span class="err"></span>') + '</div>';
   }
   function drawMsgs(who, list) {
     var el = document.getElementById('msgs'), p = proOf(who);
@@ -419,7 +432,7 @@ function render(P) {
       .then(function (r) {
         CH.busy[who] = false; if (CH.who !== who) return;
         var w = document.getElementById('waitrow'); if (w) w.remove();
-        el.insertAdjacentHTML('beforeend', r.error ? '<div class="m err">' + esc(r.error) + '</div>' : bubble(who, { from: who, text: r.reply }));
+        el.insertAdjacentHTML('beforeend', r.error ? '<div class="m err">' + esc(r.error) + '</div>' : bubble(who, { from: who, text: r.reply, action: r.action, at: r.at }));
         if (r.files) drawFiles(r.files); el.scrollTop = el.scrollHeight;
       })
       .catch(function () { CH.busy[who] = false; var w = document.getElementById('waitrow'); if (w) w.remove(); el.insertAdjacentHTML('beforeend', '<div class="m err">Couldn\'t reach the SpinUp helper. Is it running?</div>'); });
@@ -559,6 +572,19 @@ function render(P) {
     };
     f.querySelector('[data-ok]').onclick = save;
     inp.onkeydown = function (ev) { if (ev.key === 'Enter') save(); if (ev.key === 'Escape') close(); };
+  });
+  // Apply / Not now on the Lead's proposed Staff change (the chat panel sits outside #app).
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-apply],[data-decline]'); if (!b || b.disabled) return;
+    var card = b.closest('.act'), decline = !!b.dataset.decline;
+    card.querySelectorAll('button').forEach(function (x) { x.disabled = true; });
+    fetch('/project/staff-apply', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ p: P.dir, at: b.dataset.apply || b.dataset.decline, decline: decline }) })
+      .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error); return j; }); })
+      .then(function () {
+        if (!decline) { location.reload(); return; }
+        card.querySelector('.actbtns').outerHTML = '<span class="actdone">Not applied</span>';
+      })
+      .catch(function (er) { card.querySelectorAll('button').forEach(function (x) { x.disabled = false; }); card.querySelector('.err').textContent = er.message || 'Couldn\'t apply it just now.'; });
   });
   if (FILMCHAT) window.FILMCHAT = {
     glow: function (on) { document.querySelectorAll('.talk').forEach(function (b) { b.classList.toggle('hl', on); }); },
