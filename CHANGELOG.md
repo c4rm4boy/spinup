@@ -6,12 +6,19 @@ SpinUp started on October 31, 2026 as "Cabinet Builder," a clickable mockup for 
 
 ---
 
+## v0.9.10 · Nov 3 · Honest timelines
+
+- **"Is there a deadline on this?"** Chief asks up front: within 6 months, a year, 2 years, as soon as possible, no rush, or a date you type.
+- **The Lead's honest reality check.** After the Pros' questions, your Lead says how long this really takes for your scope, with the long poles spelled out, and gives you choices. Tested on a timber-frame home "within a year": *"I'll be straight with you: that's very ambitious… realistically about 22 months,"* then Realistic, Middle or Your deadline (which names the rush fees and risks).
+- **Your choice shapes everything:** the plan, the Staff's timeline (now up to 3 years) and the project's priority. Pushing for faster than realistic makes it High priority on a strict schedule. You see it on the plan, the project page and the Chief page.
+
 ## v0.9.9 · Nov 3 · Chief on your phone
 
 - **Chief on Telegram** (in the full prototype): your own private bot, run by SpinUp on your PC, answering only you.
   - Ask how your projects are going, and Chief answers knowing every Lead, Pro, task and next step.
   - Start a message with a Pro's name ("Dana, what should I focus on this week?") and it goes straight to that Pro's own session; the reply comes back labeled.
 - **Name your Chief.** Give your Chief a name on the Chief page. It's used across SpinUp and becomes the bot's name on Telegram.
+- **Connect from the page.** A Telegram badge sits next to your Chief's name: grey with a ＋ when it isn't connected, blue with a green dot when it's live. Click it to paste your bot token. SpinUp checks the token with Telegram, keeps it private on your PC and starts the bot right away; click again to switch bots or disconnect.
 - **Your ticks count everywhere:** checking off your tasks is saved on your PC, so Chief knows what's done.
 
 ## v0.9.8 · Nov 2 · Chief thinks before it picks

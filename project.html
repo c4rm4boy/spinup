@@ -99,6 +99,7 @@ details > summary { cursor:pointer; color:var(--ink-2); font-size:14px; }
 .agent .talk { margin-top:2px; }
 #chat { position:fixed; top:0; right:0; bottom:0; width:min(480px,100vw); z-index:20; display:grid; grid-template-rows:auto auto 1fr auto; background:var(--surface); border-left:1px solid var(--line); box-shadow:-12px 0 32px rgba(0,0,0,.35); padding-top:env(safe-area-inset-top,0px); }
 #chat[hidden] { display:none; }
+.sched { margin:6px 0 0; color:var(--ink-2); font-size:15px; } .sched b { color:var(--lead); }
 /* 🔊 read aloud and ✏️ rename (Tai, 11-02) */
 .say { font-size:13px; min-height:28px; padding:2px 10px; }
 .say.on { border-color:var(--accent); color:var(--accent); }
@@ -223,6 +224,8 @@ function render(P) {
   var html = '<header>' + (LIVE ? '<p style="margin:0 0 6px"><a href="SpinUp%20Chief.html">← 🧭 Chief: all your projects</a></p>' : '') +
     '<p class="eyebrow">An AI Staff for any goal <span>· SpinUp project</span></p><h1>' + esc(M.title || P.request) + '</h1>' +
     '<p class="one">' + esc(M.oneLine || P.brief || P.request) + '</p>' +
+    (P.schedule && P.schedule.label ? '<p class="sched">⏱ ' + esc(P.schedule.label) + ' · <b>' + esc(P.schedule.priority) + ' priority</b>' +
+      (P.schedule.deadline && !/not sure|no rush/i.test(P.schedule.deadline) ? ' · you asked for ' + esc(P.schedule.deadline.toLowerCase()) : '') + '</p>' : '') +
     '<div class="meta"><span class="pill">Your Staff is working</span><span>Your Lead: ' + esc(lead.emoji || '') + ' ' + esc(lead.name) + (LIVE ? ' <button type="button" class="ren" data-ren="lead" title="Rename your Lead" aria-label="Rename your Lead">✏️</button>' : '') + (lead.title ? ', ' + esc(lead.title) : '') + '</span>' +
     '<span>Staff of ' + cast.length + ' Pros</span>' + (P.date ? '<span>Set up ' + esc(P.date) + '</span>' : '') +
     (TALK ? '<button type="button" class="talk" data-talk="lead">💬 Talk to ' + esc(lead.name.split(' ')[0]) + '</button>' : '') + '</div></header>';
