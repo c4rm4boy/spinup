@@ -652,22 +652,25 @@ else if (dir) fetch('/project-data?p=' + encodeURIComponent(dir)).then(function 
 else document.getElementById('app').innerHTML = '<p class="empty">No project chosen.</p>';
 })();
 </script>
-<!-- 🐞 Feedback: bottom-left on every SpinUp page, clear of the chat panel and Skip voice (Tai, 11-03). Saved on this PC only. -->
+<!-- 🐞 Feedback: bottom-left on every SpinUp page, clear of the chat panel and Skip voice (Tai, 11-03).
+     Save on this PC (needs the helper), or Post on GitHub: opens a pre-filled public issue the person checks and submits.
+     Nothing personal goes to GitHub unless they tick "Include the last few messages", and they see it all before posting. -->
 <style>
 #fbBtn { position:fixed; left:14px; bottom:calc(14px + env(safe-area-inset-bottom, 0px)); z-index:40; border-radius:999px; padding:6px 12px; font-size:13.5px;
          background:var(--surface, #16213a); color:var(--ink, #e8eefc); border:1px solid var(--line, #2a3a5c); box-shadow:0 2px 10px rgba(0,0,0,.35); cursor:pointer; opacity:.9; }
 #fbBtn:hover { opacity:1; border-color:var(--accent, #3fd1c7); }
 #fbBtn[hidden], #fbBox[hidden] { display:none !important; }   /* pages without a global [hidden] rule (the Chief page) */
-#fbBox { position:fixed; left:14px; bottom:calc(58px + env(safe-area-inset-bottom, 0px)); z-index:41; width:min(360px, calc(100vw - 28px)); display:grid; gap:8px; padding:12px;
+#fbBox { position:fixed; left:14px; bottom:calc(58px + env(safe-area-inset-bottom, 0px)); z-index:41; width:min(370px, calc(100vw - 28px)); display:grid; gap:8px; padding:12px;
          background:var(--surface, #16213a); color:var(--ink, #e8eefc); border:1px solid var(--line, #2a3a5c); border-radius:12px; box-shadow:0 8px 28px rgba(0,0,0,.45); font-size:14px; }
 #fbBox b { font-size:15px; }
 #fbBox .fbk { display:flex; flex-wrap:wrap; gap:6px; }
 #fbBox .fbk button { border-radius:999px; padding:4px 10px; font-size:13.5px; }
 #fbBox .fbk button[aria-pressed="true"] { border-color:var(--accent, #3fd1c7); background:color-mix(in srgb, var(--accent, #3fd1c7) 22%, transparent); }
 #fbBox textarea { font:inherit; color:inherit; background:var(--bg, #0d1424); border:1px solid var(--line, #2a3a5c); border-radius:8px; padding:8px; min-height:90px; resize:vertical; }
+#fbBox label { display:flex; gap:6px; align-items:flex-start; font-size:13px; }
 #fbBox .fbnote { color:var(--muted, #9aa8c2); font-size:12.5px; }
-#fbBox .fbrow { display:flex; gap:6px; justify-content:flex-end; align-items:center; }
-#fbBox .fbmsg { color:var(--muted, #9aa8c2); font-size:13px; margin-right:auto; }
+#fbBox .fbrow { display:flex; flex-wrap:wrap; gap:6px; justify-content:flex-end; align-items:center; }
+#fbBox .fbmsg { color:var(--muted, #9aa8c2); font-size:13px; flex-basis:100%; }
 </style>
 <button type="button" id="fbBtn" title="Report a bug or share an idea">🐞 Feedback</button>
 <div id="fbBox" role="dialog" aria-label="Send feedback" hidden>
@@ -677,15 +680,20 @@ else document.getElementById('app').innerHTML = '<p class="empty">No project cho
     <button type="button" data-k="confusing" aria-pressed="false">🤔 Confusing</button><button type="button" data-k="praise" aria-pressed="false">👍 Works great</button>
   </div>
   <textarea id="fbText" aria-label="What happened" placeholder="What happened, or what would make this better? (Windows+H to dictate)"></textarea>
-  <span class="fbnote">Saved on this PC with this page, the project and the last few messages, so it can be reproduced.</span>
-  <div class="fbrow"><span class="fbmsg" id="fbMsg" aria-live="polite"></span><button type="button" id="fbCancel">Cancel</button><button type="button" class="primary" id="fbSend">Send</button></div>
+  <label><input type="checkbox" id="fbCtx"> <span>Include the last few messages and the project name<br><span class="fbnote">They can hold personal details. Leave this off if so.</span></span></label>
+  <span class="fbnote">Post on GitHub opens a public issue for you to check and submit (free GitHub account).<span id="fbLocalNote"> Save on this PC keeps it here.</span></span>
+  <div class="fbrow"><button type="button" id="fbCancel">Cancel</button><button type="button" id="fbSave">Save on this PC</button><button type="button" class="primary" id="fbGit">Post on GitHub ↗</button>
+    <span class="fbmsg" id="fbMsg" aria-live="polite"></span></div>
 </div>
 <script>
 (function () {
-  var btn = document.getElementById('fbBtn'), box = document.getElementById('fbBox'), ta = document.getElementById('fbText'), msg = document.getElementById('fbMsg'), kind = 'bug';
+  var REPO = 'https://github.com/c4rm4boy/spinup', VERSION = 'v0.9.13';
+  var btn = document.getElementById('fbBtn'), box = document.getElementById('fbBox'), ta = document.getElementById('fbText'), msg = document.getElementById('fbMsg');
+  var ctxBox = document.getElementById('fbCtx'), saveB = document.getElementById('fbSave'), kind = 'bug', HELPER = false;
   var BASE = location.protocol === 'http:' ? '' : 'http://127.0.0.1:8787';
-  btn.hidden = true;   // only where the helper can save it (not the public demo)
-  fetch(BASE + '/health').then(function (r) { if (r.ok) btn.hidden = false; }).catch(function () {});
+  // Save on this PC only where the helper is running; GitHub works everywhere, the public demo included.
+  saveB.hidden = true; document.getElementById('fbLocalNote').hidden = true;
+  if (location.protocol !== 'https:') fetch(BASE + '/health').then(function (r) { if (r.ok) { HELPER = true; saveB.hidden = false; document.getElementById('fbLocalNote').hidden = false; } }).catch(function () {});
   var open = function (on) { box.hidden = !on; if (on) { msg.textContent = ''; ta.focus(); } };
   btn.onclick = function () { open(box.hidden); };
   document.getElementById('fbCancel').onclick = function () { open(false); };
@@ -694,25 +702,49 @@ else document.getElementById('app').innerHTML = '<p class="empty">No project cho
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !box.hidden) { e.stopPropagation(); open(false); } }, true);
   // What was on screen: the last few lines of the conversation or the open chat, and which project.
   var context = function () {
-    var lines = [].slice.call(document.querySelectorAll('#log .msg, #msgs .m')).slice(-8).map(function (m) {
+    return [].slice.call(document.querySelectorAll('#log .msg, #msgs .m')).slice(-8).map(function (m) {
       var who = m.querySelector('.who'); return (who ? who.textContent.split('·')[0].trim() + ': ' : (m.classList.contains('me') || m.classList.contains('you') ? 'You: ' : '')) +
         (m.querySelector('.txt') || m).textContent.replace(/\s+/g, ' ').trim().slice(0, 280); });
-    return lines;
   };
   var project = function () {
     var p = new URLSearchParams(location.search).get('p'); if (p) return p;
     var bt = document.getElementById('briefText'); if (bt && bt.textContent.trim()) return bt.textContent.trim();
     var a = document.getElementById('askInput'); return a && a.value ? a.value : '';
   };
-  document.getElementById('fbSend').onclick = function () {
-    var text = ta.value.trim(); if (!text) { ta.focus(); return; }
-    var send = document.getElementById('fbSend'); send.disabled = true; msg.textContent = 'Saving…';
-    fetch(BASE + '/feedback', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ kind: kind, text: text, page: document.title, project: project(), version: 'v0.9.13', context: context() }) })
-      .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error); }); })
-      .then(function () { ta.value = ''; msg.textContent = 'Thanks, it\'s saved.'; setTimeout(function () { open(false); }, 1400); })
+  // Which page, without the page title (a project's title is its goal, which can be personal).
+  var where = function () {
+    var f = location.pathname.split('/').pop() || 'index.html';
+    return /Chief/i.test(decodeURIComponent(f)) ? 'Chief page' : /^project\.html/.test(f) ? 'Project page' : /^SpinUp\.html/.test(f) ? 'Start page' :
+      location.protocol === 'https:' ? 'Public demo' : decodeURIComponent(f);
+  };
+  var browser = function () { var u = navigator.userAgent, m = u.match(/Edg\/(\d+)/) || u.match(/Chrome\/(\d+)/) || u.match(/Firefox\/(\d+)/) || u.match(/Version\/(\d+).*Safari/);
+    return (/Edg\//.test(u) ? 'Edge ' : /Chrome\//.test(u) ? 'Chrome ' : /Firefox\//.test(u) ? 'Firefox ' : /Safari\//.test(u) ? 'Safari ' : '') + (m ? m[1] : '') + (/Mobi/.test(u) ? ' (phone)' : ''); };
+  var KIND = { bug: ['Bug', 'bug'], idea: ['Idea', 'enhancement'], confusing: ['Confusing', 'question'], praise: ['Works great', ''] };
+  var saveLocal = function () {
+    return fetch(BASE + '/feedback', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ kind: kind, text: ta.value.trim(), page: document.title, project: project(), version: VERSION, context: context() }) })
+      .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error); }); });
+  };
+  saveB.onclick = function () {
+    if (!ta.value.trim()) { ta.focus(); return; }
+    saveB.disabled = true; msg.textContent = 'Saving…';
+    saveLocal().then(function () { ta.value = ''; msg.textContent = 'Thanks, it\'s saved on this PC.'; setTimeout(function () { open(false); }, 1400); })
       .catch(function (e) { msg.textContent = e.message && e.message !== 'Failed to fetch' ? e.message : 'The SpinUp helper isn\'t running, so it couldn\'t be saved.'; })
-      .then(function () { send.disabled = false; });
+      .then(function () { saveB.disabled = false; });
+  };
+  document.getElementById('fbGit').onclick = function () {
+    var text = ta.value.trim(); if (!text) { ta.focus(); return; }
+    var k = KIND[kind], withCtx = ctxBox.checked, lines = withCtx ? context() : [];
+    var body = '**' + k[0] + '**\n\n' + text + '\n\n---\n' +
+      '- Where: ' + where() + '\n- Version: ' + VERSION + '\n- Browser: ' + browser() + '\n' +
+      (withCtx && project() ? '- Project: ' + project() + '\n' : '') +
+      (lines.length ? '\n<details><summary>Last messages</summary>\n\n' + lines.map(function (l) { return '> ' + l; }).join('\n>\n') + '\n</details>\n' : '') +
+      '\n_Sent from the 🐞 Feedback button in SpinUp._';
+    var title = '[' + k[0] + '] ' + text.replace(/\s+/g, ' ').slice(0, 70) + (text.length > 70 ? '…' : '');
+    var url = REPO + '/issues/new?title=' + encodeURIComponent(title) + (k[1] ? '&labels=' + k[1] : '') + '&body=' + encodeURIComponent(body.slice(0, 6000));
+    if (HELPER) saveLocal().catch(function () {});   // keep a local copy too
+    window.open(url, '_blank', 'noopener');
+    msg.textContent = 'GitHub opened in a new tab. Check it, then press Submit new issue.';
   };
 })();
 </script>
