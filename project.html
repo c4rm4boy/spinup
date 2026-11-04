@@ -290,7 +290,7 @@ function render(P) {
   html += '<section id="staff"><h2>👥 Your Staff <small>each Pro is now an agent with its own knowledge, rules and watch list</small></h2><div class="grid">' +
     cast.map(function (k) {
       var p = people[k], a = (M.agents || {})[k] || {};
-      return '<article class="agent" style="--c:' + pc(k) + '"><div class="top"><div class="av">' + esc(p.emoji) + '</div><div><div class="nm">' + esc(p.name) + (LIVE ? ' <button type="button" class="ren" data-ren="' + k + '" title="Rename ' + esc(p.name) + '" aria-label="Rename ' + esc(p.name) + '">✏️</button>' : '') + '</div><div class="ti">' + esc(p.title) + '</div></div><span class="badge">AGENT · READY</span></div>' +
+      return '<article class="agent" style="--c:' + pc(k) + '"><div class="top"><div class="av">' + esc(p.emoji) + '</div><div><div class="nm">' + esc(p.name) + (LIVE ? ' <button type="button" class="ren" data-ren="' + k + '" title="Rename ' + esc(p.name) + '" aria-label="Rename ' + esc(p.name) + '">✏️</button>' : '') + '</div><div class="ti">' + esc(p.title) + '</div></div><span class="badge">AI AGENT · READY</span></div>' +
         '<div class="status">' + (D[k] ? '<b>✓ Done:</b> ' + esc(D[k].title) : '<b>Working on:</b> ' + esc(a.status || '')) + '</div>' +
         '<details><summary>What ' + esc(p.name) + ' knows, follows and watches</summary><dl>' +
         dd('Knows', a.knows) + dd('Rules', a.rules) + dd('Watches for', a.watch) + (a.reports ? '<dt>Reports</dt><dd>' + esc(a.reports) + '</dd>' : '') + '</dl></details>' +
@@ -364,6 +364,8 @@ function render(P) {
   html += '<section id="knowledge"><h2>📚 What your Staff knows</h2><div class="facts">' + (M.knowledge || []).map(function (f) { return '<span>' + esc(f) + '</span>'; }).join('') + '</div>' +
     (P.plan && P.plan.steps ? '<details><summary>The original plan from ' + esc(lead.name) + '</summary><ol>' + P.plan.steps.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ol></details>' : '') + '</section>';
 
+  // AI disclosure (EU AI Act Art. 50; Tai, 11-04): the names and voices are friendly, but nobody here is a person.
+  html += '<p class="guard"><b>Your Staff is AI, not people.</b> The names and voices make the team easy to talk to; every Lead and Pro is an AI agent (Claude), and it can be wrong. Check anything important with a licensed professional.</p>';
   html += '<p class="guard"><b>Your Staff drafts; you decide.</b> Nothing is sent, bought, booked or signed without your OK. Every Pro follows that rule, plus the rules on its card.</p>' +
     '<p class="foot">Set up with SpinUp, a prototype by Tai Nguyen built with Claude Code. General guidance only, not professional advice.</p>';
   var app = document.getElementById('app'); app.innerHTML = html;
@@ -386,7 +388,7 @@ function render(P) {
       box.innerHTML = '<div class="chd"><b>💬 Talk to your Staff</b><button type="button" id="chatX" aria-label="Close">✕</button></div>' +
         '<div class="tabs" role="tablist">' + tabs + '</div><div class="msgs" id="msgs" aria-live="polite"></div>' +
         '<div><div class="files" id="files"></div><form id="chatF"><textarea id="chatT" rows="2" aria-label="Your message"></textarea>' +
-        '<button type="submit" class="send">Send</button><span class="hint">Enter sends · Shift+Enter for a new line · each Pro remembers your conversation · drafts only</span></form></div>';
+        '<button type="submit" class="send">Send</button><span class="hint">You\'re talking to AI, not a person · Enter sends · Shift+Enter for a new line · each Pro remembers your conversation · drafts only</span></form></div>';
       document.body.appendChild(box);
       box.querySelector('.tabs').addEventListener('click', function (e) { var b = e.target.closest('[data-tab]'); if (b) chatTab(b.dataset.tab); });
       document.getElementById('chatX').onclick = function () { box.hidden = true; };
