@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🚀 SpinUp Explained</title>
+<!-- The SpinUp idea for people who don't use AI (Tai, 11-04): "you're the CEO" told as a narrated, animated story.
+     Local only, dark by default, house style. Arrows step, Space plays or pauses, M mutes, F goes full screen. -->
+<style>
+:root {
+  --bg: #0e1522; --surface: #162033; --surface-2: #1c2840; --ink: #e8edf6; --ink-2: #b3bfd3; --muted: #8592a8;
+  --line: #26324a; --focus: #7aa5ff; --accent: #6f9bff;
+  --good: #6fd38c; --warn: #f2c94c; --bad: #ff6b6b;
+  --c-carma: #9aa8c2; --c-jerry: #6f9bff; --c-coach: #b28dff; --c-rupert: #ffa24d; --c-peter: #f2c94c;
+  --c-elon: #3fd1c7; --c-doc: #6fd38c; --c-hud: #e8916b;
+  --f-display: "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "Cascadia Mono", Consolas, ui-monospace, monospace;
+  color-scheme: dark;
+}
+:root[data-theme="light"] {
+  --bg: #f3f5f8; --surface: #ffffff; --surface-2: #eef2f7; --ink: #142033; --ink-2: #4a5872; --muted: #7a879c;
+  --line: #dbe1ea; --focus: #3d6fd9; --accent: #3d72e0;
+  --good: #2f9a4c; --warn: #b88c06; --bad: #d63c3c;
+  --c-carma: #5b6b86; --c-jerry: #3d72e0; --c-coach: #8a5cf0; --c-rupert: #e07f1f; --c-peter: #c99a07;
+  --c-elon: #109a92; --c-doc: #2f9a4c; --c-hud: #c8643f;
+  color-scheme: light;
+}
+
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 var(--f-body); }
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+code, pre { font-family: var(--f-mono); font-size: 0.92em; }
+code { background: var(--surface-2); border-radius: 5px; padding: 0 5px; }
+pre { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px; overflow-x: auto; }
+
+
+.wrap { max-width: 1000px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 48px; display: grid; gap: 22px; }
+.wrap.wide { max-width: 1200px; }
+header.top { display: flex; justify-content: space-between; align-items: start; gap: 12px; flex-wrap: wrap; }
+h1 { font: 700 clamp(28px, 5vw, 40px)/1.1 var(--f-display); margin: 0; }
+h2 { font: 650 20px/1.25 var(--f-display); margin: 0 0 10px; }
+h3 { font: 650 16px/1.25 var(--f-display); margin: 0 0 8px; }
+.lede { margin: 4px 0 0; color: var(--ink-2); max-width: 62ch; }
+.meta { color: var(--muted); font-size: 12.5px; }
+.note { color: var(--muted); font-size: 13px; margin: 0; }
+
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.card, a.card { display: grid; gap: 6px; align-content: start; text-decoration: none; color: inherit; background: var(--surface);
+  border: 1px solid var(--line); border-left: 4px solid var(--c, var(--line)); border-radius: 12px; padding: 16px; min-width: 0; }
+a.card:hover { border-color: var(--c, var(--focus)); }
+.name { font: 650 18px/1.2 var(--f-display); }
+.what { color: var(--ink-2); font-size: 14.5px; }
+
+
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+.stat .n { font: 700 32px/1 var(--f-display); font-variant-numeric: tabular-nums; }
+.stat .l { color: var(--ink-2); font-size: 14px; margin-top: 6px; }
+
+
+.tablewrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--muted); font-weight: 600; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+
+button, .btn { font: inherit; font-size: 14px; color: var(--ink-2); background: var(--surface); border: 1px solid var(--line);
+  border-radius: 8px; padding: 6px 12px; cursor: pointer; min-height: 36px; }
+button:hover, .btn:hover { color: var(--ink); border-color: var(--focus); }
+.chip { display: inline-block; font-size: 12.5px; padding: 2px 9px; border-radius: 999px; background: var(--surface-2); color: var(--ink-2); }
+.good { color: var(--good); } .warn { color: var(--warn); } .bad { color: var(--bad); }
+
+@media print { body { background: #fff; color: #000; } .no-print, #theme { display: none; } }
+</style>
+<style>
+.wrap { max-width: 1100px; gap: 14px; }
+.bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.bar .grow { flex: 1 1 auto; }
+.bar button, .bar select { font: inherit; font-size: 14px; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.bar button:hover, .bar select:hover { border-color: var(--c-elon); }
+.bar button.primary { background: var(--c-elon); border-color: var(--c-elon); color: #062a27; font-weight: 650; }
+
+/* The stage: the org chart builds up; overlays tell the parts a chart can't. */
+.stage { position: relative; aspect-ratio: 16 / 9; background: radial-gradient(ellipse at 50% 0%, var(--surface-2), var(--bg) 70%); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+.stage svg.lines { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.stage svg line { stroke: color-mix(in srgb, var(--ink-2) 45%, transparent); stroke-width: 2; vector-effect: non-scaling-stroke; stroke-dasharray: 6 5; opacity: 0; transition: opacity .6s; }
+.stage svg line.on { opacity: 1; }
+.node { position: absolute; transform: translate(-50%, -50%) scale(.6); opacity: 0; transition: opacity .55s, transform .55s cubic-bezier(.2,1.4,.4,1), filter .5s;
+  display: grid; justify-items: center; gap: 2px; text-align: center; width: 19%; }
+.node.on { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+.node .av { width: clamp(38px, 6.5vw, 70px); aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center; font-size: clamp(20px, 3.4vw, 38px);
+  background: var(--surface); border: 3px solid var(--c); box-shadow: 0 0 0 0 var(--c); }
+.node.pulse .av { animation: pulse 1.6s ease-out 2; }
+@keyframes pulse { from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--c) 70%, transparent); } to { box-shadow: 0 0 0 18px transparent; } }
+.node .role { font: 700 clamp(9px, 1.15vw, 12px)/1.2 var(--f-display); letter-spacing: .08em; text-transform: uppercase; color: var(--c); }
+.node .nm { font: 650 clamp(11px, 1.6vw, 17px)/1.2 var(--f-display); }
+.node .sub { font-size: clamp(9px, 1.15vw, 12.5px); color: var(--ink-2); line-height: 1.25; }
+.stage.dim .node, .stage.dim svg { filter: blur(3px) brightness(.45); }
+.stage.dim .over { background: color-mix(in srgb, var(--bg) 55%, transparent); }
+
+.over { position: absolute; inset: 0; display: grid; place-items: center; padding: 4%; opacity: 0; pointer-events: none; transition: opacity .5s; }
+.over.on { opacity: 1; pointer-events: auto; }
+.over .box { display: grid; gap: 12px; justify-items: center; text-align: center; width: 100%; max-width: 92%; }
+.wrap > * { min-width: 0; }   /* the long example names must not widen the page on a phone */
+.bar select { max-width: 100%; min-width: 0; }
+@media (max-width: 640px) { .bar select { flex: 1 1 100%; width: 100%; } .bar label { display: none; } }
+.big { font: 750 clamp(24px, 5vw, 56px)/1.08 var(--f-display); margin: 0; }
+.big em { font-style: normal; color: var(--c-elon); }
+.mid { font: 600 clamp(15px, 2.4vw, 26px)/1.25 var(--f-display); margin: 0; color: var(--ink-2); }
+.goal { font: 650 clamp(16px, 2.8vw, 30px)/1.2 var(--f-display); background: var(--surface); border: 2px solid var(--c-elon); border-radius: 18px 18px 18px 4px; padding: .5em 1em; }
+.anyhead { position: absolute; top: 5%; left: 0; right: 0; }
+.ideas { position: absolute; inset: 20% 2% 8% 2%; }
+.ideas .i { position: absolute; transform: translate(-50%, -50%) scale(.5); opacity: 0; white-space: nowrap; font: 600 clamp(11px, 1.6vw, 17px) var(--f-display);
+  background: var(--surface); border: 1.5px solid var(--c); color: var(--ink); border-radius: 16px 16px 16px 4px; padding: .35em .8em;
+  animation: ipop .6s ease-out var(--d) forwards, idim 1s ease-in var(--dim) forwards; }
+@keyframes ipop { to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+@keyframes idim { from { opacity: 1; transform: translate(-50%, -50%) scale(1); } to { opacity: .14; transform: translate(-50%, -50%) scale(.92); filter: blur(1px); } }
+.ideas .focus { position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%) scale(.4); opacity: 0; white-space: nowrap; z-index: 2;
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--c-elon) 18%, transparent), 0 8px 30px rgba(0,0,0,.45); animation: ifocus .8s cubic-bezier(.2,1.4,.4,1) var(--focus) forwards; }
+@keyframes ifocus { to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+@media (max-width: 640px) { .ideas .focus { white-space: normal; width: 86%; text-align: center; } }
+.ideas.ghosts { inset: 4% 2%; }
+.ideas .i.ghost { color: var(--muted); animation: ghost 1s ease-out var(--d) forwards; }
+@keyframes ghost { to { opacity: .35; transform: translate(-50%, -50%) scale(1); } }
+.anything { margin: 0; font: 900 clamp(44px, 11vw, 132px)/1 var(--f-display); letter-spacing: .04em; position: relative; z-index: 1;
+  background: linear-gradient(90deg, var(--c-elon), var(--c-jerry), var(--c-coach), var(--c-rupert), var(--c-elon)); background-size: 200% 100%;
+  -webkit-background-clip: text; background-clip: text; color: transparent; opacity: 0; transform: scale(.6);
+  animation: anyin .9s cubic-bezier(.2,1.5,.4,1) 1.6s forwards, anyshine 4s linear 2.5s infinite; }
+@keyframes anyin { to { opacity: 1; transform: scale(1); } }
+@keyframes anyshine { to { background-position: -200% 0; } }
+.over .box > p { position: relative; z-index: 1; }
+.qs { position: relative; width: min(760px, 100%); height: clamp(120px, 24vw, 230px); }
+.qs span { position: absolute; font: 650 clamp(13px, 2vw, 22px) var(--f-display); color: var(--muted); opacity: 0; animation: drift 3.6s ease-in-out forwards; }
+@keyframes drift { 0% { opacity: 0; transform: translateY(10px); } 25%, 80% { opacity: 1; transform: none; } 100% { opacity: .55; } }
+
+.list { display: grid; gap: 10px; width: min(820px, 100%); text-align: left; }
+.item { display: flex; gap: 12px; align-items: start; background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--c); border-radius: 12px; padding: 10px 14px;
+  opacity: 0; transform: translateX(-16px); transition: opacity .5s, transform .5s; }
+.item.on { opacity: 1; transform: none; }
+.item .e { font-size: clamp(18px, 2.6vw, 28px); line-height: 1; }
+.item b { display: block; font: 650 clamp(10px, 1.3vw, 13px) var(--f-display); color: var(--c); letter-spacing: .05em; text-transform: uppercase; }
+.item span { font-size: clamp(13px, 1.9vw, 19px); line-height: 1.3; }
+.docs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: min(860px, 100%); }
+.doc { background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--c); border-radius: 10px; padding: 12px; text-align: left; min-height: clamp(110px, 15vw, 170px);
+  display: grid; align-content: start; gap: 6px; opacity: 0; transform: translateY(18px); transition: opacity .5s, transform .5s; }
+.doc.on { opacity: 1; transform: none; }
+.doc .t { font: 650 clamp(11px, 1.6vw, 16px)/1.2 var(--f-display); }
+.doc i { display: block; height: 6px; border-radius: 3px; background: var(--line); }
+.doc .tag { font-size: clamp(9px, 1.1vw, 11.5px); color: var(--c-warn, var(--warn)); font-weight: 650; letter-spacing: .06em; }
+.vs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; width: min(820px, 100%); text-align: left; }
+.vh { font: 700 clamp(12px, 1.6vw, 16px) var(--f-display); color: var(--muted); letter-spacing: .04em; }
+.vh.su { color: var(--c-elon); }
+.vc { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font-size: clamp(12px, 1.8vw, 18px); line-height: 1.3; color: var(--muted);
+  opacity: 0; transition: opacity .5s; }
+.vc.su { color: var(--ink); border-left: 4px solid var(--c-elon); }
+.vc.on { opacity: 1; }
+.pile { display: flex; flex-wrap: wrap; gap: 6px; align-content: start; }
+.pile span { font-size: clamp(11px, 1.5vw, 15px); color: var(--muted); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 5px 9px;
+  transform: rotate(var(--r)); opacity: 0; animation: pop .35s ease-out forwards; }
+@keyframes pop { to { opacity: 1; } }
+.tidy { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--c-elon); border-radius: 12px; padding: 10px 12px; display: grid; gap: 8px; }
+.tidy .th { font: 650 clamp(12px, 1.7vw, 17px) var(--f-display); }
+.tidy .tr { display: flex; gap: 8px; align-items: start; font-size: clamp(11px, 1.5vw, 14.5px); color: var(--ink-2); line-height: 1.3; opacity: 0; transition: opacity .5s; }
+.tidy .tr.on { opacity: 1; }
+.tidy .tr b { display: block; color: var(--ink); font-weight: 650; }
+.phone { width: clamp(200px, 30vw, 300px); background: var(--surface); border: 2px solid var(--line); border-radius: 26px; padding: 18px 12px; display: grid; gap: 10px; }
+.phone .hd { font-size: 12px; color: var(--muted); text-align: center; }
+.msg { padding: 8px 12px; border-radius: 14px; font-size: clamp(12px, 1.6vw, 15px); line-height: 1.35; text-align: left; opacity: 0; transition: opacity .5s; }
+.msg.on { opacity: 1; }
+.msg.me { justify-self: end; background: #24407a; color: #fff; border-radius: 14px 4px 14px 14px; }
+.msg.ai { justify-self: start; background: var(--surface-2); border-left: 3px solid var(--c-carma); border-radius: 4px 14px 14px 14px; }
+.aitag { display: inline-block; font: 650 10px/15px var(--f-body); border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; color: var(--muted); margin-left: 4px; }
+
+.cap { min-height: 3.2em; font: 600 clamp(16px, 2.2vw, 22px)/1.4 var(--f-display); margin: 0; text-align: center; }
+.cap .w.now { color: var(--c-elon); }
+.dots { display: flex; gap: 6px; justify-content: center; }
+.dots button { width: 10px; height: 10px; padding: 0; border-radius: 50%; border: 0; background: var(--line); cursor: pointer; }
+.dots button.on { background: var(--c-elon); }
+@media (max-width: 640px) { .stage { aspect-ratio: 3 / 4; } .docs { grid-template-columns: repeat(2, 1fr); } .node { width: 24%; } }
+:fullscreen .wrap, .wrap:fullscreen { max-width: none; background: var(--bg); padding: 2vh 3vw; }
+@media (prefers-reduced-motion: reduce) { .node, .item, .doc, .over, .msg { transition: none; } .qs span { animation: none; opacity: 1; }
+  .anything { animation: none; opacity: 1; transform: none; }
+  .ideas .i { animation: none; opacity: .14; transform: translate(-50%, -50%); } .ideas .focus { animation: none; opacity: 1; transform: translate(-50%, -50%); } }
+
+/* Film mode (?film=1, Rupert's 60 to 90 second cut, 11-05): a 4:5 frame, no controls, big burned-in captions one sentence at a time.
+   scripts/spinup-explained-film.mjs steps it frame by frame. */
+body.film { overflow: hidden; }
+body.film .wrap { max-width: none; height: 100vh; padding: 0; gap: 0; grid-template-rows: auto 1fr auto; }
+body.film .top, body.film .bar, body.film .dots, body.film .note { display: none; }
+body.film .stage { aspect-ratio: auto; border: 0; border-radius: 0; }
+body.film .brand { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px 10px; font: 700 15px var(--f-display); color: var(--c-elon); letter-spacing: .04em; }
+body.film .brand span { color: var(--muted); font-weight: 600; letter-spacing: 0; }
+body.film .cap { min-height: 0; height: 132px; display: grid; place-items: center; padding: 8px 18px 14px; font: 700 22px/1.3 var(--f-display); background: var(--bg); border-top: 1px solid var(--line); }
+body.film .cap .w { color: var(--ink-2); }
+body.film .cap .w.now, body.film .cap .w.said { color: var(--ink); }
+body.film .cap .w.now { color: var(--c-elon); }
+.brand { display: none; }
+.over.instant { transition: none; }
+.hook .big { font-size: 44px; } .hook .mid { font-size: 22px; }
+.endcard .big { font-size: 40px; } .endcard .mid { font-size: 22px; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="wrap" id="wrap">
+  <div class="brand">🚀 SpinUp <span>You're the CEO</span></div>
+  <header class="top">
+    <div>
+      <h1>SpinUp, explained</h1>
+      <p class="lede">The idea in two minutes, for anyone. No AI words needed: you run it like a small company, and you're the CEO.</p>
+      <div class="meta">See it run: <a href="index.html">the demo</a> · ← → step · Space play/pause · M mute · F full screen</div>
+    </div>
+    <button id="theme" type="button">Light</button>
+  </header>
+
+  <div class="bar">
+    <button type="button" class="primary" id="play">▶ Play</button>
+    <button type="button" id="prev" aria-label="Back">◀</button>
+    <button type="button" id="next" aria-label="Next">▶▶</button>
+    <button type="button" id="mute" aria-pressed="false">🔊 Voice on</button>
+    <span class="grow"></span>
+    <label for="story" class="meta">Example</label>
+    <select id="story" aria-label="Example">
+      <!-- Pick the one closest to the person watching (Tai, 11-04): personal for anyone, business for owners. -->
+      <optgroup label="Personal">
+        <option value="trip">🧳 A family trip to Mexico (anyone)</option>
+        <option value="craft">🕯️ A craft side business (starting something)</option>
+      </optgroup>
+      <optgroup label="Business">
+        <option value="shop">🏪 A small shop owner (walk-in customers)</option>
+        <option value="grow">📈 A business that wants to grow (sells to businesses)</option>
+      </optgroup>
+    </select>
+    <button type="button" id="full">⛶ Full screen</button>
+  </div>
+
+  <div class="stage" id="stage" aria-live="polite">
+    <svg class="lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      <line id="l1" x1="50" y1="15" x2="50" y2="33"/>
+      <line id="l2" x1="50" y1="40" x2="50" y2="57"/>
+      <line id="l3a" x1="50" y1="64" x2="14" y2="80"/><line id="l3b" x1="50" y1="64" x2="38" y2="80"/>
+      <line id="l3c" x1="50" y1="64" x2="62" y2="80"/><line id="l3d" x1="50" y1="64" x2="86" y2="80"/>
+    </svg>
+    <div class="node" id="nYou" style="left:50%; top:11%; --c: var(--c-jerry)"><div class="av">👤</div><div class="role">CEO</div><div class="nm">You</div></div>
+    <div class="node" id="nChief" style="left:50%; top:35%; --c: var(--c-carma)"><div class="av">🧭</div><div class="role">Chief</div><div class="nm">Tom</div><div class="sub">your right hand</div></div>
+    <div class="node" id="nLead" style="left:50%; top:59%; --c: var(--c-peter)"><div class="av" id="leadAv"></div><div class="role">Lead</div><div class="nm" id="leadNm"></div><div class="sub" id="leadSub"></div></div>
+    <div class="node pro" id="p0" style="left:14%; top:86%; --c: var(--c-elon)"><div class="av"></div><div class="nm"></div></div>
+    <div class="node pro" id="p1" style="left:38%; top:86%; --c: var(--c-coach)"><div class="av"></div><div class="nm"></div></div>
+    <div class="node pro" id="p2" style="left:62%; top:86%; --c: var(--c-rupert)"><div class="av"></div><div class="nm"></div></div>
+    <div class="node pro" id="p3" style="left:86%; top:86%; --c: var(--c-doc)"><div class="av"></div><div class="nm"></div></div>
+    <div class="over" id="over"><div class="box" id="overBox"></div></div>
+  </div>
+
+  <p class="cap" id="cap"></p>
+  <div class="dots" id="dots" role="tablist" aria-label="Scenes"></div>
+  <p class="note">SpinUp is a prototype. Every Chief, Lead and Pro is an AI agent, not a person.</p>
+</div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var r = document.documentElement, tb = $('theme');
+  function setTheme(t) { r.setAttribute('data-theme', t); tb.textContent = t === 'dark' ? 'Light' : 'Dark'; try { localStorage.setItem('theme', t); } catch (e) {} }
+  try { var s0 = localStorage.getItem('theme'); if (s0) setTheme(s0); } catch (e) {}
+  tb.onclick = function () { setTheme(r.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); };
+
+  // Three examples: same story, different goal. Questions are the kind a real run caught (the gaps people miss).
+  var STORIES = {
+    trip: {
+      goal: 'Plan a family trip to Mexico', lead: ['🧳', 'Sofia', 'Travel Planner'], like: 'the way a great travel agent would',
+      pros: [['🛂', 'Documents'], ['🏨', 'Lodging'], ['💵', 'Budget'], ['🩺', 'Health & Safety']],
+      worry: ['Passports?', 'Which resort?', 'How much?', 'Car seats?', 'What am I forgetting?', 'Shots?', 'Cash or card?'],
+      qs: ['Does anyone\'s passport expire within six months of the trip? Some airlines check that.', 'Will the grandparents need a ground-floor room?', 'Do your credit cards charge a fee for foreign purchases?', 'Does anyone need prescriptions refilled before you leave?'],
+      docs: ['Passport and document checklist', 'Day-by-day plan', 'Budget with a 10% cushion', 'Packing list'],
+      wait: 'Renew a passport · pick a resort',
+      ask: 'Tom, what\'s waiting on me?', ans: 'Two things: renew your daughter\'s passport (it expires in March), and pick a resort from Sofia\'s top three.'
+    },
+    craft: {
+      goal: 'Sell my handmade candles for extra money', lead: ['🧑‍💼', 'Dana', 'Small-Business Coach'], like: 'the way a business coach would',
+      pros: [['💲', 'Pricing'], ['📦', 'Shipping'], ['📣', 'Marketing'], ['🧾', 'Taxes & Permits']],
+      worry: ['What do I charge?', 'Etsy?', 'Taxes?', 'Shipping?', 'What am I forgetting?', 'Who buys these?', 'Is it worth it?'],
+      qs: ['Does your price count your time, or just the wax and jars?', 'Will a candle survive a hot delivery truck in July?', 'Who buys these today: friends, or strangers?', 'Do you need a sales-tax permit to sell at craft fairs?'],
+      docs: ['Price sheet with real profit', 'Online shop checklist', 'Sales-tax steps', 'First month of posts'],
+      wait: 'Approve the new price sheet · photograph 5 candles',
+      ask: 'Tom, am I making money yet?', ans: 'Not quite. Your pricing Pro suggests $18 for the 8 oz candle to cover your time. Want her to update the price sheet?'
+    },
+    shop: {
+      goal: 'Bring more customers into my store', lead: ['🏪', 'Marcus', 'Retail Growth Lead'], like: 'the way a seasoned retail consultant would',
+      pros: [['📍', 'Local Marketing'], ['⭐', 'Reviews'], ['📊', 'Numbers'], ['🤝', 'Customer Care']],
+      worry: ['Ads?', 'Google?', 'Prices?', 'Slow days?', 'What am I forgetting?', 'Reviews?', 'Repeat customers?'],
+      qs: ['Is your Google listing showing the right hours and phone number?', 'When did a happy customer last get asked for a review?', 'Which day of the week is slowest, and why?', 'Do past customers hear from you when it\'s time to come back?'],
+      docs: ['Google listing fixes', 'Review-request text', 'Slow-day promotion', 'Come-back reminder plan'],
+      wait: 'Fix your Google hours · send the review text',
+      ask: 'Tom, what should I do this week?', ans: 'Fix your Google hours (they show closed on Saturday) and send the review text to last month\'s customers. Both drafts are ready.'
+    }
+  };
+  // A small business that wants to grow: more leads, more sales, new markets (Tai, 11-04, for the business sessions).
+  STORIES.grow = {
+    goal: 'Grow my business: more leads, more sales', lead: ['📈', 'Grace', 'Business Growth Lead'], like: 'the way a seasoned growth advisor would',
+    pros: [['🎯', 'Leads & Sales'], ['💲', 'Pricing & Margins'], ['🌎', 'New Markets'], ['🏭', 'Operations']],
+    worry: ['Where are new customers?', 'Trade shows?', 'Raise prices?', 'Hire a salesperson?', 'What am I forgetting?', 'Online?', 'Can we keep up?'],
+    qs: ['Does every quote get a follow-up within two days? Old quotes are the cheapest sales you\'ll ever find.', 'Which few customers bring most of your profit, and do you know why?', 'Which nearby market buys what you make but has never heard of you?', 'If orders doubled next month, could you deliver on time without running out of cash?'],
+    docs: ['Follow-ups for open quotes', 'Profit by customer and product', 'Target list for a new market', 'Can-we-handle-it checklist'],
+    wait: 'Approve the follow-up emails · pick a trade show',
+    ask: 'Tom, how\'s the sales push going?', ans: 'Follow-ups for 12 open quotes are drafted and waiting on your OK. Operations also wants a word: a big new order would stretch production in March.'
+  };
+  var S = STORIES.trip;
+
+  // The scenes. chart = how much of the org chart shows (0 none, 1 you, 2 + Chief, 3 + Lead, 4 + Pros); over = overlay builder.
+  function scenes() {
+    return [
+      { chart: 0, say: 'Here\'s SpinUp, in two minutes.', over: function () { return '<p class="big">Spin up a <em>team</em><br>for anything.</p>'; } },
+      { chart: 0, say: 'You have a goal. Any goal. Plan a trip, start a business, get out of debt, change careers, throw a party. Here\'s one: ' + S.goal + '.', over: anyGoal },
+      { chart: 0, say: 'Doing it alone, you don\'t know what you don\'t know. Hiring experts costs money and time.', over: worry },
+      { chart: 1, say: 'With SpinUp, you run it like a small company. You\'re the CEO.', pulse: 'nYou' },
+      { chart: 2, say: 'Your Chief is your right hand. Tom keeps track of every project you have, like a chief of staff.', pulse: 'nChief' },
+      { chart: 3, say: 'For each goal, the Chief brings in a Lead. That\'s the expert a friend would tell you to call first. Here, ' + S.lead[1] + ', the ' + S.lead[2] + '.', pulse: 'nLead' },
+      { chart: 4, say: 'The Lead staffs a team of Pros, the way a builder brings in the electrician and the plumber. Each one covers one part of the job.', pulse: 'pros' },
+      { chart: 4, dim: true, say: 'Before any work starts, each Pro asks the question only they would know to ask. That\'s how SpinUp catches the gaps you\'d miss.', over: questions },
+      { chart: 4, dim: true, say: 'Then they go to work and hand you drafts. You decide. Nothing is sent, bought or booked without you.', over: docs },
+      { chart: 4, dim: true, say: 'And you can talk to any of them, anytime, even from your phone.', over: phone },
+      { chart: 4, dim: true, say: 'Why not just ask a chatbot? A chatbot answers the questions you ask. SpinUp asks you the questions you didn\'t know to ask, brings in the right experts, and keeps the project running.', over: chatbot },
+      { chart: 4, dim: true, say: 'And it stays organized. With a chatbot, chats pile up, the good answer gets lost, and it forgets what you said last week. In SpinUp, every project keeps its own team, its own files and its own history, and each Pro remembers your conversation.', over: organized },
+      { chart: 4, dim: true, say: 'One honest note. Every one of them is AI, not a person. They have friendly names and voices, but they can be wrong. Check anything important with a real professional.', over: honest },
+      // ANYTHING, on screen and in the voice (Tai, 11-04): the last word is spoken again, slower, after a beat.
+      { chart: 4, dim: true, say: 'You\'re the CEO. Spin up a team for anything.', emph: 'Anything!', over: finale, end: true }
+    ];
+  }
+  // ANY goal (Tai, 11-04): a burst of ideas flashes in, they fade back, and this example's goal comes forward.
+  var IDEAS = ['Plan a family trip', 'Start a side business', 'Get out of debt', 'Remodel my kitchen', 'Throw a surprise party', 'Change careers', 'Get more customers',
+               'Train for a 5K', 'Write a book', 'Start a YouTube channel', 'Plan for retirement', 'Learn to fly-fish', 'Open a second location', 'Grow a vegetable garden', 'Get into med school', 'Buy my first home'];
+  function anyGoal(fast) {
+    // Spread over the whole stage: four loose rows, staggered, each bubble on its own spot (x, y in % of the stage below the heading).
+    var spots = [[12, 6], [42, 10], [72, 4], [92, 16], [24, 30], [58, 26], [86, 38], [8, 46], [36, 52], [70, 58], [94, 66], [16, 74], [50, 78], [80, 86], [28, 94], [62, 98]]
+      .map(function (s) { return [9 + s[0] * 0.82, s[1]]; });   // keep clear of the edges so nothing is clipped on a phone
+    var cols = ['--c-jerry', '--c-coach', '--c-rupert', '--c-peter', '--c-elon', '--c-doc', '--c-hud', '--c-carma'];
+    var step = fast ? 0.2 : 0.38, last = 0.3 + (IDEAS.length - 1) * step;   // slow enough to read each one as it lands (faster in the short film)
+    return '<p class="mid anyhead">You have a goal. <em style="font-style:normal;color:var(--c-elon)">Any</em> goal.</p>' +
+      '<div class="ideas" style="--dim:' + (last + 1.4).toFixed(2) + 's; --focus:' + (last + 1.9).toFixed(2) + 's">' +
+      IDEAS.map(function (t, i) { return '<span class="i" style="left:' + spots[i][0] + '%; top:' + spots[i][1] + '%; --c:var(' + cols[i % cols.length] + '); --d:' + (0.3 + i * step).toFixed(2) + 's">' + t + '</span>'; }).join('') +
+      '<span class="goal focus">“' + S.goal + '”</span></div>';
+  }
+  function finale() {
+    var spots = [[6, 10], [30, 4], [70, 6], [94, 12], [4, 50], [96, 48], [8, 88], [34, 96], [66, 94], [92, 86]]
+      .map(function (s) { return [12 + s[0] * 0.76, s[1]]; });
+    return '<div class="ideas ghosts">' + IDEAS.slice(0, spots.length).map(function (t, i) { return '<span class="i ghost" style="left:' + spots[i][0] + '%; top:' + spots[i][1] + '%; --c:var(--line); --d:' + (0.2 + i * 0.12).toFixed(2) + 's">' + t + '</span>'; }).join('') + '</div>' +
+      '<p class="mid">You\'re the CEO.</p><p class="big" style="font-size:clamp(20px,3.6vw,40px)">Spin up a team for</p><p class="anything">ANYTHING!</p>';
+  }
+  function worry() {
+    var spots = [[6, 10], [62, 4], [30, 40], [74, 46], [26, 78], [2, 58], [56, 80]];
+    return '<p class="mid">Doing it alone</p><div class="qs">' + S.worry.map(function (w, i) {
+      return '<span style="left:' + spots[i][0] + '%; top:' + spots[i][1] + '%; animation-delay:' + (i * 0.45) + 's">' + w + '</span>'; }).join('') + '</div>';
+  }
+  function questions() {
+    return '<p class="mid">Each Pro asks what only they would know to ask</p><div class="list">' + S.qs.map(function (q, i) {
+      var c = ['var(--c-elon)', 'var(--c-coach)', 'var(--c-rupert)', 'var(--c-doc)'][i];
+      return '<div class="item stagger" style="--c:' + c + '"><span class="e">' + S.pros[i][0] + '</span><div><b>' + S.pros[i][1] + '</b><span>' + q + '</span></div></div>'; }).join('') + '</div>';
+  }
+  function docs() {
+    return '<p class="mid">They go to work. You decide.</p><div class="docs">' + S.docs.map(function (d, i) {
+      var c = ['var(--c-elon)', 'var(--c-coach)', 'var(--c-rupert)', 'var(--c-doc)'][i];
+      return '<div class="doc stagger" style="--c:' + c + '"><span class="tag">DRAFT</span><span class="t">' + d + '</span><i></i><i style="width:80%"></i><i style="width:90%"></i><i style="width:60%"></i></div>'; }).join('') +
+      '</div><p class="meta" style="font-size:clamp(12px,1.5vw,15px)">Nothing is sent, bought or booked without your OK.</p>';
+  }
+  function phone() {
+    return '<div class="phone"><div class="hd">From your phone</div><div class="msg me stagger">' + S.ask + '</div><div class="msg ai stagger">🧭 Tom<span class="aitag">AI</span><br>' + S.ans + '</div></div>';
+  }
+  // "Why not just ask a chatbot?" (Tai, 11-04): the difference in three rows, chat box on the left, SpinUp on the right.
+  function chatbot() {
+    var rows = [['Waits for you to know what to ask', 'Asks you what you didn\'t know to ask'], ['One voice, unless you ask it to play each expert', 'The right experts, brought in for you'],
+                ['A conversation that scrolls away', 'A project that keeps running: what\'s waiting on you, the timeline, your phone']];
+    return '<p class="mid">Why not just ask a chatbot?</p><div class="vs"><div class="vh">💬 A chat box</div><div class="vh su">🚀 SpinUp</div>' +
+      rows.map(function (r) { return '<div class="vc stagger">' + r[0] + '</div><div class="vc su stagger">' + r[1] + '</div>'; }).join('') + '</div>' +
+      '<p class="mid" style="font-size:clamp(14px,2vw,20px)">It <em style="font-style:normal;color:var(--c-elon)">answers</em> your questions. SpinUp <em style="font-style:normal;color:var(--c-elon)">asks</em> the ones you\'d miss.</p>';
+  }
+  // "It stays organized" (Tai, 11-04): a pile of chats on the left, one tidy project on the right.
+  function organized() {
+    var pile = ['New chat', S.goal.slice(0, 20) + '…', 'New chat', 'Untitled', S.worry[0], 'New chat (2)', S.worry[2], 'where was that list??'];
+    var tidy = [['👥', 'Your team', S.lead[1] + ' + ' + S.pros.map(function (p) { return p[1]; }).join(', ')], ['📄', 'Your files', S.docs.slice(0, 3).join(' · ')],
+                ['✅', 'Waiting on you', S.wait], ['💬', 'Each Pro remembers', 'every conversation, in one place']];
+    return '<p class="mid">And it stays organized</p><div class="vs"><div class="vh">💬 A chatbot, a month later</div><div class="vh su">🚀 One SpinUp project</div>' +
+      '<div class="pile">' + pile.map(function (t, i) { return '<span style="--r:' + ((i % 3) - 1) * 2.5 + 'deg; animation-delay:' + (0.3 + i * 0.25) + 's">' + t + '</span>'; }).join('') + '</div>' +
+      '<div class="tidy">' + '<div class="th">' + S.goal + '</div>' + tidy.map(function (t) { return '<div class="tr stagger"><span>' + t[0] + '</span><div><b>' + t[1] + '</b>' + t[2] + '</div></div>'; }).join('') + '</div></div>';
+  }
+  function honest() {
+    return '<p class="big" style="font-size:clamp(22px,4vw,44px)">Every one of them is <em>AI</em>.</p><p class="mid">Friendly names and voices, but not people.<br>They can be wrong. Check anything important with a real professional.</p>';
+  }
+
+  // The short film for the LinkedIn post (Rupert, 11-05): 60 to 90 seconds, the point in the first 3 seconds, no AI jargon on screen,
+  // ending on "Full demo in the comments". Same pieces as the page, fewer scenes.
+  function hook() { return '<div class="hook"><p class="big">You\'re the <em>CEO</em>.</p><p class="big">AI is your <em>staff</em>.</p><p class="mid">Here\'s how you\'d hire them.</p></div>'; }
+  function endcard() { return '<div class="endcard"><p class="big">Want to see it <em>run</em>?</p><p class="mid">Full demo in the comments ↓</p></div>'; }
+  function filmScenes() {
+    return [
+      { chart: 0, say: 'You\'re the CEO. AI is your staff. Here\'s how you\'d hire them.', over: hook, instant: true },
+      { chart: 0, say: 'Pick any goal. A trip, a side business, more customers. Here\'s one: ' + S.goal + '.', over: function () { return anyGoal(true); }, min: 7.2 },
+      { chart: 2, say: 'Your Chief is your right hand. Tom keeps track of every project you have.', pulse: 'nChief' },
+      { chart: 3, say: 'For each goal, Tom brings in a Lead: the expert a friend would tell you to call first. Here, ' + S.lead[1] + ', the ' + S.lead[2] + '.', pulse: 'nLead' },
+      { chart: 4, say: 'The Lead staffs a team of Pros, the way a builder brings in the electrician and the plumber.', pulse: 'pros' },
+      { chart: 4, dim: true, say: 'Before any work starts, each Pro asks the question only they would know to ask. That\'s how it catches the gaps you\'d miss.', over: questions, min: 5.5 },
+      { chart: 4, dim: true, say: 'Then they hand you drafts. You decide. Nothing is sent, bought or booked without you.', over: docs },
+      { chart: 4, dim: true, say: 'Why not just ask a chatbot? A chatbot answers the questions you ask. SpinUp asks the ones you\'d miss, and keeps the project running.', over: chatbot, min: 7 },
+      { chart: 4, dim: true, say: 'Every one of them is AI, not a person. They can be wrong, so check anything important with a real professional.', over: honest },
+      { chart: 4, dim: true, say: 'You\'re the CEO. Spin up a team for anything.', emph: 'Anything!', over: finale, min: 5 },
+      { chart: 4, dim: true, say: 'Want to see it run? Full demo in the comments.', over: endcard, min: 4 }
+    ];
+  }
+  var FILM_MODE = /[?&]film=1/.test(location.search);
+
+  var SC = scenes(), N = 0, PLAYING = false, VOICE = true, TOKEN = 0;
+  try { VOICE = localStorage.getItem('su-explain-voice') !== '0'; } catch (e) {}
+  function fillStory() {
+    $('leadAv').textContent = S.lead[0]; $('leadNm').textContent = S.lead[1]; $('leadSub').textContent = S.lead[2];
+    for (var i = 0; i < 4; i++) { var p = $('p' + i); p.querySelector('.av').textContent = S.pros[i][0]; p.querySelector('.nm').textContent = S.pros[i][1]; }
+    SC = FILM_MODE ? filmScenes() : scenes();
+  }
+  // film: set up the scene only; FILM.renderAt drives the staggered parts, the caption and the clock.
+  function show(n, film) {
+    N = Math.max(0, Math.min(SC.length - 1, n)); var sc = SC[N], tok = ++TOKEN;
+    var on = function (id, v) { $(id).classList.toggle('on', v); };
+    on('nYou', sc.chart >= 1); on('nChief', sc.chart >= 2); on('l1', sc.chart >= 2); on('nLead', sc.chart >= 3); on('l2', sc.chart >= 3);
+    $('over').classList.toggle('instant', !!sc.instant);
+    if (film) { ['p0', 'p1', 'p2', 'p3'].forEach(function (id) { if (sc.chart < 4) on(id, false); }); }
+    else ['p0', 'p1', 'p2', 'p3'].forEach(function (id, i) { setTimeout(function () { if (tok === TOKEN) on(id, sc.chart >= 4); }, sc.chart >= 4 ? i * 350 : 0); });
+    ['l3a', 'l3b', 'l3c', 'l3d'].forEach(function (id) { on(id, sc.chart >= 4); });
+    $('stage').classList.toggle('dim', !!sc.dim);
+    document.querySelectorAll('.node.pulse').forEach(function (x) { x.classList.remove('pulse'); });
+    if (sc.pulse === 'pros') document.querySelectorAll('.node.pro').forEach(function (x) { x.classList.add('pulse'); });
+    else if (sc.pulse) $(sc.pulse).classList.add('pulse');
+    var ov = $('over');
+    if (sc.over) {
+      $('overBox').innerHTML = sc.over(); ov.classList.add('on');
+      if (!film) Array.prototype.forEach.call(ov.querySelectorAll('.stagger'), function (el, i) { setTimeout(function () { if (tok === TOKEN) el.classList.add('on'); }, 500 + i * 1100); });
+    } else ov.classList.remove('on');
+    if (film) return;
+    $('cap').innerHTML = sc.say.split(' ').map(function (w) { return '<span class="w">' + w + '</span>'; }).join(' ') +
+      (sc.emph ? ' <b class="w emph" style="color:var(--c-elon)">' + sc.emph.toUpperCase() + '</b>' : '');
+    Array.prototype.forEach.call($('dots').children, function (d, i) { d.classList.toggle('on', i === N); d.setAttribute('aria-selected', String(i === N)); });
+    narrate(sc.say, tok, sc.emph);
+  }
+
+  // Narration: Edge's natural voices when available; otherwise timed by reading speed. Plays scene to scene when ▶ is on.
+  var synth = window.speechSynthesis || null, voice = null;
+  function pickVoice() {
+    if (!synth) return; var vs = synth.getVoices().filter(function (v) { return /^en/i.test(v.lang); });
+    voice = ['Andrew', 'Ava', 'Brian', 'Emma'].map(function (n) { return vs.find(function (v) { return /Natural/.test(v.name) && v.name.indexOf(n) >= 0; }); }).filter(Boolean)[0] || vs.find(function (v) { return /Natural/.test(v.name); }) || null;
+  }
+  if (synth) { pickVoice(); synth.onvoiceschanged = pickVoice; }
+  function narrate(text, tok, emph) {
+    if (synth) synth.cancel();
+    var words = $('cap').querySelectorAll('.w:not(.emph)'), after = function () { if (tok === TOKEN && PLAYING) setTimeout(function () { if (tok === TOKEN && PLAYING) { if (N < SC.length - 1) show(N + 1); else stop(); } }, 900); };
+    if (!PLAYING && !VOICE) return;
+    if (!VOICE || !synth) { setTimeout(after, 1200 + text.split(' ').length * 330); return; }
+    var u = new SpeechSynthesisUtterance(text); if (voice) { u.voice = voice; u.lang = voice.lang; } u.rate = 1.0;
+    var starts = [], pos = 0; text.split(' ').forEach(function (w) { starts.push(pos); pos += w.length + 1; });
+    u.onboundary = function (e) { if (tok !== TOKEN || e.name === 'sentence') return; var i = starts.filter(function (s) { return s <= e.charIndex; }).length - 1;
+      Array.prototype.forEach.call(words, function (w, k) { w.classList.toggle('now', k === i); }); };
+    u.onend = function () {
+      Array.prototype.forEach.call(words, function (w) { w.classList.remove('now'); });
+      if (!emph || tok !== TOKEN) { after(); return; }
+      // The emphasis: a beat of silence, then the word again, slower and a little higher.
+      setTimeout(function () {
+        if (tok !== TOKEN) return;
+        var e = new SpeechSynthesisUtterance(emph); if (voice) { e.voice = voice; e.lang = voice.lang; } e.rate = 0.72; e.pitch = 1.15;
+        var em = $('cap').querySelector('.emph'); if (em) em.classList.add('now');
+        e.onend = e.onerror = function () { if (em) em.classList.remove('now'); after(); };
+        narrate.e = e; synth.speak(e);
+      }, 550);
+    };
+    u.onerror = u.onend; narrate.u = u; synth.speak(u);
+  }
+  function play() { PLAYING = true; $('play').textContent = '⏸ Pause'; show(N >= SC.length - 1 ? 0 : N); }
+  function stop() { PLAYING = false; $('play').textContent = '▶ Play'; TOKEN++; if (synth) synth.cancel(); }
+  function setMute(v) { VOICE = v; $('mute').textContent = v ? '🔊 Voice on' : '🔇 Voice off'; $('mute').setAttribute('aria-pressed', String(!v)); try { localStorage.setItem('su-explain-voice', v ? '1' : '0'); } catch (e) {} if (!v && synth) synth.cancel(); }
+
+  SC.forEach(function (_, i) { var b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'tab'); b.setAttribute('aria-label', 'Scene ' + (i + 1)); b.onclick = function () { stop(); show(i); }; $('dots').appendChild(b); });
+  $('play').onclick = function () { PLAYING ? stop() : play(); };
+  $('next').onclick = function () { stop(); show(N + 1); };
+  $('prev').onclick = function () { stop(); show(N - 1); };
+  $('mute').onclick = function () { setMute(!VOICE); };
+  $('story').onchange = function () { S = STORIES[this.value]; fillStory(); stop(); show(N); };
+  $('full').onclick = function () { var w = $('wrap'); document.fullscreenElement ? document.exitFullscreen() : (w.requestFullscreen && w.requestFullscreen()); };
+  document.addEventListener('keydown', function (e) {
+    if (e.target.tagName === 'SELECT' || e.ctrlKey || e.altKey || e.metaKey) return;
+    if (e.key === 'ArrowRight') { stop(); show(N + 1); } else if (e.key === 'ArrowLeft') { stop(); show(N - 1); }
+    else if (e.key === ' ') { e.preventDefault(); PLAYING ? stop() : play(); }
+    else if (e.key === 'm' || e.key === 'M') setMute(!VOICE);
+    else if (e.key === 'f' || e.key === 'F') $('full').click();
+  });
+  if (FILM_MODE) {
+    // Film mode: ?film=1&story=trip. No live clock: every CSS animation is paused and set to the frame's time.
+    document.body.classList.add('film');
+    var st = (location.search.match(/[?&]story=(\w+)/) || [])[1]; if (STORIES[st]) S = STORIES[st];
+    fillStory();
+    var TL = null, cur = -1, seen = new WeakMap();
+    // Captions one sentence at a time (long ones split at a comma), timed by their share of the voice clip.
+    var chunks = function (text) {
+      return text.match(/[^.?!:]+[.?!:]+["”]?|[^.?!:]+$/g).map(function (s) { return s.trim(); }).reduce(function (a, s) {
+        if (s.split(' ').length > 13 && s.indexOf(', ') > 0) { var k = s.indexOf(', ', Math.floor(s.length / 3)); if (k > 0) { a.push(s.slice(0, k + 1)); a.push(s.slice(k + 2)); return a; } }
+        a.push(s); return a; }, []);
+    };
+    window.FILM = {
+      // The lines to voice, in order: each scene's narration, then its emphasis word (slower, a little higher).
+      script: function () { var out = []; SC.forEach(function (sc, i) { out.push({ scene: i, speak: true, text: sc.say }); if (sc.emph) out.push({ scene: i, speak: true, text: sc.emph, emph: true }); }); return out; },
+      build: function (durs) {
+        var t = 0, k = 0, items = [], scenes = [];
+        SC.forEach(function (sc, i) {
+          var s0 = t, v = t + (i === 0 ? 0.15 : 0.35), say = { start: v, dur: durs[k++], speak: true };
+          items.push(say); var end = v + say.dur, em = null;
+          if (sc.emph) { em = { start: end + 0.45, dur: durs[k++], speak: true }; items.push(em); end = em.start + em.dur; }
+          t = Math.max(end + 0.7, s0 + (sc.min || 0));
+          var parts = chunks(sc.say), total = parts.join(' ').length, c = 0;
+          scenes.push({ start: s0, end: t, say: say, emph: em, parts: parts.map(function (p) { var a = c / total; c += p.length + 1; return { text: p, a: a, b: c / total }; }) });
+        });
+        TL = { total: t, items: items, scenes: scenes }; return TL;
+      },
+      renderAt: function (t) {
+        var i = 0; while (i < TL.scenes.length - 1 && t >= TL.scenes[i + 1].start) i++;
+        var sc = SC[i], ts = TL.scenes[i], lt = t - ts.start;
+        if (i !== cur) { show(i, true); cur = i; }
+        if (sc.chart >= 4) ['p0', 'p1', 'p2', 'p3'].forEach(function (id, j) { if (lt >= j * 0.35) $(id).classList.add('on'); });
+        Array.prototype.forEach.call($('over').querySelectorAll('.stagger'), function (el, j) { el.classList.toggle('on', lt >= 0.5 + j * 1.1); });
+        // Caption: the sentence being spoken, its words lighting up as the voice reaches them.
+        var f = Math.max(0, Math.min(1, (t - ts.say.start) / ts.say.dur)), p = ts.parts.filter(function (q) { return f >= q.a; }).pop() || ts.parts[0];
+        var inEmph = ts.emph && t >= ts.emph.start, words = p.text.split(' '), pf = (f - p.a) / (p.b - p.a);
+        var at = Math.floor(pf * words.length), html = words.map(function (w, j) {
+          var cls = t < ts.say.start ? '' : f >= 1 || j < at ? ' said' : j === at ? ' now' : '';
+          return '<span class="w' + cls + '">' + w + '</span>'; }).join(' ');
+        if (ts.emph && p === ts.parts[ts.parts.length - 1]) html += ' <b class="w emph' + (inEmph ? ' now' : '') + '" style="color:var(--c-elon)">' + sc.emph.toUpperCase() + '</b>';
+        $('cap').innerHTML = '<span>' + html + '</span>';
+        // Every animation and transition, frozen at its own age.
+        document.getAnimations().forEach(function (a) { if (!seen.has(a)) seen.set(a, t); a.pause(); a.currentTime = (t - seen.get(a)) * 1000; });
+      }
+    };
+  } else { setMute(VOICE); fillStory(); show(0); }
+})();
+</script>
+</body>
+</html>

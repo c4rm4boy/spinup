@@ -8,6 +8,8 @@ SpinUp started on October 31, 2026 as "Cabinet Builder," a clickable mockup for 
 
 ## v0.9.13 · Nov 3 · Your own words always get a team
 
+- **SpinUp Explained, on the demo site and as a 73-second film.** `explained.html` is the two-minute idea for people who don't use AI (you're the CEO, with a Chief, a Lead and Pros), narrated and animated, with four examples. The short film (`spinup-explained-trip.mp4`, 4:5, captions burned in) tells it in 11 scenes for a feed.
+- **Harder to hijack, clearer on high stakes** (from the first outside review). Pros treat what they read on the web, in email or in files as information, never as instructions, and tell you if something tried to steer them. Answers about permits, law, taxes, insurance, health or money cite their sources, stay marked DRAFT, and say who to confirm them with.
 - **Clearly AI.** Every Chief, Lead and Pro message carries an "AI" tag, and the conversation, the project page, the chat panel and the demo all say the Staff is AI agents with AI voices, not people. Pros say so plainly if asked and never claim a license or credentials. This follows the EU AI Act's transparency rule (Article 50): people should know when they're talking to AI.
 - **🔇 Mute, always on screen.** A button in the bottom-right corner mutes or unmutes every voice at once, wherever you've scrolled, and the M key does the same. It's for when a question comes up mid-sentence. It's the same switch as "🔊 Voices" up top, and SpinUp remembers it.
 - **Chief on Telegram sees new projects right away.** Chief gets the current project list with every message, so a project you started after your chat with Chief began shows up immediately.
