@@ -171,6 +171,16 @@ button.primary { background:var(--accent); color:#06231f; border-color:var(--acc
 #doc { position:fixed; inset:0; z-index:30; background:rgba(5,10,20,.7); display:grid; place-items:center; padding:16px; }
 #doc .sheet { width:min(820px,100%); max-height:88vh; overflow:auto; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:16px 20px; }
 #doc .sheet .top { display:flex; justify-content:space-between; gap:10px; align-items:center; }
+.flag.mini { display:block; margin:4px 0 0 auto; padding:1px 8px; font-size:12px; background:transparent; opacity:.7; }
+.flag.mini:hover { opacity:1; }
+.flagform { display:grid; gap:6px; margin-top:6px; font-size:13.5px; }
+.flagform textarea { font:inherit; color:inherit; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:6px; min-height:56px; }
+.flagged { display:block; margin-top:6px; font-size:12.5px; color:var(--warn, #f2c94c); }
+.secban { position: sticky; top: 0; z-index: 50; background: #5c1414; color: #fff; border-bottom: 2px solid #ff6b6b; padding: 10px 16px; font-size: 14.5px; line-height: 1.4; }
+.secban ul { margin: 4px 0 6px; padding-left: 20px; }
+.secban .secact { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.secban button { font: inherit; font-size: 13.5px; color: #fff; background: #8f2020; border: 1px solid #ff8f8f; border-radius: 999px; padding: 4px 12px; cursor: pointer; }
+.secban label { font-size: 13px; opacity: .9; }
 </style>
 </head>
 <body>
@@ -419,7 +429,9 @@ function render(P) {
   function bubble(who, m) {
     var mine = m.from === 'you', c = who === 'lead' ? 'var(--lead)' : pc(who);
     return '<div class="m ' + (mine ? 'you' : 'pro') + '" style="--c:' + c + '">' + (mine ? esc(m.text) : md(m.text) +
-      '<button type="button" class="say mini" data-sayb="' + esc(who) + '" title="Read aloud" aria-label="Read aloud">🔊</button>' + actCard(m)) + '</div>';
+      '<button type="button" class="say mini" data-sayb="' + esc(who) + '" title="Read aloud" aria-label="Read aloud">🔊</button>' +
+      (LIVE && m.at ? (m.flagged ? '<span class="flagged">⚠️ You reported this as ' + esc(m.flagged) + '</span>' : '<button type="button" class="flag mini" data-flag="' + esc(who) + '" data-at="' + esc(m.at) + '" title="Report a wrong or harmful answer">⚠️ Wrong?</button>') : '') +
+      actCard(m)) + '</div>';
   }
   // A Staff change the Lead proposed (renames): Apply or Not now. Nothing changes until you press Apply (Tai, 11-03).
   function actCard(m) {
@@ -458,6 +470,7 @@ function render(P) {
         var w = document.getElementById('waitrow'); if (w) w.remove();
         el.insertAdjacentHTML('beforeend', r.error ? '<div class="m err">' + esc(r.error) + '</div>' : bubble(who, { from: who, text: r.reply, action: r.action, at: r.at }));
         if (r.files) drawFiles(r.files); el.scrollTop = el.scrollHeight;
+        if (r.security && window.SU_SECURITY) window.SU_SECURITY();
       })
       .catch(function () { CH.busy[who] = false; var w = document.getElementById('waitrow'); if (w) w.remove(); el.insertAdjacentHTML('beforeend', '<div class="m err">Couldn\'t reach the SpinUp helper. Is it running?</div>'); });
   }
@@ -472,6 +485,28 @@ function render(P) {
     });
   }
   app.addEventListener('click', function (e) { var b = e.target.closest('[data-talk]'); if (b) chatOpen(b.dataset.talk); });
+  // ⚠️ Wrong? under a Pro's reply (SOP step 48): say what's wrong, and whether it could cause harm. Harmful pauses that Pro.
+  document.addEventListener('click', function (e) {
+    var f = e.target.closest('[data-flag]');
+    if (f) {
+      var m = f.closest('.m'); if (m.querySelector('.flagform')) return;
+      f.insertAdjacentHTML('afterend', '<div class="flagform"><textarea aria-label="What\'s wrong" placeholder="What\'s wrong with this answer?"></textarea>' +
+        '<label><input type="checkbox"> It could cause harm (health, legal, money or safety). Pause ' + esc(proOf(f.dataset.flag).name) + '.</label>' +
+        '<span><button type="button" data-flagsend>Report</button> <button type="button" data-flagcancel>Cancel</button></span></div>');
+      m.querySelector('.flagform textarea').focus(); return;
+    }
+    if (e.target.closest('[data-flagcancel]')) { e.target.closest('.flagform').remove(); return; }
+    var s = e.target.closest('[data-flagsend]'); if (!s) return;
+    var form = s.closest('.flagform'), btn = form.previousElementSibling, harmful = form.querySelector('input').checked;
+    s.disabled = true;
+    fetch('/incident', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ p: P.dir, who: btn.dataset.flag, at: btn.dataset.at, note: form.querySelector('textarea').value, harmful: harmful }) })
+      .then(function (r) { return r.json(); }).then(function (r) {
+        if (r.error) { s.disabled = false; form.insertAdjacentHTML('beforeend', '<span class="clash">' + esc(r.error) + '</span>'); return; }
+        var nm = proOf(btn.dataset.flag).name;
+        form.outerHTML = '<span class="flagged">⚠️ Reported as ' + (harmful ? 'harmful' : 'wrong') + '. ' + (r.paused ? esc(nm) + ' is paused until you resume. ' : esc(nm) + ' will be told, so it isn\'t repeated. ') + 'It\'s in the incident log on SpinUp Home.</span>';
+        btn.remove(); if (window.SU_SECURITY) window.SU_SECURITY();
+      });
+  });
   // 🔊 anywhere on the page: a first deliverable, a Pro's chat reply, or a document in the reader. Each in that person's voice.
   var genderOf = function (k) { var p = proOf(k) || {}; return p.voice === 'male' || p.voice === 'female' ? p.voice : (String(k).length % 2 ? 'male' : 'female'); };
   document.addEventListener('click', function (e) {
@@ -710,6 +745,25 @@ if (demo && window.SPINUP_PROJECTS && window.SPINUP_PROJECTS[demo]) render(windo
 else if (dir) fetch('/project-data?p=' + encodeURIComponent(dir)).then(function (r) { return r.json(); }).then(render)
   .catch(function () { document.getElementById('app').innerHTML = '<p class="empty">This project page needs the SpinUp helper running.</p>'; });
 else document.getElementById('app').innerHTML = '<p class="empty">No project chosen.</p>';
+
+// Security banner (Tai, 11-05): Chief's security watch paused a Pro or raised an alert on this project. Red, at the top, until cleared.
+if (dir && !demo && /^http/.test(location.protocol)) {
+  var sec = document.createElement('div'); sec.id = 'secBanner'; sec.className = 'secban'; sec.hidden = true; sec.setAttribute('role', 'alert');
+  document.body.insertBefore(sec, document.body.firstChild);
+  var secPost = function (u, b) { return fetch(u, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(Object.assign({ p: dir }, b)) }).then(function (r) { return r.json(); }); };
+  var secDraw = function (S) {
+    var open = (S.alerts || []).filter(function (a) { return a.open; }), paused = Object.keys(S.paused || {});
+    sec.hidden = !open.length; if (!open.length) return;
+    sec.innerHTML = '<b>🛡️ Security alert</b> · ' + (paused.length ? 'Paused: ' + esc(open.filter(function (a) { return paused.indexOf(a.who) >= 0; }).map(function (a) { return a.name; }).filter(function (v, i, x) { return x.indexOf(v) === i; }).join(', ')) + '. ' : '') +
+      '<ul>' + open.slice(0, 4).map(function (a) { return '<li>' + esc(new Date(a.at).toLocaleString()) + ' · ' + esc(a.reasons.join('; ')) + '</li>'; }).join('') + '</ul>' +
+      '<div class="secact">' + (paused.length ? paused.map(function (k) { var a = open.filter(function (x) { return x.who === k; })[0]; return '<button type="button" data-sec="resume" data-who="' + esc(k) + '">▶ Resume ' + esc(a ? a.name : k) + '</button>'; }).join('') : '<button type="button" data-sec="resume">✓ Dismiss</button>') +
+      '<label><input type="checkbox" data-sec="mode"' + (S.mode === 'alert' ? ' checked' : '') + '> Alert only on this project (don\'t pause)</label></div>';
+  };
+  window.SU_SECURITY = function () { fetch('/security?p=' + encodeURIComponent(dir)).then(function (r) { return r.json(); }).then(secDraw).catch(function () {}); };
+  sec.addEventListener('click', function (e) { var b = e.target.closest('button[data-sec="resume"]'); if (b) secPost('/security/resume', { who: b.dataset.who || '' }).then(secDraw); });
+  sec.addEventListener('change', function (e) { if (e.target.dataset.sec === 'mode') secPost('/security/mode', { mode: e.target.checked ? 'alert' : 'pause' }).then(secDraw); });
+  window.SU_SECURITY(); setInterval(window.SU_SECURITY, 15000);
+}
 })();
 </script>
 <!-- 🐞 Feedback: bottom-left on every SpinUp page, clear of the chat panel and Skip voice (Tai, 11-03).
@@ -737,7 +791,7 @@ else document.getElementById('app').innerHTML = '<p class="empty">No project cho
   <b>🐞 Bug or idea?</b>
   <div class="fbk" role="group" aria-label="What kind">
     <button type="button" data-k="bug" aria-pressed="true">🐞 Bug</button><button type="button" data-k="idea" aria-pressed="false">💡 Idea</button>
-    <button type="button" data-k="confusing" aria-pressed="false">🤔 Confusing</button><button type="button" data-k="praise" aria-pressed="false">👍 Works great</button>
+    <button type="button" data-k="confusing" aria-pressed="false">🤔 Confusing</button><button type="button" data-k="praise" aria-pressed="false">👍 Works great</button><button type="button" data-k="wrong" aria-pressed="false">⚠️ AI got it wrong</button>
   </div>
   <textarea id="fbText" aria-label="What happened" placeholder="What happened, or what would make this better? (Windows+H to dictate)"></textarea>
   <label><input type="checkbox" id="fbCtx"> <span>Include the last few messages and the project name<br><span class="fbnote">They can hold personal details. Leave this off if so.</span></span></label>
@@ -779,7 +833,7 @@ else document.getElementById('app').innerHTML = '<p class="empty">No project cho
   };
   var browser = function () { var u = navigator.userAgent, m = u.match(/Edg\/(\d+)/) || u.match(/Chrome\/(\d+)/) || u.match(/Firefox\/(\d+)/) || u.match(/Version\/(\d+).*Safari/);
     return (/Edg\//.test(u) ? 'Edge ' : /Chrome\//.test(u) ? 'Chrome ' : /Firefox\//.test(u) ? 'Firefox ' : /Safari\//.test(u) ? 'Safari ' : '') + (m ? m[1] : '') + (/Mobi/.test(u) ? ' (phone)' : ''); };
-  var KIND = { bug: ['Bug', 'bug'], idea: ['Idea', 'enhancement'], confusing: ['Confusing', 'question'], praise: ['Works great', ''] };
+  var KIND = { bug: ['Bug', 'bug'], idea: ['Idea', 'enhancement'], confusing: ['Confusing', 'question'], praise: ['Works great', ''], wrong: ['AI got it wrong', ''] };
   var saveLocal = function () {
     return fetch(BASE + '/feedback', { method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ kind: kind, text: ta.value.trim(), page: document.title, project: project(), version: VERSION, context: context() }) })

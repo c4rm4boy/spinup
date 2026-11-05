@@ -711,7 +711,7 @@ function projScroll(y) { PROJ.y = y; var d = projDoc(); if (d && d.defaultView) 
   <b>🐞 Bug or idea?</b>
   <div class="fbk" role="group" aria-label="What kind">
     <button type="button" data-k="bug" aria-pressed="true">🐞 Bug</button><button type="button" data-k="idea" aria-pressed="false">💡 Idea</button>
-    <button type="button" data-k="confusing" aria-pressed="false">🤔 Confusing</button><button type="button" data-k="praise" aria-pressed="false">👍 Works great</button>
+    <button type="button" data-k="confusing" aria-pressed="false">🤔 Confusing</button><button type="button" data-k="praise" aria-pressed="false">👍 Works great</button><button type="button" data-k="wrong" aria-pressed="false">⚠️ AI got it wrong</button>
   </div>
   <textarea id="fbText" aria-label="What happened" placeholder="What happened, or what would make this better? (Windows+H to dictate)"></textarea>
   <label><input type="checkbox" id="fbCtx"> <span>Include the last few messages and the project name<br><span class="fbnote">They can hold personal details. Leave this off if so.</span></span></label>
@@ -753,7 +753,7 @@ function projScroll(y) { PROJ.y = y; var d = projDoc(); if (d && d.defaultView) 
   };
   var browser = function () { var u = navigator.userAgent, m = u.match(/Edg\/(\d+)/) || u.match(/Chrome\/(\d+)/) || u.match(/Firefox\/(\d+)/) || u.match(/Version\/(\d+).*Safari/);
     return (/Edg\//.test(u) ? 'Edge ' : /Chrome\//.test(u) ? 'Chrome ' : /Firefox\//.test(u) ? 'Firefox ' : /Safari\//.test(u) ? 'Safari ' : '') + (m ? m[1] : '') + (/Mobi/.test(u) ? ' (phone)' : ''); };
-  var KIND = { bug: ['Bug', 'bug'], idea: ['Idea', 'enhancement'], confusing: ['Confusing', 'question'], praise: ['Works great', ''] };
+  var KIND = { bug: ['Bug', 'bug'], idea: ['Idea', 'enhancement'], confusing: ['Confusing', 'question'], praise: ['Works great', ''], wrong: ['AI got it wrong', ''] };
   var saveLocal = function () {
     return fetch(BASE + '/feedback', { method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ kind: kind, text: ta.value.trim(), page: document.title, project: project(), version: VERSION, context: context() }) })
