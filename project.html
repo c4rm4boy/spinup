@@ -171,6 +171,17 @@ button.primary { background:var(--accent); color:#06231f; border-color:var(--acc
 #doc { position:fixed; inset:0; z-index:30; background:rgba(5,10,20,.7); display:grid; place-items:center; padding:16px; }
 #doc .sheet { width:min(820px,100%); max-height:88vh; overflow:auto; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:16px 20px; }
 #doc .sheet .top { display:flex; justify-content:space-between; gap:10px; align-items:center; }
+.gnote { background:color-mix(in srgb, #f2c94c 10%, var(--surface)); border:1px solid #f2c94c; border-radius:14px; padding:14px 16px; display:grid; gap:8px; margin:12px 0; }
+.gnote h2 { margin:0; font-size:19px; } .gnote p { margin:0; } .gnote .areas { font-weight:650; } .gnote .small { font-size:13px; color:var(--muted); }
+.gnote button { justify-self:start; }
+.gack { font-size:13.5px; color:var(--muted); margin:8px 0; }
+.gstrict { background:#5c3a14; color:#fff; border-radius:10px; padding:8px 12px; font-size:14px; }
+.gline { margin-top:6px; padding-top:6px; border-top:1px dashed var(--line); font-size:12.5px; color:var(--warn, #f2c94c); }
+.gtag { display:inline-block; width:100%; font-size:12px; color:var(--warn, #f2c94c); margin-top:2px; }   /* inline-block: the done strike-through stays off it */
+.gcheck { grid-column:1 / -1; display:grid; gap:6px; margin:6px 0 4px 30px; padding:8px 10px; border:1px solid #f2c94c; border-radius:10px; font-size:13.5px; }
+.gcheck .row, .gcheck .chips { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+.gcheck input[type=text] { width:auto; height:auto; margin:0; flex:1 1 200px; min-width:0; font:inherit; color:inherit; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:4px 8px; }
+.gcheck label { display:flex; gap:6px; align-items:flex-start; }
 .flag.mini { display:block; margin:4px 0 0 auto; padding:1px 8px; font-size:12px; background:transparent; opacity:.7; }
 .flag.mini:hover { opacity:1; }
 .flagform { display:grid; gap:6px; margin-top:6px; font-size:13.5px; }
@@ -191,6 +202,8 @@ button.primary { background:var(--accent); color:#06231f; border-color:var(--acc
 'use strict';
 var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
 var q = new URLSearchParams(location.search);
+// Guardrails for high-stakes advice (Tai, 11-05), from the helper: risk areas, the safety note, and to-do checks. Null in the demo.
+var GUARD = null;
 
 // Small, safe Markdown: everything is escaped first, then headings, bullets, tables and bold are formatted.
 function md(src) {
@@ -269,6 +282,9 @@ function render(P) {
   var storeKey = 'spinup-todo-' + (P.dir || P.slug || M.title);
   var doneMap = {}; try { doneMap = JSON.parse(localStorage.getItem(storeKey) || '{}'); } catch (e) {}
   if (P.done) Object.keys(P.done).forEach(function (k) { if (P.done[k]) doneMap[k] = true; });   // ticks saved on the PC (Chief and Telegram see these)
+  // A high-stakes to-do only shows done once it went through the check (who reviewed it, or "without a professional").
+  var riskOf = function (k) { return (GUARD && GUARD.yours[+k.slice(1)]) || []; };
+  if (GUARD) Object.keys(doneMap).forEach(function (k) { if (riskOf(k).length && !GUARD.checks[k]) delete doneMap[k]; });
   var delivs = cast.filter(function (k) { return D[k]; });
   var emails = delivs.filter(function (k) { return ((M.agents || {})[k] || {}).first && M.agents[k].first.kind === 'email'; });
   var weeks = Math.max.apply(null, (M.timeline || []).map(function (p) { return p.start + p.weeks - 1; }).concat([4]));
@@ -285,6 +301,13 @@ function render(P) {
       (P.google && P.google.on ? 'Connected to Google (read and draft only). Click to change.' : 'Not connected to Google. Click to connect.') + '"><span class="g">G</span>' +
       (P.google && P.google.on ? ' Google' : '') + '</button>' : '') + '</div>' +
     (LIVE ? '<div id="gpanel" class="gpanel" hidden role="region" aria-label="Google for this project"></div>' : '') + '</header>';
+  // The safety note: shown until accepted (the Staff won't chat before that), then a one-line reminder with the record number.
+  if (LIVE && GUARD && GUARD.need) html += GUARD.ack
+    ? '<p class="gack">🛡️ ' + (GUARD.areaLine ? esc(GUARD.areaLine) + ' · ' : '') + 'You accepted the safety note on ' + esc(new Date(GUARD.ack.at).toLocaleString()) + ' (safety record #' + esc(GUARD.ack.record) + '). Check advice with a professional before acting.</p>'
+    : '<section class="gnote" role="alert"><h2>🛡️ Before your Staff starts: a safety note</h2>' + (GUARD.areaLine ? '<p class="areas">' + esc(GUARD.areaLine) + '</p>' : '') +
+      '<p>' + esc(GUARD.ackText) + '</p><p class="small">Your answer is saved in this PC\'s safety record with the date and time, and Chief sends you a receipt on Telegram.</p>' +
+      '<button type="button" class="primary" id="gAck">I understand. I\'ll check with a professional before acting.</button></section>';
+  if (LIVE && GUARD && GUARD.strict) html += '<p class="gstrict">⚠️ This Staff runs on ' + esc(GUARD.model) + ', which may have fewer built-in safety checks than Claude. SpinUp\'s own safety rules apply to every project.</p>';
 
   html += '<nav class="tiles" aria-label="Sections">' +
     tile('#staff', 'var(--accent)', cast.length, 'Pros at work') +
@@ -337,7 +360,10 @@ function render(P) {
   html += '<section id="today"><h2>✅ Today <small>you do what only a person can; your Staff does the rest</small></h2><div class="cols">' +
     '<div class="box"><h3>' + (ME ? esc(ME) + '\'s' : 'Yours') + '</h3><ul class="todo">' + (M.yours || []).map(function (t, i) {
       var id = 'y' + i, done = !!doneMap[id];
-      return '<li class="' + (done ? 'done' : '') + '"><input type="checkbox" data-id="' + id + '"' + (done ? ' checked' : '') + ' aria-label="Done"><span class="t">' + esc(t.task) + '</span><span class="when">' + esc(t.when) + '</span></li>';
+      var risk = riskOf(id), ck = GUARD && GUARD.checks[id];
+      return '<li class="' + (done ? 'done' : '') + '"><input type="checkbox" data-id="' + id + '"' + (done ? ' checked' : '') + ' aria-label="Done"><span class="t">' + esc(t.task) +
+        (LIVE && risk.length ? '<span class="gtag">' + (ck ? (ck.self ? '⚠️ Done without a professional (recorded)' : '✓ Reviewed by ' + esc(ck.reviewer)) : risk.map(function (a) { return esc(GUARD.lines[a].split(':')[0]); }).join(' · ') + ': needs a professional\'s OK') + '</span>' : '') +
+        '</span><span class="when">' + esc(t.when) + '</span></li>';
     }).join('') + '</ul></div>' +
     '<div class="box"><h3>Your Staff\'s</h3><ul class="todo">' + delivs.map(function (k) {
       return '<li class="delivered"><span>✓</span><span class="t"><span class="who" style="--c:' + pc(k) + '">' + esc(nm(k)) + '</span> ' + esc(D[k].title) + '</span><span class="when">Done</span></li>';
@@ -430,6 +456,7 @@ function render(P) {
     var mine = m.from === 'you', c = who === 'lead' ? 'var(--lead)' : pc(who);
     return '<div class="m ' + (mine ? 'you' : 'pro') + '" style="--c:' + c + '">' + (mine ? esc(m.text) : md(m.text) +
       '<button type="button" class="say mini" data-sayb="' + esc(who) + '" title="Read aloud" aria-label="Read aloud">🔊</button>' +
+      (GUARD && (GUARD.pros[who] || []).length ? '<div class="gline">' + GUARD.pros[who].map(function (a) { return esc(GUARD.lines[a]); }).join('<br>') + '</div>' : '') +
       (LIVE && m.at ? (m.flagged ? '<span class="flagged">⚠️ You reported this as ' + esc(m.flagged) + '</span>' : '<button type="button" class="flag mini" data-flag="' + esc(who) + '" data-at="' + esc(m.at) + '" title="Report a wrong or harmful answer">⚠️ Wrong?</button>') : '') +
       actCard(m)) + '</div>';
   }
@@ -729,9 +756,36 @@ function render(P) {
 
   app.addEventListener('change', function (e) {
     var c = e.target.closest('input[data-id]'); if (!c) return;
+    // A high-stakes to-do: before it counts as done, say who checked it, or record that you're doing it without a professional.
+    if (LIVE && c.checked && riskOf(c.dataset.id).length && !GUARD.checks[c.dataset.id]) {
+      c.checked = false; var li = c.closest('li'); if (li.querySelector('.gcheck')) return;
+      var real = (P.realPros || []).map(function (h) { return '<button type="button" data-rev="' + esc(h.name + (h.role ? ', ' + h.role : '')) + '">' + esc(h.name) + '</button>'; }).join('');
+      li.insertAdjacentHTML('beforeend', '<div class="gcheck" data-item="' + c.dataset.id + '"><b>Who checked this before you acted?</b>' + (real ? '<span class="chips">' + real + '</span>' : '') +
+        '<span class="row"><input type="text" placeholder="Name and role, e.g. Jan Lee, my CPA" aria-label="Who checked it"><button type="button" data-gsave>Save</button></span>' +
+        '<label><input type="checkbox" data-gself> I\'m doing this without a professional, and I accept the risk. (Recorded, with a Telegram receipt.)</label>' +
+        '<span class="row"><button type="button" data-gselfsave disabled>Record it</button><button type="button" data-gcancel>Cancel</button><span class="clash"></span></span></div>');
+      return;
+    }
     doneMap[c.dataset.id] = c.checked; c.closest('li').classList.toggle('done', c.checked);
     try { localStorage.setItem(storeKey, JSON.stringify(doneMap)); } catch (er) {}
     if (LIVE) fetch('/project/ticks', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ p: P.dir, done: doneMap }) }).catch(function () {});
+  });
+  // The safety note and the to-do check (guardrails).
+  var gpost = function (u, body) { return fetch(u, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(Object.assign({ p: P.dir }, body)) }).then(function (r) { return r.json(); }); };
+  app.addEventListener('change', function (e) { var s = e.target.closest('[data-gself]'); if (s) s.closest('.gcheck').querySelector('[data-gselfsave]').disabled = !s.checked; });
+  app.addEventListener('click', function (e) {
+    if (e.target.id === 'gAck') { e.target.disabled = true; gpost('/guard/ack', {}).then(function () { location.reload(); }); return; }
+    var g = e.target.closest('.gcheck'); if (!g) return;
+    var r = e.target.closest('[data-rev]'); if (r) { g.querySelector('input[type=text]').value = r.dataset.rev; return; }
+    if (e.target.closest('[data-gcancel]')) { g.remove(); return; }
+    var self = !!e.target.closest('[data-gselfsave]'), save = e.target.closest('[data-gsave]'); if (!self && !save) return;
+    var who = g.querySelector('input[type=text]').value.trim(); if (save && !who) { g.querySelector('.clash').textContent = 'Type who checked it.'; return; }
+    gpost('/guard/check', { item: g.dataset.item, self: self, reviewer: self ? '' : who }).then(function (G) {
+      if (G.error) { g.querySelector('.clash').textContent = G.error; return; }
+      GUARD = G; doneMap[g.dataset.item] = true; try { localStorage.setItem(storeKey, JSON.stringify(doneMap)); } catch (er) {}
+      var li = g.closest('li'), ck = G.checks[g.dataset.item]; li.classList.add('done'); li.querySelector('input[data-id]').checked = true;
+      li.querySelector('.gtag').textContent = ck.self ? '⚠️ Done without a professional (recorded)' : '✓ Reviewed by ' + ck.reviewer; g.remove();
+    });
   });
   app.addEventListener('click', function (e) {
     var b = e.target.closest('button[data-copy]'); if (!b) return;
@@ -742,7 +796,9 @@ function render(P) {
 
 var demo = q.get('demo'), dir = q.get('p');
 if (demo && window.SPINUP_PROJECTS && window.SPINUP_PROJECTS[demo]) render(window.SPINUP_PROJECTS[demo]);
-else if (dir) fetch('/project-data?p=' + encodeURIComponent(dir)).then(function (r) { return r.json(); }).then(render)
+else if (dir) Promise.all([fetch('/project-data?p=' + encodeURIComponent(dir)).then(function (r) { return r.json(); }),
+    fetch('/guard?p=' + encodeURIComponent(dir)).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })])
+  .then(function (x) { GUARD = x[1]; render(x[0]); })
   .catch(function () { document.getElementById('app').innerHTML = '<p class="empty">This project page needs the SpinUp helper running.</p>'; });
 else document.getElementById('app').innerHTML = '<p class="empty">No project chosen.</p>';
 
