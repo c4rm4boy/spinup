@@ -203,6 +203,11 @@ body.film .cap .w.now { color: var(--c-elon); }
 .over.instant { transition: none; }
 .hook .big { font-size: 44px; } .hook .mid { font-size: 22px; }
 .endcard .big { font-size: 40px; } .endcard .mid { font-size: 22px; margin-top: 10px; }
+.endcard { display: grid; justify-items: center; gap: 14px; }
+.cta { display: inline-block; padding: 16px 34px; border-radius: 999px; background: var(--c-elon); color: var(--bg); font: 800 24px var(--f-display); text-decoration: none; box-shadow: 0 0 0 0 var(--c-elon); animation: ctaPulse 2s ease-out infinite; }
+.cta:hover, .cta:focus-visible { filter: brightness(1.12); outline: 3px solid var(--ink); outline-offset: 3px; }
+@keyframes ctaPulse { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--c-elon) 60%, transparent); } 100% { box-shadow: 0 0 0 22px transparent; } }
+@media (prefers-reduced-motion: reduce) { .cta { animation: none; } }
 </style>
 </head>
 <body>
@@ -212,7 +217,7 @@ body.film .cap .w.now { color: var(--c-elon); }
     <div>
       <h1>SpinUp, explained</h1>
       <p class="lede">The idea in two minutes, for anyone. No AI words needed: you run it like a small company, and you're the CEO.</p>
-      <div class="meta">See it run: <a href="index.html">the demo</a> · ← → step · Space play/pause · M mute · F full screen</div>
+      <div class="meta">See it run: <a href="https://c4rm4boy.github.io/spinup/">the demo</a> · ← → step · Space play/pause · M mute · F full screen</div>
     </div>
     <button id="theme" type="button">Light</button>
   </header>
@@ -327,7 +332,9 @@ body.film .cap .w.now { color: var(--c-elon); }
       { chart: 4, dim: true, say: 'And it stays organized. With a chatbot, chats pile up, the good answer gets lost, and it forgets what you said last week. In SpinUp, every project keeps its own team, its own files and its own history, and each Pro remembers your conversation.', over: organized },
       { chart: 4, dim: true, say: 'One honest note. Every one of them is AI, not a person. They have friendly names and voices, but they can be wrong. Check anything important with a real professional.', over: honest },
       // ANYTHING, on screen and in the voice (Tai, 11-04): the last word is spoken again, slower, after a beat.
-      { chart: 4, dim: true, say: 'You\'re the CEO. Spin up a team for anything.', emph: 'Anything!', over: finale, end: true }
+      { chart: 4, dim: true, say: 'You\'re the CEO. Spin up a team for anything.', emph: 'Anything!', over: finale },
+      // The ask (Tai, 11-06): end by sending them to the live demo. Full address, so it works from a file someone was sent.
+      { chart: 4, dim: true, say: 'Now see it run. Click Try the demo, pick a goal, and watch the team come together.', over: tryDemo, end: true }
     ];
   }
   // ANY goal (Tai, 11-04): a burst of ideas flashes in, they fade back, and this example's goal comes forward.
@@ -393,6 +400,8 @@ body.film .cap .w.now { color: var(--c-elon); }
   // The short film for the LinkedIn post (Rupert, 11-05): 60 to 90 seconds, the point in the first 3 seconds, no AI jargon on screen,
   // ending on "Full demo in the comments". Same pieces as the page, fewer scenes.
   function hook() { return '<div class="hook"><p class="big">You\'re the <em>CEO</em>.</p><p class="big">AI is your <em>staff</em>.</p><p class="mid">Here\'s how you\'d hire them.</p></div>'; }
+  var DEMO = 'https://c4rm4boy.github.io/spinup/';
+  function tryDemo() { return '<div class="endcard"><p class="big">Now see it <em>run</em>.</p><a class="cta" href="' + DEMO + '" target="_blank" rel="noopener">▶ Try the demo</a><p class="mid">Pick a goal. Watch your team come together.</p></div>'; }
   function endcard() { return '<div class="endcard"><p class="big">Want to see it <em>run</em>?</p><p class="mid">Full demo in the comments ↓</p></div>'; }
   function filmScenes() {
     return [
