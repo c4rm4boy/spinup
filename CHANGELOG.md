@@ -8,6 +8,7 @@ SpinUp started on October 31, 2026 as "Cabinet Builder," a clickable mockup for 
 
 ## v0.9.13 · Nov 3 · Your own words always get a team
 
+- **Talk to your Staff is now a workspace.** Your Pros are listed down the left, with every Pro's folders and files below them. Click a file and it opens beside the chat, so you can read a draft and talk about it at the same time. Markdown is formatted, text and CSV show as text, and images show as images. **A web page a Pro made runs as a real page**, right there or with ↗ Open in browser. It's served from its own file-only address that the helper refuses, so the page can't send messages as you or change anything. **↗ New tab** opens the whole workspace in its own tab. On a phone, ☰ slides the list in.
 - **SpinUp Explained has a recorded, natural voice.** Every line is pre-voiced with one Microsoft neural voice (Andrew Multilingual) and built into the page, so Chrome, Safari and phones sound the same as Edge instead of a flat system voice. The page is still one file (about 1.4 MB).
 - **SpinUp Explained now ends on a "Try the demo" button** that opens the live demo, and the demo link uses the full address, so it works from a copy someone was emailed.
 - **SpinUp Explained, on the demo site and as a 73-second film.** `explained.html` is the two-minute idea for people who don't use AI (you're the CEO, with a Chief, a Lead and Pros), narrated and animated, with four examples. The short film (`spinup-explained-trip.mp4`, 4:5, captions burned in) tells it in 11 scenes for a feed.

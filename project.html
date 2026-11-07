@@ -97,7 +97,7 @@ details > summary { cursor:pointer; color:var(--ink-2); font-size:14px; }
 /* Talk to your Staff: a chat drawer with a tab per Pro, each tab a real Claude Code session (needs the SpinUp helper). */
 .talk { justify-self:start; font-size:14px; }
 .agent .talk { margin-top:2px; }
-#chat { position:fixed; top:0; right:0; bottom:0; width:min(480px,100vw); z-index:20; display:grid; grid-template-rows:auto auto 1fr auto; background:var(--surface); border-left:1px solid var(--line); box-shadow:-12px 0 32px rgba(0,0,0,.35); padding-top:env(safe-area-inset-top,0px); }
+#chat { position:fixed; top:0; right:0; bottom:0; z-index:20; display:grid; background:var(--surface); border-left:1px solid var(--line); box-shadow:-12px 0 32px rgba(0,0,0,.35); padding-top:env(safe-area-inset-top,0px); }
 #chat[hidden] { display:none; }
 /* Real people (step 13a) and the timeline review */
 .realbar { display:flex; gap:8px; flex-wrap:wrap; }
@@ -168,6 +168,53 @@ button.primary { background:var(--accent); color:#06231f; border-color:var(--acc
 #chat form { display:grid; grid-template-columns:1fr auto; gap:8px; padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px)); border-top:1px solid var(--line); }
 #chat textarea { font:inherit; color:var(--ink); background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:8px 10px; resize:none; min-height:44px; max-height:140px; }
 #chat .hint { grid-column:1/-1; color:var(--muted); font-size:12.5px; }
+/* Staff panel (Tai, 11-07): Pros on the left with their folders and files below; a file opens in a third panel beside
+   the chat. ↗ opens the whole thing in its own tab (&view=staff). Narrow screens: ☰ slides the panel in, a file covers the chat. */
+#chat { width:min(820px,100vw); grid-template-rows:auto 1fr; }
+#chat.viewing { width:min(1320px,100vw); }
+#chat .chd .ib { padding:3px 9px; font-size:14px; }
+#chat .chd .side-t { display:none; }
+#chat .cbody { display:grid; grid-template-columns:230px minmax(0,1fr); min-height:0; position:relative; }
+#chat.viewing .cbody { grid-template-columns:230px minmax(300px,1fr) minmax(320px,1.15fr); }
+#chat .side { border-right:1px solid var(--line); overflow-y:auto; min-height:0; display:flex; flex-direction:column; background:var(--surface); }
+#chat .side .tabs { flex-direction:column; flex-wrap:nowrap; gap:4px; padding:10px; }
+#chat .side .tabs button { display:flex; align-items:center; gap:6px; text-align:left; border-radius:10px; padding:6px 10px; white-space:normal; }
+#chat .side .tabs button .dot { margin-left:auto; width:8px; height:8px; border-radius:50%; background:var(--c); animation:pulse 1.2s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity:.25; } }
+#chat .side .tabs small { color:var(--muted); font-size:12px; }
+#chat .side h3 { margin:0; padding:8px 12px 4px; font:650 12.5px var(--f-display); color:var(--muted); text-transform:uppercase; letter-spacing:.05em; display:flex; align-items:center; }
+#chat .side h3 button { margin-left:auto; padding:0 6px; font-size:13px; background:none; border:0; color:var(--muted); cursor:pointer; }
+#chat .ftree { padding:0 6px 14px; font-size:13.5px; }
+#chat .ftree details { margin:1px 0; } #chat .ftree details details { margin-left:12px; }
+#chat .ftree summary { cursor:pointer; padding:3px 6px; border-radius:6px; list-style-position:inside; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+#chat .ftree summary:hover { background:var(--surface-2); }
+#chat .ftree .f { display:flex; gap:6px; width:100%; text-align:left; background:none; border:0; border-radius:6px; padding:3px 6px 3px 22px; color:var(--ink); font:inherit; cursor:pointer; }
+#chat .ftree details details .f { padding-left:22px; }
+#chat .ftree .f span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+#chat .ftree .f:hover { background:var(--surface-2); } #chat .ftree .f[aria-current="true"] { background:color-mix(in srgb, var(--accent) 18%, var(--surface)); }
+#chat .ftree .none { color:var(--muted); padding:2px 6px 2px 22px; font-size:12.5px; }
+#chat .cmain { display:grid; grid-template-rows:1fr auto; min-height:0; min-width:0; }
+#chat .viewer { display:none; border-left:1px solid var(--line); min-height:0; min-width:0; grid-template-rows:auto 1fr; background:var(--bg); }
+#chat.viewing .viewer { display:grid; }
+#chat .vhd { display:flex; align-items:center; gap:6px; padding:8px 10px; border-bottom:1px solid var(--line); background:var(--surface); }
+#chat .vhd b { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:14px; }
+#chat .vhd button { font-size:13px; padding:3px 9px; }
+#chat .vbody { overflow:auto; min-height:0; padding:14px 18px; }
+#chat .vbody.page { padding:0; } #chat .vbody iframe { width:100%; height:100%; border:0; background:#fff; display:block; }
+#chat .vbody img { max-width:100%; height:auto; display:block; margin:0 auto; border-radius:8px; }
+#chat .vbody pre { white-space:pre-wrap; word-break:break-word; font-size:13.5px; margin:0; }
+#chat .vbody .md h4 { margin:14px 0 4px; } #chat .vbody .md p { margin:6px 0; }
+#chat .vbody .vnote { color:var(--muted); font-size:13px; margin:0 0 10px; }
+body.staffview #chat { inset:0; width:auto; border:0; box-shadow:none; }
+body.staffview #chat .pop, body.staffview #chat #chatX { display:none; }
+body.staffview #app, body.staffview .secban ~ #app { visibility:hidden; }
+@media (max-width: 760px) {
+  #chat .chd .side-t { display:inline-block; }
+  #chat .cbody, #chat.viewing .cbody { grid-template-columns:minmax(0,1fr); }
+  #chat .side { position:absolute; inset:0 auto 0 0; width:min(280px,85vw); z-index:3; box-shadow:12px 0 32px rgba(0,0,0,.45); transform:translateX(-105%); transition:transform .2s; }
+  #chat.sideon .side { transform:none; }
+  #chat .viewer { position:absolute; inset:0; z-index:2; }
+}
 #doc { position:fixed; inset:0; z-index:30; background:rgba(5,10,20,.7); display:grid; place-items:center; padding:16px; }
 #doc .sheet { width:min(820px,100%); max-height:88vh; overflow:auto; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:16px 20px; }
 #doc .sheet .top { display:flex; justify-content:space-between; gap:10px; align-items:center; }
@@ -420,21 +467,107 @@ function render(P) {
     if (!box) {
       box = document.createElement('aside'); box.id = 'chat'; box.setAttribute('aria-label', 'Talk to your Staff');
       var tabs = ['lead'].concat(cast).map(function (k) { var p = k === 'lead' ? lead : people[k];
-        return '<button type="button" role="tab" data-tab="' + k + '" style="--c:' + (k === 'lead' ? 'var(--lead)' : pc(k)) + '">' + esc(p.emoji || '') + ' ' + esc(p.name.split(' ')[0]) + '</button>'; }).join('');
-      box.innerHTML = '<div class="chd"><b>💬 Talk to your Staff</b><button type="button" id="chatX" aria-label="Close">✕</button></div>' +
-        '<div class="tabs" role="tablist">' + tabs + '</div><div class="msgs" id="msgs" aria-live="polite"></div>' +
-        '<div><div class="files" id="files"></div><form id="chatF"><textarea id="chatT" rows="2" aria-label="Your message"></textarea>' +
-        '<button type="submit" class="send">Send</button><span class="hint">You\'re talking to AI, not a person · Enter sends · Shift+Enter for a new line · each Pro remembers your conversation · drafts only</span></form></div>';
+        return '<button type="button" role="tab" data-tab="' + k + '" style="--c:' + (k === 'lead' ? 'var(--lead)' : pc(k)) + '" title="' + esc(p.name + (p.title ? ', ' + p.title : '')) + '">' + esc(p.emoji || '') + ' <span>' + esc(p.name.split(' ')[0]) + (p.title ? '<small> · ' + esc(p.title) + '</small>' : '') + '</span></button>'; }).join('');
+      box.innerHTML = '<div class="chd"><button type="button" class="ib side-t" id="chatSide" aria-label="Staff and files">☰</button><b>💬 Talk to your Staff</b>' +
+        (LIVE ? '<button type="button" class="ib pop" id="chatPop" title="Open in its own tab">↗ New tab</button>' : '') +
+        '<button type="button" class="ib" id="chatX" aria-label="Close">✕</button></div>' +
+        '<div class="cbody"><nav class="side" aria-label="Staff and files"><div class="tabs" role="tablist">' + tabs + '</div>' +
+        (LIVE ? '<h3>📁 Files<button type="button" id="treeR" title="Refresh" aria-label="Refresh files">⟳</button></h3><div class="ftree" id="ftree"></div>' : '') + '</nav>' +
+        '<section class="cmain"><div class="msgs" id="msgs" aria-live="polite"></div>' +
+        '<form id="chatF"><textarea id="chatT" rows="2" aria-label="Your message"></textarea>' +
+        '<button type="submit" class="send">Send</button><span class="hint">You\'re talking to AI, not a person · Enter sends · Shift+Enter for a new line · each Pro remembers your conversation · drafts only</span></form></section>' +
+        '<section class="viewer" id="viewer" aria-label="File"><div class="vhd"><b id="vname"></b><span class="hdb" id="vbtns"></span><button type="button" id="vX" aria-label="Close file">✕</button></div><div class="vbody" id="vbody"></div></section></div>';
       document.body.appendChild(box);
-      box.querySelector('.tabs').addEventListener('click', function (e) { var b = e.target.closest('[data-tab]'); if (b) chatTab(b.dataset.tab); });
+      box.querySelector('.tabs').addEventListener('click', function (e) { var b = e.target.closest('[data-tab]'); if (b) { chatTab(b.dataset.tab); box.classList.remove('sideon'); } });
       document.getElementById('chatX').onclick = function () { box.hidden = true; };
+      document.getElementById('chatSide').onclick = function () { box.classList.toggle('sideon'); };
+      if (LIVE) {
+        document.getElementById('chatPop').onclick = function () {
+          window.open(location.pathname + '?p=' + encodeURIComponent(P.dir) + '&view=staff&who=' + encodeURIComponent(CH.who) + (CH.file ? '&file=' + encodeURIComponent(CH.file.who + '/' + CH.file.path) : ''), '_blank');
+        };
+        document.getElementById('treeR').onclick = loadTree;
+        document.getElementById('ftree').addEventListener('click', function (e) { var b = e.target.closest('[data-fpath]'); if (b) { openFile(b.dataset.fwho, b.dataset.fpath, b.dataset.fkind); box.classList.remove('sideon'); } });
+      }
+      document.getElementById('vX').onclick = closeFile;
       document.getElementById('chatF').addEventListener('submit', function (e) { e.preventDefault(); chatSend(); });
       document.getElementById('chatT').addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); chatSend(); } });
-      document.getElementById('files').addEventListener('click', function (e) { var b = e.target.closest('[data-file]'); if (b) openDoc(CH.who, b.dataset.file); });
-      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { var d = document.getElementById('doc'); if (d) d.remove(); else box.hidden = true; } });
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape') return; var d = document.getElementById('doc');
+        if (d) d.remove(); else if (box.classList.contains('sideon')) box.classList.remove('sideon'); else if (CH.file) closeFile(); else if (!document.body.classList.contains('staffview')) box.hidden = true;
+      });
     }
     box.hidden = false; chatTab(who);
   }
+  // ---------- Files (Tai, 11-07): every Pro's folder as a tree; a file opens beside the chat ----------
+  var KICON = { md: '📄', html: '🌐', image: '🖼️', text: '📃', other: '📎' };
+  function loadTree() {
+    if (!LIVE) return;
+    fetch('/pro/tree?p=' + encodeURIComponent(P.dir)).then(function (r) { return r.json(); }).then(function (t) { CH.view = t.viewPort; CH.tree = t.folders || []; drawTree(); }).catch(function () {});
+  }
+  function drawTree() {
+    var el = document.getElementById('ftree'); if (!el) return;
+    var by = {}; (CH.tree || []).forEach(function (f) { by[f.who] = f.files; });
+    var open = {}; el.querySelectorAll('details[open]').forEach(function (d) { open[d.dataset.key] = 1; });
+    var first = !el.childElementCount;
+    el.innerHTML = ['lead'].concat(cast).map(function (k) {
+      var p = proOf(k), files = by[k] || [], root = {};
+      files.forEach(function (f) { var parts = f.path.split('/'), n = root; parts.slice(0, -1).forEach(function (d) { n = n[d + '/'] = n[d + '/'] || {}; }); n[parts[parts.length - 1]] = f; });
+      function draw(node, prefix) {
+        var ks = Object.keys(node).sort(function (a, b) { var da = /\/$/.test(a), db = /\/$/.test(b); return da !== db ? (da ? -1 : 1) : a.localeCompare(b); });
+        return ks.map(function (n) {
+          if (/\/$/.test(n)) { var key = k + ':' + prefix + n; return '<details data-key="' + esc(key) + '"' + (open[key] ? ' open' : '') + '><summary>📁 ' + esc(n.slice(0, -1)) + '</summary>' + draw(node[n], prefix + n) + '</details>'; }
+          var f = node[n], cur = CH.file && CH.file.who === k && CH.file.path === f.path;
+          return '<button type="button" class="f" data-fwho="' + esc(k) + '" data-fpath="' + esc(f.path) + '" data-fkind="' + esc(f.kind) + '"' + (cur ? ' aria-current="true"' : '') + ' title="' + esc(f.path) + '"><i>' + KICON[f.kind] + '</i><span>' + esc(n) + '</span></button>';
+        }).join('');
+      }
+      var key = k + ':', isOpen = open[key] || (first && (k === CH.who || files.length));
+      return '<details data-key="' + esc(key) + '"' + (isOpen ? ' open' : '') + '><summary>' + esc(p.emoji || '📁') + ' ' + esc(p.name.split(' ')[0]) + (p.title ? ' · ' + esc(p.title) : '') + '</summary>' +
+        (files.length ? draw(root, '') : '<div class="none">Nothing yet</div>') + '</details>';
+    }).join('');
+  }
+  function closeFile() { CH.file = null; document.getElementById('chat').classList.remove('viewing'); document.getElementById('vbody').innerHTML = ''; stopSaying(); drawTree(); }
+  function openFile(who, f, kind) {
+    var box = document.getElementById('chat'), vb = document.getElementById('vbody'), btns = document.getElementById('vbtns'), p = proOf(who);
+    var qs = 'p=' + encodeURIComponent(P.dir) + '&who=' + encodeURIComponent(who) + '&f=' + encodeURIComponent(f);
+    CH.file = { who: who, path: f }; drawTree(); stopSaying();
+    document.getElementById('vname').textContent = (KICON[kind] || '📎') + ' ' + f.split('/').pop() + ' · ' + p.name.split(' ')[0];
+    document.getElementById('vname').title = f;
+    box.classList.add('viewing'); vb.className = 'vbody'; btns.innerHTML = ''; vb.innerHTML = '<p class="vnote">Loading…</p>';
+    if (kind === 'html') {
+      // A page the Pro made: it runs for real, from the separate file-only address (see VIEW_PORT in the helper).
+      var url = 'http://127.0.0.1:' + (CH.view || 8788) + '/' + f.split('/').reduce(function (a, s) { return a + '/' + encodeURIComponent(s); }, encodeURIComponent(P.dir) + '/' + encodeURIComponent(who));
+      vb.className = 'vbody page';
+      vb.innerHTML = '<iframe title="' + esc(f) + '" src="' + esc(url) + '" sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-modals allow-downloads"></iframe>';
+      btns.innerHTML = '<button type="button" data-vopen>↗ Open in browser</button>';
+      btns.querySelector('[data-vopen]').onclick = function () { window.open(url, '_blank'); };
+      return;
+    }
+    if (kind === 'image') {
+      var src = '/pro/raw?' + qs;
+      vb.innerHTML = '<img alt="' + esc(f) + '" src="' + esc(src) + '">';
+      btns.innerHTML = '<button type="button" data-vopen>↗ Open</button>';
+      btns.querySelector('[data-vopen]').onclick = function () { window.open(src, '_blank'); };
+      return;
+    }
+    fetch('/pro/file?' + qs).then(function (r) { return r.json(); }).then(function (d) {
+      if (!CH.file || CH.file.path !== f || CH.file.who !== who) return;
+      if (d.error) { vb.innerHTML = '<p class="vnote">' + esc(d.error) + '</p>'; return; }
+      if (d.kind === 'other') { vb.innerHTML = '<p class="vnote">SpinUp can\'t show this kind of file yet.</p>'; return; }
+      var body = d.kind === 'md' ? '<div class="md">' + md(d.text) + '</div>' : '<pre>' + esc(d.text) + '</pre>';
+      vb.innerHTML = (d.cut ? '<p class="vnote">This file is long; showing the first part.</p>' : '') + body;
+      btns.innerHTML = '<button type="button" class="say" data-sayf="' + esc(who) + '">🔊 Read it</button><button type="button" data-vopen title="Open in its own window">↗ Pop out</button>';
+      btns.querySelector('[data-sayf]').dataset.text = plainForSpeech(d.text || '');
+      btns.querySelector('[data-vopen]').onclick = function () {
+        var w = window.open('', '_blank'); if (!w) return;
+        var css = [].map.call(document.querySelectorAll('style'), function (s) { return s.textContent; }).join('\n');
+        w.document.write('<!doctype html><html data-theme="' + (document.documentElement.getAttribute('data-theme') || 'dark') + '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>' + esc(f.split('/').pop() + ' · ' + p.name) + '</title><style>' + css +
+          '\nbody{max-width:860px;margin:0 auto;padding:20px 18px 40px;background:var(--bg);color:var(--ink)} pre{white-space:pre-wrap}</style></head><body><h3>' + esc(f) + ' · ' + esc(p.name) + '</h3>' + body + '</body></html>');
+        w.document.close();
+      };
+    }).catch(function () { vb.innerHTML = '<p class="vnote">Couldn\'t reach the SpinUp helper. Is it running?</p>'; });
+  }
+  // A pulsing dot on a Pro who's working on your message.
+  function markBusy() { document.querySelectorAll('#chat [data-tab]').forEach(function (b) { var d = b.querySelector('.dot'); if (CH.busy[b.dataset.tab] && !d) b.insertAdjacentHTML('beforeend', '<i class="dot" aria-label="thinking"></i>'); else if (!CH.busy[b.dataset.tab] && d) d.remove(); }); }
   function proOf(k) { return k === 'lead' ? lead : people[k]; }
   function chatTab(who) {
     CH.who = who;
@@ -443,11 +576,11 @@ function render(P) {
       if (b.dataset.tab === who) { var row = b.parentNode; if (b.offsetLeft + b.offsetWidth > row.scrollLeft + row.clientWidth || b.offsetLeft < row.scrollLeft) row.scrollLeft = b.offsetLeft - 10; }
     });
     document.getElementById('chatT').placeholder = 'Message ' + proOf(who).name.split(' ')[0] + '…';
-    if (FILMCHAT) { drawMsgs(who, (P.chats || {})[who] || []); drawFiles([]); return; }
+    if (FILMCHAT) { drawMsgs(who, (P.chats || {})[who] || []); return; }
     document.getElementById('msgs').innerHTML = '<p class="wait">Loading…</p>';
     fetch('/pro/history?p=' + encodeURIComponent(P.dir) + '&who=' + who).then(function (r) { return r.json(); }).then(function (h) {
       if (CH.who !== who) return;
-      drawMsgs(who, h.messages || []); drawFiles(h.files || []);
+      drawMsgs(who, h.messages || []); if (!CH.tree) loadTree(); else drawTree();
       if (CH.busy[who] || h.busy) waitRow(who);
       document.getElementById('chatT').focus();
     });
@@ -476,9 +609,7 @@ function render(P) {
       '<p class="wait">Say hi to ' + esc(p.name) + '. ' + (who === 'lead' ? 'Ask about the plan, the timeline or what to do next.' : 'Ask about their first work, or for a new draft.') + '</p>';
     el.scrollTop = el.scrollHeight;
   }
-  function drawFiles(files) {
-    document.getElementById('files').innerHTML = files.map(function (f) { return '<button type="button" data-file="' + esc(f) + '">📄 ' + esc(f) + '</button>'; }).join('');
-  }
+
   function waitRow(who) {
     var el = document.getElementById('msgs'), w = document.createElement('p'), t0 = Date.now();
     w.className = 'wait'; w.id = 'waitrow'; el.appendChild(w); el.scrollTop = el.scrollHeight;
@@ -487,31 +618,30 @@ function render(P) {
   function chatSend() {
     var ta = document.getElementById('chatT'), text = ta.value.trim(), who = CH.who;
     if (!text || CH.busy[who]) return;
-    ta.value = ''; CH.busy[who] = true;
+    ta.value = ''; CH.busy[who] = true; markBusy();
     var el = document.getElementById('msgs'); if (el.querySelector('.wait')) el.innerHTML = '';
     el.insertAdjacentHTML('beforeend', bubble(who, { from: 'you', text: text })); waitRow(who);
     fetch('/pro/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ p: P.dir, who: who, text: text }) })
       .then(function (r) { return r.json(); })
       .then(function (r) {
-        CH.busy[who] = false; if (CH.who !== who) return;
+        CH.busy[who] = false; markBusy(); if (CH.who !== who) { loadTree(); return; }
         var w = document.getElementById('waitrow'); if (w) w.remove();
         el.insertAdjacentHTML('beforeend', r.error ? '<div class="m err">' + esc(r.error) + '</div>' : bubble(who, { from: who, text: r.reply, action: r.action, at: r.at }));
-        if (r.files) drawFiles(r.files); el.scrollTop = el.scrollHeight;
+        loadTree(); el.scrollTop = el.scrollHeight;
         if (r.security && window.SU_SECURITY) window.SU_SECURITY();
       })
-      .catch(function () { CH.busy[who] = false; var w = document.getElementById('waitrow'); if (w) w.remove(); el.insertAdjacentHTML('beforeend', '<div class="m err">Couldn\'t reach the SpinUp helper. Is it running?</div>'); });
+      .catch(function () { CH.busy[who] = false; markBusy(); var w = document.getElementById('waitrow'); if (w) w.remove(); el.insertAdjacentHTML('beforeend', '<div class="m err">Couldn\'t reach the SpinUp helper. Is it running?</div>'); });
   }
-  function openDoc(who, f) {
-    fetch('/pro/file?p=' + encodeURIComponent(P.dir) + '&who=' + who + '&f=' + encodeURIComponent(f)).then(function (r) { return r.json(); }).then(function (d) {
-      var o = document.createElement('div'); o.id = 'doc';
-      o.innerHTML = '<div class="sheet" role="dialog" aria-label="' + esc(f) + '"><div class="top"><b>📄 ' + esc(f) + ' · ' + esc(proOf(who).name) + '</b><span class="hdb">' +
-        '<button type="button" class="say" data-sayf="' + esc(who) + '">🔊 Read it</button><button type="button" data-close>Close</button></span></div><div class="md">' + md(d.text || d.error || '') + '</div></div>';
-      o.querySelector('[data-sayf]').dataset.text = plainForSpeech(d.text || '');
-      o.addEventListener('click', function (e) { if (e.target === o || e.target.closest('[data-close]')) { stopSaying(); o.remove(); } });
-      document.body.appendChild(o);
-    });
-  }
+
   app.addEventListener('click', function (e) { var b = e.target.closest('[data-talk]'); if (b) chatOpen(b.dataset.talk); });
+  // ↗ New tab (Tai, 11-07): &view=staff is Talk to your Staff as the whole page; &file=<pro>/<path> opens that file too.
+  if (LIVE && q.get('view') === 'staff') {
+    document.body.classList.add('staffview'); document.title = '💬 Staff · ' + document.title;
+    var w0 = q.get('who'); chatOpen(w0 === 'lead' || people[w0] ? w0 : 'lead');
+    var f0 = q.get('file');
+    if (f0 && f0.indexOf('/') > 0) { var fw = f0.slice(0, f0.indexOf('/')), fp = f0.slice(f0.indexOf('/') + 1), ext = (fp.match(/\.(\w+)$/) || [])[1] || '';
+      openFile(fw, fp, /^html?$/i.test(ext) ? 'html' : /^(png|jpe?g|gif|webp|svg)$/i.test(ext) ? 'image' : /^(md|markdown)$/i.test(ext) ? 'md' : 'text'); }
+  }
   // ⚠️ Wrong? under a Pro's reply (SOP step 48): say what's wrong, and whether it could cause harm. Harmful pauses that Pro.
   document.addEventListener('click', function (e) {
     var f = e.target.closest('[data-flag]');
