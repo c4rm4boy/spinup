@@ -231,6 +231,26 @@ body.staffview #app, body.staffview .secban ~ #app { visibility:hidden; }
 .gcheck label { display:flex; gap:6px; align-items:flex-start; }
 .flag.mini { display:block; margin:4px 0 0 auto; padding:1px 8px; font-size:12px; background:transparent; opacity:.7; }
 .flag.mini:hover { opacity:1; }
+.ctime { padding:6px 14px; font-size:13px; color:var(--ink-2); border-bottom:1px solid var(--line); display:flex; flex-wrap:wrap; gap:4px 6px; align-items:center; }
+.ctime .like.mini { padding:1px 8px; font-size:12px; }
+.like { border-radius:999px; font-size:13px; padding:3px 10px; } .like.on { border-color:#6fd38c; color:#6fd38c; }
+.vsum { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr)); gap:10px; }
+.vsum div { background:var(--surface); border:1px solid var(--line); border-top:4px solid #3fd1c7; border-radius:12px; padding:12px 14px; display:grid; gap:2px; }
+.vsum b { font:700 24px/1.15 var(--f-display); font-variant-numeric:tabular-nums; } .vsum span { color:var(--ink-2); font-size:14px; }
+.vrows { display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr)); gap:10px; }
+.vrow { background:var(--surface); border:1px solid var(--line); border-top:4px solid var(--c); border-radius:12px; padding:12px 14px; display:grid; gap:8px; align-content:start; }
+.vhead { display:flex; flex-wrap:wrap; gap:4px 8px; align-items:center; } .vhead span { color:var(--ink-2); font-size:14px; flex:1; } .vhead .like { flex:none; }
+.vrow dl { display:grid; grid-template-columns:auto 1fr; gap:4px 12px; margin:0; font-size:14.5px; } .vrow dt { color:var(--ink-2); } .vrow dd { margin:0; } .vrow small { color:var(--muted); }
+.vfiles { margin:6px 0 0; padding:0; list-style:none; display:grid; gap:4px; font-size:13.5px; } .vfiles li { display:flex; justify-content:space-between; gap:10px; } .vfiles small { display:block; color:var(--muted); }
+.tell { margin:0; font-size:13.5px; color:var(--ink-2); font-style:italic; } .tell button { font-style:normal; }
+.rateform { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; } .rateform input { font:inherit; color:inherit; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:3px 8px; width:130px; }
+.vnote { font-size:13px; color:var(--muted); margin:0; }
+.vrate .mini { padding:0 4px; border:0; background:transparent; font-size:13px; vertical-align:baseline; opacity:.7; } .vrate .mini:hover { opacity:1; }
+.star.mini { float:right; margin:-4px -6px 2px 8px; padding:0 6px; border:0; background:transparent; font-size:16px; line-height:1.4; color:var(--muted); opacity:.55; cursor:pointer; }
+.m:hover .star.mini, .star.mini:focus-visible { opacity:1; } .star.mini.on { color:#f2c94c; opacity:1; }
+.starnote { display:block; clear:both; margin-top:6px; font-size:12.5px; color:#f2c94c; }
+.more { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin:2px 0 10px; }
+.more button { font-size:13px; padding:4px 12px; border-radius:999px; } .more small { color:var(--muted); }
 .flagform { display:grid; gap:6px; margin-top:6px; font-size:13.5px; }
 .flagform textarea { font:inherit; color:inherit; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:6px; min-height:56px; }
 .flagged { display:block; margin-top:6px; font-size:12.5px; color:var(--warn, #f2c94c); }
@@ -360,6 +380,7 @@ function render(P) {
     tile('#staff', 'var(--accent)', cast.length, 'Pros at work') +
     tile('#today', 'var(--you)', (M.yours || []).length, 'for you to do') +
     tile('#work', 'var(--good)', delivs.length, 'first deliverables done') +
+    (LIVE ? '<a class="tile" href="#value" style="--c:#3fd1c7" id="vTile"><b>…</b><span>your time with your Staff</span></a>' : '') +
     tile('#timeline', 'var(--lead)', weeks, 'weeks on the timeline') +
     (emails.length ? tile('#work', '#e88bd8', emails.length, 'email drafts waiting on you') : '') +
     tile('#decisions', '#b28dff', (M.decisions || []).length, 'decisions made') +
@@ -428,6 +449,9 @@ function render(P) {
         '<details' + (kind === 'email' ? '' : '') + '><summary>Open</summary><div class="md">' + md(d.body) + '</div></details></article>';
     }).join('') + '</div></section>';
 
+  // ⏱ Time and value (Tai, 11-07): your real time, what a person would have billed for the same files, and the AI cost.
+  if (LIVE) html += '<section id="value"><h2>⏱ Time and value <small>how long you spent, and what the same work would cost from a person</small></h2><div id="valBody"><p class="empty">Adding it up…</p></div></section>';
+
   // Timeline.
   html += '<section id="timeline"><h2>📅 Timeline <small>' + weeks + ' weeks, by owner</small>' +
     (LIVE ? '<button type="button" class="tlbtn" data-tl="review">🔄 Ask ' + esc(lead.name.split(' ')[0]) + ' to review it</button>' : '') + '</h2><div class="gantt" style="--w:' + weeks + '">' +
@@ -472,8 +496,8 @@ function render(P) {
         (LIVE ? '<button type="button" class="ib pop" id="chatPop" title="Open in its own tab">↗ New tab</button>' : '') +
         '<button type="button" class="ib" id="chatX" aria-label="Close">✕</button></div>' +
         '<div class="cbody"><nav class="side" aria-label="Staff and files"><div class="tabs" role="tablist">' + tabs + '</div>' +
-        (LIVE ? '<h3>📁 Files<button type="button" id="treeR" title="Refresh" aria-label="Refresh files">⟳</button></h3><div class="ftree" id="ftree"></div>' : '') + '</nav>' +
-        '<section class="cmain"><div class="msgs" id="msgs" aria-live="polite"></div>' +
+        (LIVE ? '<h3>📁 Files<button type="button" id="treeO" title="Open this project folder in File Explorer" aria-label="Open folder">📂</button><button type="button" id="treeR" title="Refresh" aria-label="Refresh files" style="margin-left:0">⟳</button></h3><div class="ftree" id="ftree"></div>' : '') + '</nav>' +
+        '<section class="cmain">' + (LIVE ? '<div class="ctime" id="ctime"></div>' : '') + '<div class="msgs" id="msgs" aria-live="polite"></div>' +
         '<form id="chatF"><textarea id="chatT" rows="2" aria-label="Your message"></textarea>' +
         '<button type="submit" class="send">Send</button><span class="hint">You\'re talking to AI, not a person · Enter sends · Shift+Enter for a new line · each Pro remembers your conversation · drafts only</span></form></section>' +
         '<section class="viewer" id="viewer" aria-label="File"><div class="vhd"><b id="vname"></b><span class="hdb" id="vbtns"></span><button type="button" id="vX" aria-label="Close file">✕</button></div><div class="vbody" id="vbody"></div></section></div>';
@@ -486,6 +510,7 @@ function render(P) {
           window.open(location.pathname + '?p=' + encodeURIComponent(P.dir) + '&view=staff&who=' + encodeURIComponent(CH.who) + (CH.file ? '&file=' + encodeURIComponent(CH.file.who + '/' + CH.file.path) : ''), '_blank');
         };
         document.getElementById('treeR').onclick = loadTree;
+        document.getElementById('treeO').onclick = function () { openFolder(); };
         document.getElementById('ftree').addEventListener('click', function (e) { var b = e.target.closest('[data-fpath]'); if (b) { openFile(b.dataset.fwho, b.dataset.fpath, b.dataset.fkind); box.classList.remove('sideon'); } });
       }
       document.getElementById('vX').onclick = closeFile;
@@ -525,6 +550,8 @@ function render(P) {
         (files.length ? draw(root, '') : '<div class="none">Nothing yet</div>') + '</details>';
     }).join('');
   }
+  // 📂 Show the project's folder, or one file, in File Explorer (the helper opens it; only inside the SpinUp home).
+  function openFolder(who, f) { fetch('/pro/open-folder', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ p: P.dir, who: who, f: f }) }).catch(function () {}); }
   function closeFile() { CH.file = null; document.getElementById('chat').classList.remove('viewing'); document.getElementById('vbody').innerHTML = ''; stopSaying(); drawTree(); }
   function openFile(who, f, kind) {
     var box = document.getElementById('chat'), vb = document.getElementById('vbody'), btns = document.getElementById('vbtns'), p = proOf(who);
@@ -533,20 +560,21 @@ function render(P) {
     document.getElementById('vname').textContent = (KICON[kind] || '📎') + ' ' + f.split('/').pop() + ' · ' + p.name.split(' ')[0];
     document.getElementById('vname').title = f;
     box.classList.add('viewing'); vb.className = 'vbody'; btns.innerHTML = ''; vb.innerHTML = '<p class="vnote">Loading…</p>';
+    var showIn = function () { btns.insertAdjacentHTML('beforeend', '<button type="button" data-vdir title="Show this file in File Explorer">📂</button>'); btns.querySelector('[data-vdir]').onclick = function () { openFolder(who, f); }; };
     if (kind === 'html') {
       // A page the Pro made: it runs for real, from the separate file-only address (see VIEW_PORT in the helper).
       var url = 'http://127.0.0.1:' + (CH.view || 8788) + '/' + f.split('/').reduce(function (a, s) { return a + '/' + encodeURIComponent(s); }, encodeURIComponent(P.dir) + '/' + encodeURIComponent(who));
       vb.className = 'vbody page';
       vb.innerHTML = '<iframe title="' + esc(f) + '" src="' + esc(url) + '" sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-modals allow-downloads"></iframe>';
       btns.innerHTML = '<button type="button" data-vopen>↗ Open in browser</button>';
-      btns.querySelector('[data-vopen]').onclick = function () { window.open(url, '_blank'); };
+      btns.querySelector('[data-vopen]').onclick = function () { window.open(url, '_blank'); }; showIn();
       return;
     }
     if (kind === 'image') {
       var src = '/pro/raw?' + qs;
       vb.innerHTML = '<img alt="' + esc(f) + '" src="' + esc(src) + '">';
       btns.innerHTML = '<button type="button" data-vopen>↗ Open</button>';
-      btns.querySelector('[data-vopen]').onclick = function () { window.open(src, '_blank'); };
+      btns.querySelector('[data-vopen]').onclick = function () { window.open(src, '_blank'); }; showIn();
       return;
     }
     fetch('/pro/file?' + qs).then(function (r) { return r.json(); }).then(function (d) {
@@ -556,7 +584,7 @@ function render(P) {
       var body = d.kind === 'md' ? '<div class="md">' + md(d.text) + '</div>' : '<pre>' + esc(d.text) + '</pre>';
       vb.innerHTML = (d.cut ? '<p class="vnote">This file is long; showing the first part.</p>' : '') + body;
       btns.innerHTML = '<button type="button" class="say" data-sayf="' + esc(who) + '">🔊 Read it</button><button type="button" data-vopen title="Open in its own window">↗ Pop out</button>';
-      btns.querySelector('[data-sayf]').dataset.text = plainForSpeech(d.text || '');
+      btns.querySelector('[data-sayf]').dataset.text = plainForSpeech(d.text || ''); showIn();
       btns.querySelector('[data-vopen]').onclick = function () {
         var w = window.open('', '_blank'); if (!w) return;
         var css = [].map.call(document.querySelectorAll('style'), function (s) { return s.textContent; }).join('\n');
@@ -580,14 +608,17 @@ function render(P) {
     document.getElementById('msgs').innerHTML = '<p class="wait">Loading…</p>';
     fetch('/pro/history?p=' + encodeURIComponent(P.dir) + '&who=' + who).then(function (r) { return r.json(); }).then(function (h) {
       if (CH.who !== who) return;
-      drawMsgs(who, h.messages || []); if (!CH.tree) loadTree(); else drawTree();
+      drawMsgs(who, h.messages || [], h.more || 0); drawTime(); if (!CH.tree) loadTree(); else drawTree();
       if (CH.busy[who] || h.busy) waitRow(who);
       document.getElementById('chatT').focus();
     });
   }
   function bubble(who, m) {
     var mine = m.from === 'you', c = who === 'lead' ? 'var(--lead)' : pc(who);
-    return '<div class="m ' + (mine ? 'you' : 'pro') + '" style="--c:' + c + '">' + (mine ? esc(m.text) : md(m.text) +
+    // ☆ Star (Tai, 11-07): saves this message, or just the part you selected, as a preference every Pro sees.
+    var star = LIVE && m.at ? '<button type="button" class="star mini' + (m.star ? ' on' : '') + '" data-star="' + esc(who) + '" data-at="' + esc(m.at) + '" aria-pressed="' + !!m.star + '" title="' +
+      (m.star ? STAR_ON : STAR_OFF) + '">' + (m.star ? '★' : '☆') + '</button>' : '';
+    return '<div class="m ' + (mine ? 'you' : 'pro') + '" style="--c:' + c + '">' + star + (mine ? esc(m.text) : md(m.text) +
       '<button type="button" class="say mini" data-sayb="' + esc(who) + '" title="Read aloud" aria-label="Read aloud">🔊</button>' +
       (GUARD && (GUARD.pros[who] || []).length ? '<div class="gline">' + GUARD.pros[who].map(function (a) { return esc(GUARD.lines[a]); }).join('<br>') + '</div>' : '') +
       (LIVE && m.at ? (m.flagged ? '<span class="flagged">⚠️ You reported this as ' + esc(m.flagged) + '</span>' : '<button type="button" class="flag mini" data-flag="' + esc(who) + '" data-at="' + esc(m.at) + '" title="Report a wrong or harmful answer">⚠️ Wrong?</button>') : '') +
@@ -603,9 +634,26 @@ function render(P) {
           '<button type="button" data-apply="' + esc(m.at) + '" data-all="1" title="This project and every future project">Apply everywhere</button>' +
           '<button type="button" data-decline="' + esc(m.at) + '">Not now</button></span><span class="err"></span>') + '</div>';
   }
-  function drawMsgs(who, list) {
+  var STAR_ON = 'Starred: saved as a preference. Click to take it back.', STAR_OFF = 'Star it: save this as a preference every Pro sees (select part of it first to save just that)';
+  // Chat history (Tai, 11-07): the newest 30 show; "Earlier" pulls 30 more each time, "From the start" pulls the rest.
+  function moreRow(more, at) {
+    return more > 0 ? '<div class="more" data-before="' + esc(at || '') + '"><button type="button" data-more="30">⤒ Earlier messages <small>(' + more + ' more)</small></button>' +
+      (more > 30 ? '<button type="button" data-more="all">⇞ From the start</button>' : '') + '</div>' : '';
+  }
+  function loadEarlier(row, n) {
+    var who = CH.who, el = document.getElementById('msgs'), h0 = el.scrollHeight, top0 = el.scrollTop;
+    row.querySelectorAll('button').forEach(function (b) { b.disabled = true; });
+    fetch('/pro/history?p=' + encodeURIComponent(P.dir) + '&who=' + who + '&n=' + (n === 'all' ? 5000 : 30) + '&before=' + encodeURIComponent(row.dataset.before))
+      .then(function (r) { return r.json(); }).then(function (h) {
+        if (CH.who !== who) return;
+        var list = h.messages || [];
+        row.outerHTML = (list.length ? moreRow(h.more || 0, list[0].at) : '') + list.map(function (m) { return bubble(who, m); }).join('');
+        el.scrollTop = n === 'all' ? 0 : top0 + (el.scrollHeight - h0);   // "Earlier" keeps your place; "From the start" goes to the top
+      }).catch(function () { row.querySelectorAll('button').forEach(function (b) { b.disabled = false; }); });
+  }
+  function drawMsgs(who, list, more) {
     var el = document.getElementById('msgs'), p = proOf(who);
-    el.innerHTML = list.length ? list.map(function (m) { return bubble(who, m); }).join('') :
+    el.innerHTML = list.length ? moreRow(more, list[0].at) + list.map(function (m) { return bubble(who, m); }).join('') :
       '<p class="wait">Say hi to ' + esc(p.name) + '. ' + (who === 'lead' ? 'Ask about the plan, the timeline or what to do next.' : 'Ask about their first work, or for a new draft.') + '</p>';
     el.scrollTop = el.scrollHeight;
   }
@@ -620,14 +668,15 @@ function render(P) {
     if (!text || CH.busy[who]) return;
     ta.value = ''; CH.busy[who] = true; markBusy();
     var el = document.getElementById('msgs'); if (el.querySelector('.wait')) el.innerHTML = '';
-    el.insertAdjacentHTML('beforeend', bubble(who, { from: 'you', text: text })); waitRow(who);
+    el.insertAdjacentHTML('beforeend', bubble(who, { from: 'you', text: text })); var mineEl = el.lastElementChild; waitRow(who);
     fetch('/pro/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ p: P.dir, who: who, text: text }) })
       .then(function (r) { return r.json(); })
       .then(function (r) {
         CH.busy[who] = false; markBusy(); if (CH.who !== who) { loadTree(); return; }
         var w = document.getElementById('waitrow'); if (w) w.remove();
+        if (r.asked && mineEl && mineEl.isConnected) mineEl.outerHTML = bubble(who, { from: 'you', text: text, at: r.asked });   // now it can be starred
         el.insertAdjacentHTML('beforeend', r.error ? '<div class="m err">' + esc(r.error) + '</div>' : bubble(who, { from: who, text: r.reply, action: r.action, at: r.at }));
-        loadTree(); el.scrollTop = el.scrollHeight;
+        loadTree(); loadValue(); el.scrollTop = el.scrollHeight;
         if (r.security && window.SU_SECURITY) window.SU_SECURITY();
       })
       .catch(function () { CH.busy[who] = false; markBusy(); var w = document.getElementById('waitrow'); if (w) w.remove(); el.insertAdjacentHTML('beforeend', '<div class="m err">Couldn\'t reach the SpinUp helper. Is it running?</div>'); });
@@ -642,6 +691,107 @@ function render(P) {
     if (f0 && f0.indexOf('/') > 0) { var fw = f0.slice(0, f0.indexOf('/')), fp = f0.slice(f0.indexOf('/') + 1), ext = (fp.match(/\.(\w+)$/) || [])[1] || '';
       openFile(fw, fp, /^html?$/i.test(ext) ? 'html' : /^(png|jpe?g|gif|webp|svg)$/i.test(ext) ? 'image' : /^(md|markdown)$/i.test(ext) ? 'md' : 'text'); }
   }
+  document.addEventListener('click', function (e) {
+    var mb = e.target.closest('[data-more]'); if (mb) { loadEarlier(mb.closest('.more'), mb.dataset.more); return; }
+    var st = e.target.closest('[data-star]'); if (!st) return;
+    var bub = st.closest('.m'), sel = window.getSelection(), part = '';
+    if (sel && !sel.isCollapsed && bub.contains(sel.anchorNode) && bub.contains(sel.focusNode)) part = sel.toString().trim();
+    st.disabled = true;
+    fetch('/pro/star', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ p: P.dir, who: st.dataset.star, at: st.dataset.at, text: part }) })
+      .then(function (r) { return r.json(); }).then(function (r) {
+        st.disabled = false; if (r.error) { st.title = r.error; return; }
+        var on = !!r.star; st.classList.toggle('on', on); st.textContent = on ? '★' : '☆'; st.setAttribute('aria-pressed', String(on)); st.title = on ? STAR_ON : STAR_OFF;
+        var old = bub.querySelector('.starnote'); if (old) old.remove();
+        bub.insertAdjacentHTML('beforeend', '<span class="starnote">' + (on ? '★ Saved as a preference' + (part ? ' (the part you selected)' : '') +
+          '. Every Pro sees it from now on, including the ones you are already talking to. You can see or remove it in the About section on SpinUp Home.' : 'Star removed. It is no longer a preference.') + '</span>');
+        setTimeout(function () { var n = bub.querySelector('.starnote'); if (n) n.remove(); }, 8000);
+        if (sel) sel.removeAllRanges();
+      }).catch(function () { st.disabled = false; });
+  });
+  // ---------- ⏱ Time and value ----------
+  var VAL = null, valTimer = null;
+  function dur(ms) { var m = Math.round(ms / 60000); return m < 1 ? 'under a minute' : m < 60 ? m + ' min' : Math.floor(m / 60) + 'h ' + ('0' + (m % 60)).slice(-2) + 'm'; }
+  function money(n) { return '$' + Math.round(n).toLocaleString('en-US'); }
+  function cents(n) { return n < 1 ? '$' + n.toFixed(2) : '$' + n.toFixed(n < 100 ? 2 : 0); }
+  function rng(lo, hi, f) { return lo === hi ? f(lo) : f(lo) + '–' + f(hi); }
+  function hrs(h) { return h.lo || h.hi ? rng(h.lo, h.hi, function (x) { return String(+x.toFixed(1)); }) + ' hrs' : '—'; }
+  function proFirst(v) { return v.who === 'lead' ? lead.name.split(' ')[0] : (people[v.who] || { name: v.name }).name.split(' ')[0]; }
+  function loadValue() {
+    if (!LIVE) return;
+    fetch('/pro/value?p=' + encodeURIComponent(P.dir)).then(function (r) { return r.json(); }).then(function (v) {
+      VAL = v; drawValue(); drawTime();
+      var pending = (v.pros || []).some(function (x) { return x.pending; });
+      clearTimeout(valTimer);
+      if (pending && !v.estimating && !VAL.asked) { VAL.asked = true; fetch('/pro/value/estimate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ p: P.dir }) }); }
+      if (pending || v.estimating) valTimer = setTimeout(loadValue, 6000);
+    }).catch(function () {});
+  }
+  function totals(list) {
+    return list.reduce(function (a, x) { a.ms += x.time.ms; a.lo += x.hours.lo; a.hi += x.hours.hi; a.ai += x.ai; if (x.human) { a.$lo += x.human.lo; a.$hi += x.human.hi; } return a; }, { ms: 0, lo: 0, hi: 0, ai: 0, $lo: 0, $hi: 0 });
+  }
+  // The sentence Tai can tell someone, in his words: "I spent 2 hours with Jane and got exactly what I needed."
+  function tellLine(x) {
+    var t = x.time.ms ? dur(x.time.ms) : 'a few minutes';
+    return 'I spent ' + t + ' with ' + proFirst(x) + ', my AI ' + (x.title || 'Pro') + (x.liked ? ', and got exactly what I needed' : '') + '. ' +
+      (x.hours.hi ? 'A human ' + (x.title || 'pro').toLowerCase() + ' would bill about ' + hrs(x.hours) + ' for the same work' + (x.human ? ', ' + rng(x.human.lo, x.human.hi, money) + (x.rate && x.rate.src !== 'you' && x.rate.city ? ' at ' + x.rate.city + ' rates' : '') : '') + '. ' : '') +
+      'The AI cost about ' + cents(x.ai) + '.';
+  }
+  function drawValue() {
+    var el = document.getElementById('valBody'), vt = document.getElementById('vTile'); if (!el || !VAL) return;
+    var list = VAL.pros || [], T = totals(list);
+    if (vt) vt.querySelector('b').textContent = T.ms ? dur(T.ms) : '0 min';
+    if (!list.length) { el.innerHTML = '<p class="empty">Nothing yet. Talk to a Pro and the time and value add up here.</p>'; return; }
+    var pend = list.some(function (x) { return x.pending; });
+    el.innerHTML = '<div class="vsum"><div><b>' + (T.ms ? dur(T.ms) : '0 min') + '</b><span>your time with your Staff</span></div>' +
+      '<div><b>' + (T.hi ? rng(+T.lo.toFixed(1), +T.hi.toFixed(1), String) + ' hrs' : '—') + '</b><span>the same work from people</span></div>' +
+      '<div><b>' + (T.$hi ? rng(T.$lo, T.$hi, money) : '—') + '</b><span>what people would charge</span></div>' +
+      '<div><b>' + cents(T.ai + (VAL.setupAi || 0)) + '</b><span>AI cost' + (VAL.setupAi ? ' (with ' + cents(VAL.setupAi) + ' to set up)' : '') + '</span></div></div>' +
+      (pend ? '<p class="vnote">⏳ Pricing ' + (VAL.estimating ? 'the newest files' : 'new files') + '… (one small AI estimate per file version)</p>' : '') +
+      '<div class="vrows">' + list.map(function (x) {
+        var c = x.who === 'lead' ? 'var(--lead)' : pc(x.who);
+        return '<article class="vrow" style="--c:' + c + '" data-vwho="' + esc(x.who) + '"><div class="vhead"><b>' + esc(x.name) + '</b><span>' + esc(x.title) + '</span>' +
+          '<button type="button" class="like' + (x.liked ? ' on' : '') + '" data-like="' + esc(x.who) + '" aria-pressed="' + !!x.liked + '" title="Did ' + esc(proFirst(x)) + ' give you what you needed?">👍 ' + (x.liked ? 'Got what I needed' : 'Got what I needed?') + '</button></div>' +
+          '<dl><dt>Your time</dt><dd>' + (x.time.ms ? dur(x.time.ms) : '—') + ' <small>' + x.time.sittings + (x.time.sittings === 1 ? ' sitting' : ' sittings') + ' · ' + x.time.msgs + ' messages</small></dd>' +
+          '<dt>A person would take</dt><dd>' + hrs(x.hours) + (x.pending ? ' <small>⏳ ' + x.pending + ' to price</small>' : '') + '</dd>' +
+          '<dt>Going rate</dt><dd class="vrate">' + (x.rate ? rng(x.rate.lo, x.rate.hi, money) + '/hr <small>' + (x.rate.src === 'you' ? 'your rate' : 'estimate' + (x.rate.city ? ', ' + esc(x.rate.city) : '')) + '</small>' : '—') +
+            ' <button type="button" class="mini" data-rate="' + esc(x.who) + '" title="Set your own rate">✏️</button></dd>' +
+          '<dt>Worth</dt><dd><b>' + (x.human ? rng(x.human.lo, x.human.hi, money) : '—') + '</b></dd>' +
+          '<dt>AI cost</dt><dd>' + cents(x.ai) + '</dd></dl>' +
+          (x.files.length ? '<details><summary>' + x.files.length + (x.files.length === 1 ? ' file' : ' files') + ' priced</summary><ul class="vfiles">' + x.files.map(function (f) {
+            return '<li><span>' + esc(f.path) + (f.what ? ' <small>' + esc(f.what) + '</small>' : '') + '</span><span>' + (f.hi ? rng(f.lo, f.hi, String) + ' h' : '⏳') + '</span></li>'; }).join('') + '</ul></details>' : '') +
+          '<p class="tell">“' + esc(tellLine(x)) + '” <button type="button" class="mini" data-tell="' + esc(x.who) + '" title="Copy this sentence">📋 Copy</button></p></article>';
+      }).join('') + '</div>' +
+      '<p class="vnote">How it\'s counted: your time comes from the chat timestamps; a gap of 15 minutes or more starts a new sitting, so time away isn\'t counted. "A person would take" is an AI estimate of the hours a human in that role would bill for the deliverable they would really hand over (a drawing set, not a web page), made once per file version. "Worth" is those hours at the middle of the going rate. It leaves out site visits, meetings and licensed sign-off, and your Staff\'s work is a draft, not a professional\'s. AI cost is what the same calls would cost on the API; your Claude plan covers it.</p>';
+  }
+  function drawTime() {
+    var el = document.getElementById('ctime'); if (!el) return;
+    var x = VAL && (VAL.pros || []).filter(function (v) { return v.who === CH.who; })[0];
+    if (!x) { el.innerHTML = ''; if (!VAL) loadValue(); return; }
+    el.innerHTML = '⏱ <b>' + (x.time.ms ? dur(x.time.ms) : 'under a minute') + '</b> with ' + esc(proFirst(x)) + ' · ' + x.time.sittings + (x.time.sittings === 1 ? ' sitting' : ' sittings') + ' · ' + x.time.msgs + ' messages' +
+      (x.hours.hi ? ' · a person: ' + hrs(x.hours) + (x.human ? ' (' + rng(x.human.lo, x.human.hi, money) + ')' : '') : '') +
+      ' <button type="button" class="like mini' + (x.liked ? ' on' : '') + '" data-like="' + esc(x.who) + '" aria-pressed="' + !!x.liked + '" title="Did ' + esc(proFirst(x)) + ' give you what you needed?">👍 ' + (x.liked ? 'Got what I needed' : 'Got what I needed?') + '</button>';
+  }
+  document.addEventListener('click', function (e) {
+    var lk = e.target.closest('[data-like]');
+    if (lk) { lk.disabled = true; fetch('/pro/value/like', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ p: P.dir, who: lk.dataset.like }) })
+      .then(function (r) { return r.json(); }).then(function (v) { if (!v.error) { VAL = v; drawValue(); drawTime(); } }); return; }
+    var tl = e.target.closest('[data-tell]');
+    if (tl) { var x = VAL.pros.filter(function (v) { return v.who === tl.dataset.tell; })[0]; if (x && navigator.clipboard) navigator.clipboard.writeText(tellLine(x)).then(function () { tl.textContent = '✓ Copied'; setTimeout(function () { tl.textContent = '📋 Copy'; }, 2000); }); return; }
+    var rt = e.target.closest('[data-rate]');
+    if (rt) { var dd = rt.closest('dd'); if (dd.querySelector('form')) return;
+      dd.insertAdjacentHTML('beforeend', '<form class="rateform"><input aria-label="Hourly rate" placeholder="120 or 100-150" inputmode="numeric"> <button type="submit">Save</button> <button type="button" data-ratereset>Use the estimate</button><span class="clash"></span></form>');
+      var fm = dd.querySelector('form'); fm.querySelector('input').focus();
+      fm.querySelector('[data-ratereset]').onclick = function () { saveRate(rt.dataset.rate, { reset: true }, fm); };
+      fm.onsubmit = function (ev) { ev.preventDefault(); var m = fm.querySelector('input').value.replace(/[$,\s]/g, '').match(/^(\d+)(?:[-–](\d+))?$/);
+        if (!m) { fm.querySelector('.clash').textContent = ' Type a rate like 120, or 100-150.'; return; } saveRate(rt.dataset.rate, { lo: +m[1], hi: +(m[2] || m[1]) }, fm); };
+    }
+  });
+  function saveRate(who, body, fm) {
+    body.p = P.dir; body.who = who;
+    fetch('/pro/value/rate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).then(function (r) { return r.json(); })
+      .then(function (v) { if (v.error) { fm.querySelector('.clash').textContent = ' ' + v.error; return; } VAL = v; drawValue(); drawTime(); if (body.reset) loadValue(); });
+  }
+  loadValue();
   // ⚠️ Wrong? under a Pro's reply (SOP step 48): say what's wrong, and whether it could cause harm. Harmful pauses that Pro.
   document.addEventListener('click', function (e) {
     var f = e.target.closest('[data-flag]');

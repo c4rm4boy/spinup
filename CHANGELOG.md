@@ -8,6 +8,19 @@ SpinUp started on October 31, 2026 as "Cabinet Builder," a clickable mockup for 
 
 ## v0.9.13 · Nov 3 · Your own words always get a team
 
+- **⏱ Time and value.** The project page has a new card, and the chat a timer strip, showing what working with your Staff was worth.
+  - **Your time:** how long you spent with each Pro, worked out from the chat timestamps. A gap of 15 minutes or more starts a new sitting, so time away isn't counted.
+  - **The same work from a person:** the hours a human in that role would bill for what they'd really hand over, such as a drawing set rather than a web page. It's one small, conservative AI estimate per file version. That's multiplied by the local going rate, and ✏️ sets your own rate.
+  - **The AI cost.**
+  - **👍 Got what I needed** marks the Pros whose work you actually used.
+  - **📋 Copy** gives you a sentence you can tell someone: "I spent 2h 19m with Jane, my AI Interior Designer…"
+  - **The token tracker no longer overcounts chats.** A resumed chat reports a running total, and the tracker was adding those totals together. It now counts each message once: the remodel project's AI cost goes from $168 to about $12, and SpinUp's total from $186 to $28.
+- **Your whole chat history, and ☆ stars that become preferences.**
+  - Each Pro's chat now keeps every message back to the first one; it used to keep only the last 200.
+  - Opening a chat shows the newest 30. **⤒ Earlier messages** at the top loads 30 more each time and keeps your place, and **⇞ From the start** loads everything.
+  - **☆ on any message** (yours or a Pro's) saves it as a preference that every Lead and Pro sees. Select part of a message first to save just that part. Pros you're already talking to hear about the new star with your next message.
+  - Click ★ again to take it back. Removing it under About you on SpinUp Home un-stars the message too.
+- **One SpinUp home.** Everything SpinUp keeps is now in one folder, `Documents\SpinUp`: `library` (your projects, experts, profile and logs), `pros` (each Pro's own folder) and `work`. A backup or a move is one folder. Older installs move over by themselves the first time the helper starts. It copies rather than moves, keeps the old folders as a backup, and carries every Pro's memory over. **📂** in the Files panel opens the project's folder in File Explorer, and 📂 on an open file shows that file there.
 - **Talk to your Staff is now a workspace.** Your Pros are listed down the left, with every Pro's folders and files below them. Click a file and it opens beside the chat, so you can read a draft and talk about it at the same time. Markdown is formatted, text and CSV show as text, and images show as images. **A web page a Pro made runs as a real page**, right there or with ↗ Open in browser. It's served from its own file-only address that the helper refuses, so the page can't send messages as you or change anything. **↗ New tab** opens the whole workspace in its own tab. On a phone, ☰ slides the list in.
 - **SpinUp Explained has a recorded, natural voice.** Every line is pre-voiced with one Microsoft neural voice (Andrew Multilingual) and built into the page, so Chrome, Safari and phones sound the same as Edge instead of a flat system voice. The page is still one file (about 1.4 MB).
 - **SpinUp Explained now ends on a "Try the demo" button** that opens the live demo, and the demo link uses the full address, so it works from a copy someone was emailed.

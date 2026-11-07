@@ -151,18 +151,20 @@ button { font:inherit; font-size:14px; color:var(--ink-2); background:var(--surf
   <section class="side">
     <div class="box">
       <h2>🗂 Where things live (all local)</h2>
-<pre class="tree"><b>spinup/library/</b>             private, never committed
-  profile.json              what you ☆ starred
-  leads/&lt;expert&gt;/           each Lead + a bench that grows
-  goals/                    repeat a goal instantly
-  projects/&lt;date-goal&gt;/     your projects: answers, plan,
-                            agents, first deliverables
-  demos/projects/           sample projects, kept apart
-  usage.jsonl               the token log
-<b>%LOCALAPPDATA%/SpinUp/</b>
+<pre class="tree"><b>Documents/SpinUp/</b>          one home: back it up or move it
+                            as one folder (SPINUP_HOME)
+  library/
+    profile.json            what you ☆ starred
+    leads/&lt;expert&gt;/         each Lead + a bench that grows
+    goals/                  repeat a goal instantly
+    projects/&lt;date-goal&gt;/   your projects: Staff, answers,
+                            plan, to-dos, timeline
+    demos/projects/         sample projects, kept apart
+    usage.jsonl             the token log
+    safety-record.jsonl     tamper-evident safety log
+  pros/&lt;project&gt;/&lt;pro&gt;/     each Pro's own folder (it sees
+                            only this): files, chat, session
   work/                     empty folder for one-shot calls
-  pros/&lt;project&gt;/&lt;pro&gt;/     each Pro's folder: its chat,
-                            session id, documents
 <b>~/.claude/projects/</b>        Claude Code's own session files</pre>
     </div>
     <div class="box">
