@@ -118,6 +118,30 @@ button.primary { background:var(--accent); color:#06231f; border-color:var(--acc
 .tlr ul { margin:0; padding-left:18px; } .tlr .err { color:#ff8a7a; }
 .tlbtn { margin-left:auto; font:inherit; font-size:13.5px; }
 .sched { margin:6px 0 0; color:var(--ink-2); font-size:15px; } .sched b { color:var(--lead); }
+/* 🗂️ Project data (Tai, 11-08) */
+#data .dtabs { display:flex; gap:6px; flex-wrap:wrap; }
+#data .dtabs button { font:inherit; font-size:14px; padding:6px 12px; border-radius:999px; border:1px solid var(--line); background:var(--surface); color:var(--ink-2); cursor:pointer; }
+#data .dtabs button[aria-selected="true"] { border-color:#f2b84b; color:var(--ink); background:color-mix(in srgb, #f2b84b 16%, var(--surface)); }
+#data .dbar { display:flex; gap:8px; flex-wrap:wrap; align-items:center; font-size:14px; color:var(--ink-2); }
+#data .dbar input { flex:1 1 200px; font:inherit; padding:6px 10px; border-radius:8px; border:1px solid var(--line); background:var(--surface-2, var(--surface)); color:var(--ink); }
+#data .dbar button, #data .dbar .btn { font:inherit; font-size:14px; padding:5px 10px; border-radius:8px; border:1px solid var(--line); background:var(--surface); color:var(--ink); cursor:pointer; text-decoration:none; }
+#data .dbar button[aria-pressed="true"] { border-color:#f2b84b; }
+#data .dgrid { overflow-x:auto; border:1px solid var(--line); border-radius:12px; }
+#data table { width:100%; border-collapse:collapse; font-size:14px; }
+#data th, #data td { padding:7px 10px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+#data th button { font:inherit; font-weight:650; background:none; border:0; color:var(--ink); cursor:pointer; padding:0; white-space:nowrap; }
+#data td.t-money, #data td.t-number { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+#data td.t-date { white-space:nowrap; }
+#data tfoot td { border-bottom:0; }
+#data .board { display:grid; grid-auto-flow:column; grid-auto-columns:minmax(200px, 1fr); gap:10px; overflow-x:auto; padding-bottom:4px; }
+#data .lane { background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:8px; display:grid; gap:8px; align-content:start; }
+#data .lane h4 { margin:0; font-size:14px; } #data .lane h4 small { color:var(--ink-2); font-weight:400; }
+#data .card { background:var(--surface-2, var(--bg)); border:1px solid var(--line); border-radius:10px; padding:8px; display:grid; gap:3px; font-size:13.5px; }
+#data .card small { color:var(--ink-2); } #data .card select { font:inherit; font-size:13px; margin-top:4px; background:var(--surface); color:var(--ink); border:1px solid var(--line); border-radius:6px; }
+#data .dhist { list-style:none; margin:0; padding:0; display:grid; gap:6px; font-size:13.5px; max-height:320px; overflow:auto; }
+#data .dhist li.undone { opacity:.55; } #data .dhist .hwhen { color:var(--ink-2); }
+#data .dnote { margin:0; font-size:13.5px; color:var(--ink-2); }
+#data .sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
 /* 🔊 read aloud and ✏️ rename (Tai, 11-02) */
 .say { font-size:13px; min-height:28px; padding:2px 10px; }
 .say.on { border-color:var(--accent); color:var(--accent); }
@@ -165,9 +189,20 @@ button.primary { background:var(--accent); color:#06231f; border-color:var(--acc
 #chat .wait { color:var(--muted); font-size:14px; }
 #chat .files { display:flex; flex-wrap:wrap; gap:6px; padding:0 14px 6px; }
 #chat .files button { font-size:13px; padding:3px 9px; }
-#chat form { display:grid; grid-template-columns:1fr auto; gap:8px; padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px)); border-top:1px solid var(--line); }
+#chat form { display:grid; grid-template-columns:auto 1fr auto; gap:8px; padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px)); border-top:1px solid var(--line); }
 #chat textarea { font:inherit; color:var(--ink); background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:8px 10px; resize:none; min-height:44px; max-height:140px; }
 #chat .hint { grid-column:1/-1; color:var(--muted); font-size:12.5px; }
+/* 📎 Attachments (Tai, 11-07): paste, drop or pick images and PDFs for a Pro. */
+#chat .clip { align-self:stretch; padding:0 10px; font-size:18px; }
+#chat .atts { grid-column:1/-1; display:flex; flex-wrap:wrap; gap:8px; } #chat .atts:empty { display:none; }
+.att { position:relative; display:flex; align-items:center; gap:6px; background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:4px 26px 4px 4px; font-size:12.5px; max-width:220px; }
+.att img { width:44px; height:44px; object-fit:cover; border-radius:6px; } .att .pdfi { font-size:26px; width:44px; text-align:center; }
+.att span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } .att.up { opacity:.6; }
+.att button { position:absolute; top:2px; right:2px; padding:0 6px; border:0; background:transparent; font-size:13px; }
+.mfiles { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; justify-content:flex-end; }
+.mfiles button { padding:0; border:1px solid var(--line); border-radius:8px; overflow:hidden; background:var(--surface-2); }
+.mfiles img { display:block; width:120px; height:90px; object-fit:cover; } .mfiles .pdfb { padding:8px 10px; font-size:13px; }
+#chat.dropping .cmain { outline:2px dashed var(--accent); outline-offset:-6px; }
 /* Staff panel (Tai, 11-07): Pros on the left with their folders and files below; a file opens in a third panel beside
    the chat. ↗ opens the whole thing in its own tab (&view=staff). Narrow screens: ☰ slides the panel in, a file covers the chat. */
 #chat { width:min(820px,100vw); grid-template-rows:auto 1fr; }
@@ -194,6 +229,7 @@ button.primary { background:var(--accent); color:#06231f; border-color:var(--acc
 #chat .ftree .f:hover { background:var(--surface-2); } #chat .ftree .f[aria-current="true"] { background:color-mix(in srgb, var(--accent) 18%, var(--surface)); }
 #chat .ftree .none { color:var(--muted); padding:2px 6px 2px 22px; font-size:12.5px; }
 #chat .cmain { display:grid; grid-template-rows:1fr auto; min-height:0; min-width:0; }
+#chat .cmain:has(> .ctime) { grid-template-rows:auto 1fr auto; }   /* the ⏱ strip takes only its own height */
 #chat .viewer { display:none; border-left:1px solid var(--line); min-height:0; min-width:0; grid-template-rows:auto 1fr; background:var(--bg); }
 #chat.viewing .viewer { display:grid; }
 #chat .vhd { display:flex; align-items:center; gap:6px; padding:8px 10px; border-bottom:1px solid var(--line); background:var(--surface); }
@@ -231,6 +267,8 @@ body.staffview #app, body.staffview .secban ~ #app { visibility:hidden; }
 .gcheck label { display:flex; gap:6px; align-items:flex-start; }
 .flag.mini { display:block; margin:4px 0 0 auto; padding:1px 8px; font-size:12px; background:transparent; opacity:.7; }
 .flag.mini:hover { opacity:1; }
+#chatF .send.stop { background:#7a2a2a; border-color:#c0504d; color:#fff; }
+.m.stopped { opacity:.7; } .stoptag { display:block; margin-top:4px; font-size:12px; opacity:.85; }
 .ctime { padding:6px 14px; font-size:13px; color:var(--ink-2); border-bottom:1px solid var(--line); display:flex; flex-wrap:wrap; gap:4px 6px; align-items:center; }
 .ctime .like.mini { padding:1px 8px; font-size:12px; }
 .like { border-radius:999px; font-size:13px; padding:3px 10px; } .like.on { border-color:#6fd38c; color:#6fd38c; }
@@ -381,6 +419,7 @@ function render(P) {
     tile('#today', 'var(--you)', (M.yours || []).length, 'for you to do') +
     tile('#work', 'var(--good)', delivs.length, 'first deliverables done') +
     (LIVE ? '<a class="tile" href="#value" style="--c:#3fd1c7" id="vTile"><b>…</b><span>your time with your Staff</span></a>' : '') +
+    (LIVE ? '<a class="tile" href="#data" style="--c:#f2b84b" id="dTile" hidden><b>…</b><span>records in your project data</span></a>' : '') +
     tile('#timeline', 'var(--lead)', weeks, 'weeks on the timeline') +
     (emails.length ? tile('#work', '#e88bd8', emails.length, 'email drafts waiting on you') : '') +
     tile('#decisions', '#b28dff', (M.decisions || []).length, 'decisions made') +
@@ -451,6 +490,7 @@ function render(P) {
 
   // ⏱ Time and value (Tai, 11-07): your real time, what a person would have billed for the same files, and the AI cost.
   if (LIVE) html += '<section id="value"><h2>⏱ Time and value <small>how long you spent, and what the same work would cost from a person</small></h2><div id="valBody"><p class="empty">Adding it up…</p></div></section>';
+  if (LIVE) html += '<section id="data"><h2>🗂️ Project data <small>the tables your whole Staff reads and adds to, kept on this PC (SQLite)</small></h2><div id="dataBody"><p class="empty">Loading…</p></div></section>';
 
   // Timeline.
   html += '<section id="timeline"><h2>📅 Timeline <small>' + weeks + ' weeks, by owner</small>' +
@@ -485,7 +525,7 @@ function render(P) {
 
   // ---------- Talk to your Staff ----------
   // One tab per Pro (and the Lead). Each message resumes that Pro's own Claude Code session on this PC.
-  var CH = { who: null, busy: {} };
+  var CH = { who: null, busy: {} }, ATT = {};   // ATT: 📎 files waiting to go with your next message, per Pro (set here: chatOpen can run before the 📎 code below)
   function chatOpen(who) {
     var box = document.getElementById('chat');
     if (!box) {
@@ -498,8 +538,8 @@ function render(P) {
         '<div class="cbody"><nav class="side" aria-label="Staff and files"><div class="tabs" role="tablist">' + tabs + '</div>' +
         (LIVE ? '<h3>📁 Files<button type="button" id="treeO" title="Open this project folder in File Explorer" aria-label="Open folder">📂</button><button type="button" id="treeR" title="Refresh" aria-label="Refresh files" style="margin-left:0">⟳</button></h3><div class="ftree" id="ftree"></div>' : '') + '</nav>' +
         '<section class="cmain">' + (LIVE ? '<div class="ctime" id="ctime"></div>' : '') + '<div class="msgs" id="msgs" aria-live="polite"></div>' +
-        '<form id="chatF"><textarea id="chatT" rows="2" aria-label="Your message"></textarea>' +
-        '<button type="submit" class="send">Send</button><span class="hint">You\'re talking to AI, not a person · Enter sends · Shift+Enter for a new line · each Pro remembers your conversation · drafts only</span></form></section>' +
+        '<form id="chatF">' + (LIVE ? '<div class="atts" id="atts" aria-label="Attachments"></div><button type="button" class="clip" id="chatClip" title="Attach images or PDFs (or paste a screenshot, or drop files here)" aria-label="Attach">📎</button><input type="file" id="chatFile" accept="image/png,image/jpeg,image/gif,image/webp,application/pdf" multiple hidden>' : '<span></span>') + '<textarea id="chatT" rows="2" aria-label="Your message"></textarea>' +
+        '<button type="submit" class="send">Send</button><span class="hint">You\'re talking to AI, not a person · Enter sends · Shift+Enter for a new line · paste or drop images and PDFs · each Pro remembers your conversation · drafts only</span></form></section>' +
         '<section class="viewer" id="viewer" aria-label="File"><div class="vhd"><b id="vname"></b><span class="hdb" id="vbtns"></span><button type="button" id="vX" aria-label="Close file">✕</button></div><div class="vbody" id="vbody"></div></section></div>';
       document.body.appendChild(box);
       box.querySelector('.tabs').addEventListener('click', function (e) { var b = e.target.closest('[data-tab]'); if (b) { chatTab(b.dataset.tab); box.classList.remove('sideon'); } });
@@ -514,7 +554,7 @@ function render(P) {
         document.getElementById('ftree').addEventListener('click', function (e) { var b = e.target.closest('[data-fpath]'); if (b) { openFile(b.dataset.fwho, b.dataset.fpath, b.dataset.fkind); box.classList.remove('sideon'); } });
       }
       document.getElementById('vX').onclick = closeFile;
-      document.getElementById('chatF').addEventListener('submit', function (e) { e.preventDefault(); chatSend(); });
+      document.getElementById('chatF').addEventListener('submit', function (e) { e.preventDefault(); if (CH.busy[CH.who]) chatStop(); else chatSend(); });
       document.getElementById('chatT').addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); chatSend(); } });
       document.addEventListener('keydown', function (e) {
         if (e.key !== 'Escape') return; var d = document.getElementById('doc');
@@ -524,10 +564,11 @@ function render(P) {
     box.hidden = false; chatTab(who);
   }
   // ---------- Files (Tai, 11-07): every Pro's folder as a tree; a file opens beside the chat ----------
-  var KICON = { md: '📄', html: '🌐', image: '🖼️', text: '📃', other: '📎' };
+  var KICON = { md: '📄', html: '🌐', image: '🖼️', pdf: '📕', text: '📃', other: '📎' };
   function loadTree() {
     if (!LIVE) return;
     fetch('/pro/tree?p=' + encodeURIComponent(P.dir)).then(function (r) { return r.json(); }).then(function (t) { CH.view = t.viewPort; CH.tree = t.folders || []; drawTree(); }).catch(function () {});
+    if (!CH.out) fetch('/settings').then(function (r) { return r.json(); }).then(function (s) { CH.out = { telegram: s.telegram, mail: s.mail }; }).catch(function () {});
   }
   function drawTree() {
     var el = document.getElementById('ftree'); if (!el) return;
@@ -560,7 +601,11 @@ function render(P) {
     document.getElementById('vname').textContent = (KICON[kind] || '📎') + ' ' + f.split('/').pop() + ' · ' + p.name.split(' ')[0];
     document.getElementById('vname').title = f;
     box.classList.add('viewing'); vb.className = 'vbody'; btns.innerHTML = ''; vb.innerHTML = '<p class="vnote">Loading…</p>';
-    var showIn = function () { btns.insertAdjacentHTML('beforeend', '<button type="button" data-vdir title="Show this file in File Explorer">📂</button>'); btns.querySelector('[data-vdir]').onclick = function () { openFolder(who, f); }; };
+    // 📲 / ✉️ (Tai, 11-08): send the open file to your own phone or your own Gmail. Shown once that's set up on SpinUp Home.
+    var sendBtns = function () { var o = LIVE && CH.out || {};
+      return (o.telegram ? '<button type="button" data-send="telegram" title="Send this file to your Telegram (' + esc(o.telegram) + ')">📲 To my phone</button>' : '') +
+        (o.mail ? '<button type="button" data-send="email-me" title="Email this file to ' + esc(o.mail) + '">✉️ Email me</button>' : ''); };
+    var showIn = function () { btns.insertAdjacentHTML('beforeend', sendBtns() + '<button type="button" data-vdir title="Show this file in File Explorer">📂</button>'); btns.querySelector('[data-vdir]').onclick = function () { openFolder(who, f); }; };
     if (kind === 'html') {
       // A page the Pro made: it runs for real, from the separate file-only address (see VIEW_PORT in the helper).
       var url = 'http://127.0.0.1:' + (CH.view || 8788) + '/' + f.split('/').reduce(function (a, s) { return a + '/' + encodeURIComponent(s); }, encodeURIComponent(P.dir) + '/' + encodeURIComponent(who));
@@ -570,10 +615,11 @@ function render(P) {
       btns.querySelector('[data-vopen]').onclick = function () { window.open(url, '_blank'); }; showIn();
       return;
     }
-    if (kind === 'image') {
+    if (kind === 'image' || kind === 'pdf') {
       var src = '/pro/raw?' + qs;
-      vb.innerHTML = '<img alt="' + esc(f) + '" src="' + esc(src) + '">';
-      btns.innerHTML = '<button type="button" data-vopen>↗ Open</button>';
+      if (kind === 'pdf') { vb.className = 'vbody page'; vb.innerHTML = '<iframe title="' + esc(f) + '" src="' + esc(src) + '"></iframe>'; }
+      else vb.innerHTML = '<img alt="' + esc(f) + '" src="' + esc(src) + '">';
+      btns.innerHTML = '<button type="button" data-vopen>↗ Open</button>' + (LIVE ? '<button type="button" data-share="' + esc(who) + '" data-f="' + esc(f) + '" title="Copy it to every other Pro on this project">⤴ Share with Staff</button>' : '');
       btns.querySelector('[data-vopen]').onclick = function () { window.open(src, '_blank'); }; showIn();
       return;
     }
@@ -595,10 +641,18 @@ function render(P) {
     }).catch(function () { vb.innerHTML = '<p class="vnote">Couldn\'t reach the SpinUp helper. Is it running?</p>'; });
   }
   // A pulsing dot on a Pro who's working on your message.
-  function markBusy() { document.querySelectorAll('#chat [data-tab]').forEach(function (b) { var d = b.querySelector('.dot'); if (CH.busy[b.dataset.tab] && !d) b.insertAdjacentHTML('beforeend', '<i class="dot" aria-label="thinking"></i>'); else if (!CH.busy[b.dataset.tab] && d) d.remove(); }); }
+  function markBusy() { document.querySelectorAll('#chat [data-tab]').forEach(function (b) { var d = b.querySelector('.dot'); if (CH.busy[b.dataset.tab] && !d) b.insertAdjacentHTML('beforeend', '<i class="dot" aria-label="thinking"></i>'); else if (!CH.busy[b.dataset.tab] && d) d.remove(); });
+    // ■ Stop (Tai, 11-07): while this Pro is thinking, Send becomes Stop. Enter never stops; only the button does.
+    var sb = document.querySelector('#chatF .send'); if (!sb || !CH.who) return; var busy = !!CH.busy[CH.who];
+    sb.textContent = busy ? '■ Stop' : 'Send'; sb.classList.toggle('stop', busy); sb.disabled = false;
+    sb.title = busy ? 'Stop: ' + proOf(CH.who).name.split(' ')[0] + ' will not answer this one' : ''; }
+  function chatStop() {
+    var sb = document.querySelector('#chatF .send'); sb.disabled = true; sb.textContent = 'Stopping…';
+    fetch('/pro/stop', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ p: P.dir, who: CH.who }) }).catch(function () { markBusy(); });
+  }
   function proOf(k) { return k === 'lead' ? lead : people[k]; }
   function chatTab(who) {
-    CH.who = who;
+    CH.who = who; markBusy(); drawAtts();
     document.querySelectorAll('#chat [data-tab]').forEach(function (b) {
       b.setAttribute('aria-selected', String(b.dataset.tab === who));
       if (b.dataset.tab === who) { var row = b.parentNode; if (b.offsetLeft + b.offsetWidth > row.scrollLeft + row.clientWidth || b.offsetLeft < row.scrollLeft) row.scrollLeft = b.offsetLeft - 10; }
@@ -618,7 +672,7 @@ function render(P) {
     // ☆ Star (Tai, 11-07): saves this message, or just the part you selected, as a preference every Pro sees.
     var star = LIVE && m.at ? '<button type="button" class="star mini' + (m.star ? ' on' : '') + '" data-star="' + esc(who) + '" data-at="' + esc(m.at) + '" aria-pressed="' + !!m.star + '" title="' +
       (m.star ? STAR_ON : STAR_OFF) + '">' + (m.star ? '★' : '☆') + '</button>' : '';
-    return '<div class="m ' + (mine ? 'you' : 'pro') + '" style="--c:' + c + '">' + star + (mine ? esc(m.text) : md(m.text) +
+    return '<div class="m ' + (mine ? 'you' : 'pro') + (m.stopped ? ' stopped' : '') + '" style="--c:' + c + '">' + star + (mine ? esc(m.text) + filesHtml(who, m.files) + (m.stopped ? '<span class="stoptag">⏹ Stopped before an answer</span>' : '') : md(m.text) +
       '<button type="button" class="say mini" data-sayb="' + esc(who) + '" title="Read aloud" aria-label="Read aloud">🔊</button>' +
       (GUARD && (GUARD.pros[who] || []).length ? '<div class="gline">' + GUARD.pros[who].map(function (a) { return esc(GUARD.lines[a]); }).join('<br>') + '</div>' : '') +
       (LIVE && m.at ? (m.flagged ? '<span class="flagged">⚠️ You reported this as ' + esc(m.flagged) + '</span>' : '<button type="button" class="flag mini" data-flag="' + esc(who) + '" data-at="' + esc(m.at) + '" title="Report a wrong or harmful answer">⚠️ Wrong?</button>') : '') +
@@ -626,7 +680,8 @@ function render(P) {
   }
   // A Staff change the Lead proposed (renames): Apply or Not now. Nothing changes until you press Apply (Tai, 11-03).
   function actCard(m) {
-    var a = m.action; if (!a || a.type !== 'rename') return '';
+    var a = m.action; if (a && a.type === 'tables') return tablesCard(m);
+    if (!a || a.type !== 'rename') return '';
     var rows = a.changes.map(function (c) { return '<li>' + esc(c.from) + ' → <b>' + esc(c.name) + '</b>' + (c.clash && !a.done ? '<br><span class="clash">⚠️ ' + esc(c.clash) + '</span>' : '') + '</li>'; }).join('');
     return '<div class="act"><b>✏️ Rename ' + a.changes.length + (a.changes.length === 1 ? ' person' : ' people') + '</b><ul>' + rows + '</ul>' +
       (a.done ? '<span class="actdone">' + (a.done === 'applied everywhere' ? '✓ Applied everywhere' : a.done === 'applied' ? '✓ Applied to this project' : 'Not applied') + '</span>'
@@ -664,19 +719,26 @@ function render(P) {
     (function tick() { if (!w.isConnected) return; w.textContent = proOf(who).name.split(' ')[0] + ' is thinking… ' + Math.round((Date.now() - t0) / 1000) + 's'; setTimeout(tick, 1000); })();
   }
   function chatSend() {
-    var ta = document.getElementById('chatT'), text = ta.value.trim(), who = CH.who;
-    if (!text || CH.busy[who]) return;
-    ta.value = ''; CH.busy[who] = true; markBusy();
+    var ta = document.getElementById('chatT'), text = ta.value.trim(), who = CH.who, att = ATT[who] || [];
+    if (att.some(function (a) { return !a.path; })) return;   // still uploading
+    var files = att.map(function (a) { return a.path; });
+    if ((!text && !files.length) || CH.busy[who]) return;
+    ta.value = ''; ATT[who] = []; drawAtts(); CH.busy[who] = true; markBusy();
     var el = document.getElementById('msgs'); if (el.querySelector('.wait')) el.innerHTML = '';
-    el.insertAdjacentHTML('beforeend', bubble(who, { from: 'you', text: text })); var mineEl = el.lastElementChild; waitRow(who);
-    fetch('/pro/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ p: P.dir, who: who, text: text }) })
+    el.insertAdjacentHTML('beforeend', bubble(who, { from: 'you', text: text, files: files })); var mineEl = el.lastElementChild; waitRow(who);
+    fetch('/pro/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ p: P.dir, who: who, text: text, files: files }) })
       .then(function (r) { return r.json(); })
       .then(function (r) {
         CH.busy[who] = false; markBusy(); if (CH.who !== who) { loadTree(); return; }
         var w = document.getElementById('waitrow'); if (w) w.remove();
-        if (r.asked && mineEl && mineEl.isConnected) mineEl.outerHTML = bubble(who, { from: 'you', text: text, at: r.asked });   // now it can be starred
+        if (r.asked && mineEl && mineEl.isConnected) mineEl.outerHTML = bubble(who, { from: 'you', text: text, files: files, at: r.asked, stopped: r.stopped });   // now it can be starred
+        if (r.stopped) {   // your words go back in the box, so you can finish them and send again
+          var ta2 = document.getElementById('chatT'); if (!ta2.value.trim()) { ta2.value = text; ta2.focus(); }
+          el.insertAdjacentHTML('beforeend', '<p class="wait">⏹ Stopped. ' + esc(proOf(who).name.split(' ')[0]) + ' will not answer that one. Your message is back in the box if you want to finish it.</p>');
+          el.scrollTop = el.scrollHeight; return;
+        }
         el.insertAdjacentHTML('beforeend', r.error ? '<div class="m err">' + esc(r.error) + '</div>' : bubble(who, { from: who, text: r.reply, action: r.action, at: r.at }));
-        loadTree(); loadValue(); el.scrollTop = el.scrollHeight;
+        loadTree(); loadValue(); if (window.loadDataNow) loadDataNow(); el.scrollTop = el.scrollHeight;
         if (r.security && window.SU_SECURITY) window.SU_SECURITY();
       })
       .catch(function () { CH.busy[who] = false; markBusy(); var w = document.getElementById('waitrow'); if (w) w.remove(); el.insertAdjacentHTML('beforeend', '<div class="m err">Couldn\'t reach the SpinUp helper. Is it running?</div>'); });
@@ -708,6 +770,204 @@ function render(P) {
         if (sel) sel.removeAllRanges();
       }).catch(function () { st.disabled = false; });
   });
+  // ---------- 📎 Attachments (Tai, 11-07) ----------
+  // Paste a screenshot, drop files on the chat, or click 📎. Each file uploads to that Pro's from-you folder right away;
+  // big photos are shrunk in the browser first (longest side 2000 px), since full resolution only costs tokens.
+  function rawUrl(who, f) { return '/pro/raw?p=' + encodeURIComponent(P.dir) + '&who=' + encodeURIComponent(who) + '&f=' + encodeURIComponent(f); }
+  function filesHtml(who, list) {
+    if (!list || !list.length || !LIVE) return '';
+    return '<span class="mfiles">' + list.map(function (f) { var pdf = /\.pdf$/i.test(f);
+      return '<button type="button" data-fopen="' + esc(who) + '" data-f="' + esc(f) + '" data-k="' + (pdf ? 'pdf' : 'image') + '" title="Open ' + esc(f.split('/').pop()) + '">' +
+        (pdf ? '<span class="pdfb">📕 ' + esc(f.split('/').pop().replace(/^\d{4}-\d{2}-\d{2}-\d{6}-/, '')) + '</span>' : '<img alt="Your attachment" src="' + esc(rawUrl(who, f)) + '">') + '</button>'; }).join('') + '</span>';
+  }
+  function drawAtts() {
+    var el = document.getElementById('atts'); if (!el) return;
+    el.innerHTML = (ATT[CH.who] || []).map(function (a, i) {
+      return '<span class="att' + (a.path ? '' : ' up') + '">' + (a.kind === 'pdf' ? '<span class="pdfi">📕</span>' : '<img alt="" src="' + esc(a.preview) + '">') +
+        '<span title="' + esc(a.name) + '">' + (a.error ? '⚠️ ' + esc(a.error) : a.path ? esc(a.name) : 'Uploading…') + '</span><button type="button" data-attx="' + i + '" aria-label="Remove">✕</button></span>';
+    }).join('');
+  }
+  function shrink(file) {   // resolves to a Blob: photos over 2000 px (or 3 MB) become a JPEG; everything else goes as is
+    return new Promise(function (ok) {
+      if (!/^image\/(png|jpeg|webp)$/.test(file.type)) return ok(file);
+      var img = new Image(), u = URL.createObjectURL(file);
+      img.onload = function () {
+        var big = Math.max(img.width, img.height), k = Math.min(1, 2000 / big);
+        if (k === 1 && file.size <= 3e6) { URL.revokeObjectURL(u); return ok(file); }
+        var c = document.createElement('canvas'); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+        var g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(u);
+        c.toBlob(function (b) { ok(b || file); }, 'image/jpeg', 0.88);
+      };
+      img.onerror = function () { URL.revokeObjectURL(u); ok(file); }; img.src = u;
+    });
+  }
+  function addFiles(list) {
+    var who = CH.who; if (!who || !LIVE) return;
+    [].slice.call(list || []).forEach(function (file) {
+      var isPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name || '');
+      if (!isPdf && !/^image\//.test(file.type)) return;
+      var a = { name: file.name || 'screenshot.png', kind: isPdf ? 'pdf' : 'image', preview: isPdf ? '' : URL.createObjectURL(file) };
+      (ATT[who] = ATT[who] || []).push(a); drawAtts();
+      shrink(file).then(function (blob) {
+        if (blob.size > 10 * 1024 * 1024) throw new Error('over 10 MB');
+        return fetch('/pro/attach?p=' + encodeURIComponent(P.dir) + '&who=' + encodeURIComponent(who) + '&name=' + encodeURIComponent(a.name), { method: 'POST', headers: { 'Content-Type': 'application/octet-stream' }, body: blob });
+      }).then(function (r) { return r.json(); }).then(function (r) {
+        if (r.error) throw new Error(r.error); a.path = r.path; drawAtts();
+      }).catch(function (e) { a.error = String(e.message || 'upload failed'); a.path = null; drawAtts();
+        setTimeout(function () { ATT[who] = (ATT[who] || []).filter(function (x) { return x !== a; }); drawAtts(); }, 5000); });
+    });
+  }
+  if (LIVE) {
+    var chatBox = document.getElementById('chat') || document.body;
+    document.addEventListener('paste', function (e) {
+      if (!document.getElementById('chat') || document.getElementById('chat').hidden || !CH.who) return;
+      var fl = e.clipboardData && e.clipboardData.files; if (fl && fl.length) { e.preventDefault(); addFiles(fl); }
+    });
+    document.addEventListener('dragover', function (e) { var c = document.getElementById('chat'); if (c && !c.hidden && e.target.closest && e.target.closest('#chat')) { e.preventDefault(); c.classList.add('dropping'); } });
+    document.addEventListener('dragleave', function (e) { var c = document.getElementById('chat'); if (c && !e.relatedTarget) c.classList.remove('dropping'); });
+    document.addEventListener('drop', function (e) { var c = document.getElementById('chat'); if (!c || !e.target.closest || !e.target.closest('#chat')) return; e.preventDefault(); c.classList.remove('dropping'); addFiles(e.dataTransfer.files); });
+    document.addEventListener('change', function (e) { if (e.target.id === 'chatFile') { addFiles(e.target.files); e.target.value = ''; } });
+    document.addEventListener('click', function (e) {
+      if (e.target.closest('#chatClip')) { document.getElementById('chatFile').click(); return; }
+      var x = e.target.closest('[data-attx]'); if (x) { (ATT[CH.who] || []).splice(+x.dataset.attx, 1); drawAtts(); return; }
+      var fo = e.target.closest('[data-fopen]'); if (fo) { openFile(fo.dataset.fopen, fo.dataset.f, fo.dataset.k); return; }
+      var sd = e.target.closest('[data-send]');
+      if (sd && CH.file) {
+        sd.disabled = true; var was = sd.textContent; sd.textContent = 'Sending…';
+        fetch('/pro/deliver', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ p: P.dir, who: CH.file.who, f: CH.file.path, how: sd.dataset.send }) })
+          .then(function (r) { return r.json(); }).then(function (r) {
+            sd.textContent = r.error ? '⚠️ ' + was : '✓ Sent'; sd.title = r.error || r.line; if (r.error) sd.disabled = false;
+          }, function () { sd.textContent = '⚠️ ' + was; sd.title = 'The SpinUp helper isn\'t answering.'; sd.disabled = false; });
+        return;
+      }
+      var sh = e.target.closest('[data-share]'); if (!sh) return;
+      sh.disabled = true;
+      fetch('/pro/share', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ p: P.dir, who: sh.dataset.share, f: sh.dataset.f }) })
+        .then(function (r) { return r.json(); }).then(function (r) {
+          sh.textContent = r.error ? '⚠️ ' + r.error : '✓ Shared with ' + r.shared.length + ' Pros'; sh.title = r.shared ? 'In the from-you folder of: ' + r.shared.join(', ') : ''; loadTree();
+        });
+    });
+  }
+
+  // ---------- 🗂️ Project data (Tai, 11-08): the project's SQLite tables ----------
+  // The Lead plans them with the project; any Pro can propose more (you press Apply). Pros add rows; you can move a stage,
+  // delete a row, undo any change, download a CSV, or send it to your phone or email.
+  function tablesCard(m) {
+    var a = m.action;
+    var rows = a.tables.map(function (t) { return '<li><b>' + esc(t.title) + '</b> <small>(' + esc(t.kind) + ')</small>' + (t.about ? ': ' + esc(t.about) : '') +
+      '<br><small>' + t.columns.map(function (c) { return esc(c.label) + (c.type === 'choice' ? ' [' + esc(c.choices.join(' · ')) + ']' : ''); }).join(', ') + '</small></li>'; }).join('');
+    return '<div class="act"><b>🗂️ New project data: ' + a.tables.length + (a.tables.length === 1 ? ' table' : ' tables') + '</b><ul>' + rows + '</ul>' +
+      (a.done ? '<span class="actdone">' + (a.done === 'applied' ? '✓ Created' + (a.made && a.made.length ? ': ' + esc(a.made.join(', ')) : '') : 'Not created') + '</span>'
+        : '<span class="actbtns"><button type="button" class="primary" data-tapply="' + esc(m.at) + '">Apply</button><button type="button" data-tdecline="' + esc(m.at) + '">Not now</button></span><span class="err"></span>') + '</div>';
+  }
+  var DT = { list: [], cur: null, rows: null, sort: null, q: '', hist: false, out: null };
+  function loadData(keep) {
+    if (!LIVE) return;
+    if (!DT.out) fetch('/settings').then(function (r) { return r.json(); }).then(function (s) { DT.out = { telegram: s.telegram, mail: s.mail }; drawData(); }).catch(function () {});
+    fetch('/tables?p=' + encodeURIComponent(P.dir)).then(function (r) { return r.json(); }).then(function (j) {
+      DT.list = j.tables || [];
+      var tl = document.getElementById('dTile'), n = DT.list.reduce(function (a, t) { return a + t.count; }, 0);
+      if (tl) { tl.hidden = !DT.list.length; tl.querySelector('b').textContent = n; }
+      if (!DT.list.some(function (t) { return t.name === DT.cur; })) DT.cur = DT.list.length ? DT.list[0].name : null;
+      if (DT.cur) loadRows(); else drawData();
+    }).catch(function () {});
+  }
+  function loadRows() {
+    fetch('/tables/rows?p=' + encodeURIComponent(P.dir) + '&t=' + encodeURIComponent(DT.cur)).then(function (r) { return r.json(); }).then(function (j) { DT.rows = j; drawData(); if (DT.hist) loadHist(); });
+  }
+  function loadHist() {
+    fetch('/tables/history?p=' + encodeURIComponent(P.dir) + '&n=60').then(function (r) { return r.json(); }).then(function (j) {
+      var el = document.getElementById('dHist'); if (!el) return;
+      var ch = j.changes || [];
+      el.innerHTML = ch.length ? ch.map(function (c) {
+        var o = c.old || {}, n = c.new || {}, label = n[Object.keys(n)[1]] || o[Object.keys(o)[1]] || ('#' + c.row), diff = '';
+        if (c.op === 'change') diff = Object.keys(n).filter(function (k) { return k !== '_at' && k !== '_by' && String(n[k]) !== String(o[k]); }).map(function (k) { return esc(k) + ': ' + esc(o[k] == null ? '–' : o[k]) + ' → <b>' + esc(n[k] == null ? '–' : n[k]) + '</b>'; }).join('; ');
+        return '<li' + (c.undone ? ' class="undone"' : '') + '><span class="hwhen">' + esc(new Date(c.at).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })) + '</span> <b>' + esc(c.by) + '</b> ' +
+          ({ add: 'added', change: 'changed', delete: 'deleted' })[c.op] + ' ' + esc(label) + ' <small>in ' + esc(c.title) + '</small>' + (diff ? '<br><small>' + diff + '</small>' : '') +
+          (c.undone ? ' <small>(undone)</small>' : ' <button type="button" class="mini" data-dundo="' + c.id + '">↶ Undo</button>') + '</li>';
+      }).join('') : '<li>No changes yet.</li>';
+    });
+  }
+  function fmt(c, v) {
+    if (v == null || v === '') return '';
+    if (c.type === 'money') return '$' + Number(v).toLocaleString('en-US', { minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 });
+    if (c.type === 'bool') return v ? '✓' : '';
+    if (c.type === 'link') return '<a href="' + esc(v) + '" target="_blank" rel="noopener noreferrer">' + esc(String(v).replace(/^https?:\/\/(www\.)?/, '').slice(0, 40)) + '</a>';
+    if (c.type === 'email') return '<a href="mailto:' + esc(v) + '">' + esc(v) + '</a>';
+    if (c.type === 'number') return esc(Number(v).toLocaleString('en-US'));
+    return esc(v);
+  }
+  function drawData() {
+    var el = document.getElementById('dataBody'); if (!el) return;
+    if (!DT.list.length) { el.innerHTML = '<p class="empty">No tables on this project yet. If you want to keep records (leads, workouts, a budget, guests), ask ' + esc(proOf('lead').name) + ': "set up tables to track …".</p>'; return; }
+    var T = DT.rows && DT.rows.table, rows = (DT.rows && DT.rows.rows) || [];
+    var tabs = '<div class="dtabs" role="tablist">' + DT.list.map(function (t) { return '<button type="button" role="tab" data-dtab="' + esc(t.name) + '" aria-selected="' + (t.name === DT.cur) + '">' + esc(t.title) + ' <small>' + t.count + '</small></button>'; }).join('') + '</div>';
+    if (!T) { el.innerHTML = tabs; return; }
+    var q = DT.q.toLowerCase(), list = rows.filter(function (r) { return !q || T.columns.some(function (c) { return String(r[c.name] == null ? '' : r[c.name]).toLowerCase().indexOf(q) >= 0; }); });
+    if (DT.sort) { var sc = DT.sort.col, dir = DT.sort.dir; list = list.slice().sort(function (a, b) { var x = a[sc], y = b[sc]; if (x == null) return 1; if (y == null) return -1; return (typeof x === 'number' ? x - y : String(x).localeCompare(String(y))) * dir; }); }
+    var stage = T.kind === 'pipeline' && (T.columns.filter(function (c) { return c.type === 'choice' && /stage|status/i.test(c.name); })[0] || T.columns.filter(function (c) { return c.type === 'choice'; })[0]);
+    var o = DT.out || {};
+    var bar = '<div class="dbar"><input type="search" id="dQ" placeholder="Search ' + esc(T.title) + '" value="' + esc(DT.q) + '" aria-label="Search">' +
+      '<span>' + list.length + (list.length === rows.length ? '' : ' of ' + rows.length) + ' rows' + (T.about ? ' · ' + esc(T.about) : '') + '</span>' +
+      '<a class="btn" href="/tables/csv?p=' + encodeURIComponent(P.dir) + '&t=' + encodeURIComponent(T.name) + '">⬇ CSV</a>' +
+      (o.telegram ? '<button type="button" data-dsend="telegram" title="Send this table to your Telegram as a CSV">📲</button>' : '') +
+      (o.mail ? '<button type="button" data-dsend="email-me" title="Email this table to ' + esc(o.mail) + ' as a CSV">✉️</button>' : '') +
+      '<button type="button" data-dhist aria-pressed="' + DT.hist + '">🕘 History</button></div>';
+    var body;
+    if (stage) {
+      var main = T.columns.filter(function (c) { return c !== stage; }), first = main[0], extra = main.slice(1).filter(function (c) { return ['money', 'date', 'person', 'text', 'choice'].indexOf(c.type) >= 0; }).slice(0, 3);
+      body = '<div class="board">' + stage.choices.concat(list.some(function (r) { return !r[stage.name]; }) ? [''] : []).map(function (s) {
+        var cards = list.filter(function (r) { return (r[stage.name] || '') === s; });
+        var sum = T.columns.filter(function (c) { return c.type === 'money'; })[0];
+        return '<div class="lane"><h4>' + esc(s || 'No stage') + ' <small>' + cards.length + (sum && cards.length ? ' · ' + fmt(sum, cards.reduce(function (a, r) { return a + (+r[sum.name] || 0); }, 0)) : '') + '</small></h4>' +
+          cards.map(function (r) { return '<div class="card"><b>' + fmt(first, r[first.name]) + '</b>' + extra.map(function (c) { return r[c.name] != null && r[c.name] !== '' ? '<small>' + esc(c.label) + ': ' + fmt(c, r[c.name]) + '</small>' : ''; }).join('') +
+            '<select data-dstage="' + r.id + '" aria-label="Move to stage">' + stage.choices.map(function (x) { return '<option' + (x === r[stage.name] ? ' selected' : '') + '>' + esc(x) + '</option>'; }).join('') + '</select></div>'; }).join('') + '</div>';
+      }).join('') + '</div>';
+    } else {
+      var money = T.columns.filter(function (c) { return c.type === 'money' || (T.kind === 'budget' && c.type === 'number'); });
+      body = '<div class="dgrid"><table><thead><tr>' + T.columns.map(function (c) { var s = DT.sort && DT.sort.col === c.name ? (DT.sort.dir > 0 ? ' ▲' : ' ▼') : ''; return '<th><button type="button" data-dsort="' + esc(c.name) + '">' + esc(c.label) + s + '</button></th>'; }).join('') + '<th><span class="sr">Actions</span></th></tr></thead><tbody>' +
+        (list.length ? list.map(function (r) { return '<tr>' + T.columns.map(function (c) { return '<td class="t-' + c.type + '">' + fmt(c, r[c.name]) + '</td>'; }).join('') + '<td><button type="button" class="mini" data-ddel="' + r.id + '" title="Delete this row (you can undo it in History)">🗑</button></td></tr>'; }).join('')
+          : '<tr><td colspan="' + (T.columns.length + 1) + '" class="empty">Nothing here yet.</td></tr>') + '</tbody>' +
+        (money.length && list.length ? '<tfoot><tr>' + T.columns.map(function (c) { return '<td class="t-money">' + (money.indexOf(c) >= 0 ? '<b>' + fmt({ type: c.type }, list.reduce(function (a, r) { return a + (+r[c.name] || 0); }, 0)) + '</b>' : '') + '</td>'; }).join('') + '<td></td></tr></tfoot>' : '') + '</table></div>';
+    }
+    var focus = document.activeElement && document.activeElement.id === 'dQ', pos = focus ? document.activeElement.selectionStart : 0;
+    el.innerHTML = tabs + bar + body + (DT.hist ? '<ul class="dhist" id="dHist"><li>Loading…</li></ul>' : '') + '<p class="dnote" id="dMsg" aria-live="polite"></p>';
+    if (focus) { var qi = document.getElementById('dQ'); qi.focus(); qi.setSelectionRange(pos, pos); }
+    if (DT.hist) loadHist();
+  }
+  function dPost(url, body) {
+    return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(Object.assign({ p: P.dir }, body)) })
+      .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || 'That didn\'t work.'); return j; }); });
+  }
+  function dMsg(t) { var m = document.getElementById('dMsg'); if (m) m.textContent = t; }
+  if (LIVE) {
+    document.addEventListener('input', function (e) { if (e.target.id === 'dQ') { DT.q = e.target.value; drawData(); } });
+    document.addEventListener('change', function (e) {
+      var s = e.target.closest && e.target.closest('[data-dstage]'); if (!s) return;
+      var T = DT.rows.table, st = T.columns.filter(function (c) { return c.type === 'choice' && /stage|status/i.test(c.name); })[0] || T.columns.filter(function (c) { return c.type === 'choice'; })[0];
+      var up = {}; up[T.name] = [{ id: +s.dataset.dstage }]; up[T.name][0][st.name] = s.value;
+      dPost('/tables/change', { update: up }).then(function () { loadData(); }, function (er) { dMsg('⚠️ ' + er.message); });
+    });
+    document.addEventListener('click', function (e) {
+      var t = e.target.closest('[data-dtab]'); if (t) { DT.cur = t.dataset.dtab; DT.sort = null; DT.q = ''; loadRows(); return; }
+      var so = e.target.closest('[data-dsort]'); if (so) { var c = so.dataset.dsort; DT.sort = DT.sort && DT.sort.col === c ? (DT.sort.dir > 0 ? { col: c, dir: -1 } : null) : { col: c, dir: 1 }; drawData(); return; }
+      if (e.target.closest('[data-dhist]')) { DT.hist = !DT.hist; drawData(); return; }
+      var dl = e.target.closest('[data-ddel]');
+      if (dl) { var del = {}; del[DT.rows.table.name] = [+dl.dataset.ddel]; dPost('/tables/change', { delete: del }).then(function () { loadData(); }, function (er) { dMsg('⚠️ ' + er.message); }); return; }
+      var un = e.target.closest('[data-dundo]'); if (un) { un.disabled = true; dPost('/tables/undo', { id: +un.dataset.dundo }).then(function () { loadData(); }, function (er) { dMsg('⚠️ ' + er.message); un.disabled = false; }); return; }
+      var sd = e.target.closest('[data-dsend]');
+      if (sd) { sd.disabled = true; dMsg('Sending…'); dPost('/tables/deliver', { t: DT.cur, how: sd.dataset.dsend }).then(function (j) { dMsg(j.line); sd.disabled = false; }, function (er) { dMsg('⚠️ ' + er.message); sd.disabled = false; }); return; }
+      var ap = e.target.closest('[data-tapply],[data-tdecline]');
+      if (ap && !ap.disabled) {
+        var card = ap.closest('.act'), no = !!ap.dataset.tdecline; card.querySelectorAll('button').forEach(function (x) { x.disabled = true; });
+        dPost('/tables/apply', { who: CH.who, at: ap.dataset.tapply || ap.dataset.tdecline, decline: no }).then(function (j) {
+          card.querySelector('.actbtns').outerHTML = '<span class="actdone">' + (no ? 'Not created' : '✓ Created' + (j.made && j.made.length ? ': ' + esc(j.made.join(', ')) : '')) + '</span>'; loadData();
+        }, function (er) { card.querySelectorAll('button').forEach(function (x) { x.disabled = false; }); card.querySelector('.err').textContent = er.message; });
+      }
+    });
+    loadData(); window.loadDataNow = loadData;
+  }
+
   // ---------- ⏱ Time and value ----------
   var VAL = null, valTimer = null;
   function dur(ms) { var m = Math.round(ms / 60000); return m < 1 ? 'under a minute' : m < 60 ? m + ' min' : Math.floor(m / 60) + 'h ' + ('0' + (m % 60)).slice(-2) + 'm'; }

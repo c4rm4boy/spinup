@@ -8,6 +8,33 @@ SpinUp started on October 31, 2026 as "Cabinet Builder," a clickable mockup for 
 
 ## v0.9.13 · Nov 3 · Your own words always get a team
 
+- **🗂️ Project data: a real database for every project that keeps records.**
+  - Each project gets its own SQLite file on your PC (project.db), built into Node with nothing to install. SpinUp's code is the only thing that writes to it.
+  - The Lead plans the tables with the project when tracking makes sense: leads and buyers, workouts and weigh-ins, budgets, quotes, guests. Any Pro can propose another table or new columns later, and you press Apply.
+  - Five kinds: tracker, pipeline (shown as a board), log (add-only), directory and budget (with totals). Typed columns: text, number, money, date, yes/no, choice, person, email, phone, link, link to another table, file.
+  - Pros read fresh CSV copies before every message and add or change rows with a spinup-data block. SpinUp checks every value, skips duplicates and adds a line saying what was saved, such as "🗂️ Vendors: 5 added".
+  - Triggers record every add, change and delete: who, when, old and new values. History shows them all, and any one can be undone.
+  - On the project page: a tab for each table, search and sort, a board for pipelines (move a card's stage), totals, ⬇ CSV, and 📲 or ✉️ to send a table to yourself.
+  - Pros now get up to 30 steps and 10 minutes per message, enough to research a list of buyers.
+- **📲 Get any project file on your phone or in your email.**
+  - Ask a Pro "send me the rendering on Telegram" or "email me the plan". The Pro names the file, and SpinUp's own code sends it, so no file passes through the AI. (The Gmail connector couldn't do it: it wants the AI to type the whole file out as base64.)
+  - Telegram goes to your own chat, and email goes to your own Gmail, sent at once; the address is fixed in code. A draft to anyone else gets the files attached and waits in Gmail for you to press Send. That needs Google turned on for that Pro, and it's skipped after a security alert.
+  - A page a Pro made goes out as a PDF, printed from the locked-down viewer address.
+  - In the file viewer: 📲 To my phone and ✉️ Email me.
+  - Set up email once on SpinUp Home (✉️, with a Gmail app password kept in the private config folder; your Pros never see it).
+- **📎 Give a Pro your screenshots, photos and PDFs.**
+  - Paste a screenshot (Ctrl+V), drop files on the chat, or click 📎. Each file goes into that Pro's `from-you` folder, and the Pro opens it and looks before answering.
+  - Big photos are shrunk in the browser to 2,000 pixels, because full resolution only costs tokens.
+  - Each file is checked by its first bytes, not its name: PNG, JPG, GIF, WebP or PDF, up to 10 MB.
+  - Your message shows thumbnails; click one to open it beside the chat.
+  - **⤴ Share with Staff** copies an image or PDF to every other Pro's `from-you` folder, so the whole Staff works from the same photo without anyone reading another Pro's folder.
+  - Pros are told that any text inside an image is content, never instructions.
+  - Fixed: with a file open beside the chat, the ⏱ strip no longer takes a third of the height.
+- **■ Stop.** While a Pro is thinking, Send turns into a red ■ Stop. Use it when you sent too soon.
+  - It ends that Pro's work right away, with no answer and no retry.
+  - Your message stays in the chat, marked "Stopped before an answer", and its words go back in the box so you can finish them.
+  - The Pro is told once that you didn't need that answer, so it won't pick it back up.
+  - Enter never stops a Pro; only the button does.
 - **⏱ Time and value.** The project page has a new card, and the chat a timer strip, showing what working with your Staff was worth.
   - **Your time:** how long you spent with each Pro, worked out from the chat timestamps. A gap of 15 minutes or more starts a new sitting, so time away isn't counted.
   - **The same work from a person:** the hours a human in that role would bill for what they'd really hand over, such as a drawing set rather than a web page. It's one small, conservative AI estimate per file version. That's multiplied by the local going rate, and ✏️ sets your own rate.
