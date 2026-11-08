@@ -125,6 +125,8 @@ button.primary { background:var(--accent); color:#06231f; border-color:var(--acc
 .memx:hover { color:var(--bad); }
 li.hand small { color:var(--ink-2); }
 .todo .added { display:block; font-size:12.5px; color:var(--ink-2); }
+.deliv .dstate { margin:0; font-size:13px; color:var(--ink-2); } .deliv .dstate b { color:var(--ink); }
+.deliv details.orig { margin-top:8px; } .deliv .redo { justify-self:start; margin-top:4px; }
 .ticked { display:grid; gap:4px; margin-top:6px; font-size:13.5px; color:var(--good); } .ticked s { color:var(--ink-2); }
 /* 🗂️ Project data (Tai, 11-08) */
 #data .dtabs { display:flex; gap:6px; flex-wrap:wrap; }
@@ -238,6 +240,37 @@ li.hand small { color:var(--ink-2); }
 #chat .ftree .none { color:var(--muted); padding:2px 6px 2px 22px; font-size:12.5px; }
 #chat .cmain { display:grid; grid-template-rows:1fr auto; min-height:0; min-width:0; }
 #chat .cmain:has(> .ctime) { grid-template-rows:auto 1fr auto; }   /* the ⏱ strip takes only its own height */
+#chat .cmain:has(> .cdeps:not(:empty)) { grid-template-rows:auto auto 1fr auto; }   /* ⏳ and ⏱ strips, then the messages */
+/* ⏳ Dependencies (Tai, 11-08) */
+.cdeps { padding:0 14px; font-size:13px; display:grid; gap:2px; }
+.cdeps:empty { display:none; }
+.cdeps .dl { display:flex; flex-wrap:wrap; gap:4px 6px; align-items:baseline; padding:3px 0; border-bottom:1px solid var(--line); }
+.cdeps .dl b { white-space:nowrap; }
+.cdeps .dl.you b { color:var(--you, var(--warn)); } .cdeps .dl.them b { color:var(--accent); }
+.cdeps .dl .late { color:var(--warn); font-weight:650; }
+.cdeps button.dep { font:inherit; background:var(--surface-2); border:1px solid var(--line); border-radius:999px; padding:1px 9px; color:var(--ink); cursor:pointer; }
+.cdeps .dx { background:none; border:0; color:var(--ink-2); cursor:pointer; padding:0 2px; }
+.pdeps { font-size:13.5px; color:var(--warn); }
+/* 📋 Your Staff's work board (Tai, 11-08) */
+.wboard { display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap:12px; align-items:start; }
+.wcol { background:var(--surface); border:1px solid var(--line); border-top:4px solid var(--c); border-radius:12px; padding:10px 12px; display:grid; gap:6px; min-width:0; }
+.wcol h3 { margin:0; font-size:16px; } .wcol h3 small { color:var(--ink-2); font-weight:400; font-size:13px; }
+.wcol h4 { margin:6px 0 0; font-size:13.5px; color:var(--ink-2); font-weight:650; } .wcol h4 small { font-weight:400; }
+.wcol ul { list-style:none; margin:0; padding:0; display:grid; gap:6px; }
+.task { display:grid; gap:4px; padding:8px; border:1px solid var(--line); border-radius:10px; background:var(--surface-2, var(--bg)); font-size:14px; min-width:0; }
+.task small { color:var(--ink-2); font-size:12.5px; }
+.task.ready { border-color:color-mix(in srgb, var(--good) 55%, var(--line)); }
+.task.approved { padding:5px 8px; background:none; } .task.approved.changed { border-color:var(--warn); }
+.task details summary { cursor:pointer; font-size:13px; color:var(--ink-2); } .task .md { font-size:13.5px; max-height:420px; overflow:auto; }
+.tact, .tfiles, .tbtns { display:flex; flex-wrap:wrap; gap:5px; align-items:center; }
+.tact .primary { background:var(--good); color:#06231f; border-color:var(--good); font-weight:650; }
+.tdrop { color:var(--ink-2); } .task.todo { grid-template-columns:1fr auto; } .task.todo > b, .task.todo > small { grid-column:1; } .task.todo > .tact { grid-column:2; grid-row:1 / span 2; align-self:start; } .tchg { color:var(--warn); font-size:13px; }
+.tnone { margin:0; font-size:13.5px; color:var(--ink-2); }
+.tok summary { cursor:pointer; font-size:13.5px; color:var(--good); }
+.wcol.real { border-top-style:dashed; } .task.approved { grid-template-columns:1fr auto; align-items:center; } .task.approved > .tchg, .task.approved > .tfiles, .task.approved > .tsnapbox { grid-column:1 / -1; } .tadd { justify-self:start; } .msgtext { white-space:pre-wrap; font-family:inherit; font-size:13.5px; margin:4px 0 0; max-height:260px; overflow:auto; }
+.tsnapbox { border-left:3px solid var(--good); padding-left:8px; font-size:13px; max-height:320px; overflow:auto; }
+.cdeps .dl.tasks b { color:var(--good); } .cdeps .tready { color:var(--good); }
+
 #chat .viewer { display:none; border-left:1px solid var(--line); min-height:0; min-width:0; grid-template-rows:auto 1fr; background:var(--bg); }
 #chat.viewing .viewer { display:grid; }
 #chat .vhd { display:flex; align-items:center; gap:6px; padding:8px 10px; border-bottom:1px solid var(--line); background:var(--surface); }
@@ -426,7 +459,7 @@ function render(P) {
   html += '<nav class="tiles" aria-label="Sections">' +
     tile('#staff', 'var(--accent)', cast.length, 'Pros at work') +
     tile('#today', 'var(--you)', (M.yours || []).filter(function (t) { return !t.removed; }).length, 'for you to do') +
-    tile('#work', 'var(--good)', delivs.length, 'first deliverables done') +
+    (P.tasks ? tile('#work', 'var(--good)', P.tasks.filter(function (t) { return t.status === 'ready' || t.changed; }).length, 'Staff work ready for you') : tile('#work', 'var(--good)', delivs.length, 'first deliverables done')) +
     (LIVE ? '<a class="tile" href="#value" style="--c:#3fd1c7" id="vTile"><b>…</b><span>your time with your Staff</span></a>' : '') +
     (LIVE ? '<a class="tile" href="#data" style="--c:#f2b84b" id="dTile" hidden><b>…</b><span>records in your project data</span></a>' : '') +
     tile('#timeline', 'var(--lead)', weeks, 'weeks on the timeline') +
@@ -440,7 +473,12 @@ function render(P) {
     cast.map(function (k) {
       var p = people[k], a = (M.agents || {})[k] || {};
       return '<article class="agent" style="--c:' + pc(k) + '"><div class="top"><div class="av">' + esc(p.emoji) + '</div><div><div class="nm">' + esc(p.name) + (LIVE ? ' <button type="button" class="ren" data-ren="' + k + '" title="Rename ' + esc(p.name) + '" aria-label="Rename ' + esc(p.name) + '">✏️</button>' : '') + '</div><div class="ti">' + esc(p.title) + '</div></div><span class="badge">AI AGENT · READY</span></div>' +
-        '<div class="status">' + (D[k] ? '<b>✓ Done:</b> ' + esc(D[k].title) : '<b>Working on:</b> ' + esc(a.status || '')) + '</div>' +
+        '<div class="status">' + (function () { var T = (P.tasks || []).filter(function (t) { return t.who === k; }), now = T.filter(function (t) { return t.status === 'doing'; })[0], rd = T.filter(function (t) { return t.status === 'ready'; }).length;
+          if (P.tasks) return now ? '<b>Working on:</b> ' + esc(now.title) + (rd ? ' · <b>' + rd + ' ready for you</b>' : '') : rd ? '<b>' + rd + ' ready for you</b>' : '<b>Up to date</b>';
+          return D[k] ? '<b>✓ Done:</b> ' + esc(D[k].title) : '<b>Working on:</b> ' + esc(a.status || ''); })() + '</div>' +
+        // ⏳ What this Pro is waiting on (Tai, 11-08); the full list is at the top of its chat.
+        (function () { var w = (P.deps || []).filter(function (d) { return d.pro === k && d.status !== 'cleared' && !(d.todo && doneMap[d.todo]); });
+          return w.length ? '<div class="pdeps" title="' + esc(w.map(function (d) { return d.what + ' (from ' + (d.on === 'you' ? 'you' : nm(d.on)) + ')'; }).join('\n')) + '">⏳ Waiting on ' + esc(w.map(function (d) { return d.on === 'you' ? 'you' : nm(d.on); }).filter(function (x, i, a) { return a.indexOf(x) === i; }).join(' and ')) + ': ' + esc(w[0].what) + (w.length > 1 ? ' +' + (w.length - 1) + ' more' : '') + '</div>' : ''; })() +
         '<details><summary>What ' + esc(p.name) + ' knows, follows and watches</summary><dl>' +
         dd('Knows', a.knows) + dd('Rules', a.rules) + dd('Watches for', a.watch) + (a.reports ? '<dt>Reports</dt><dd>' + esc(a.reports) + '</dd>' : '') + '</dl></details>' +
         (TALK ? '<button type="button" class="talk" data-talk="' + k + '">💬 Talk to ' + esc(p.name) + '</button>' : '') + '</article>';
@@ -483,8 +521,8 @@ function render(P) {
         (t.addedBy ? '<span class="added">➕ added by ' + esc(String(t.addedByName || nm(t.addedBy)).split(' ')[0]) + (LIVE ? ' <button type="button" class="memx" data-yrm="' + id + '" title="Remove this to-do" aria-label="Remove: ' + esc(t.task) + '">✕</button>' : '') + '</span>' : '') +
         '</span><span class="when">' + esc(t.when) + '</span></li>';
     }).join('') + '</ul></div>' +
-    '<div class="box"><h3>Your Staff\'s</h3><ul class="todo">' + delivs.map(function (k) {
-      return '<li class="delivered"><span>✓</span><span class="t"><span class="who" style="--c:' + pc(k) + '">' + esc(nm(k)) + '</span> ' + esc(D[k].title) + '</span><span class="when">Done</span></li>';
+    '<div class="box"><h3>Your Staff\'s</h3><ul class="todo">' + (P.tasks ? staffSummary(P.tasks) + '</ul></div></div></section>' : delivs.map(function (k) {
+      return '<li class="delivered"><span>✓</span><span class="t"><span class="who" style="--c:' + pc(k) + '">' + esc(nm(k)) + '</span> ' + esc(D[k].title) + '</span><span class="when">' + ((P.firstWork || {})[k] ? 'Revised' : 'First draft') + '</span></li>';
     }).join('') + (P.handoffs || []).slice(-8).reverse().map(function (h) {
       // 📨 A handoff between Pros (Tai, 11-08): it reaches the named Pro with your next message to them.
       return '<li class="hand"><span>📨</span><span><span class="who" style="--c:' + pc(h.to) + '">' + esc(nm(h.to)) + '</span> ' + esc(h.task) + ' <small>from ' + esc(String(h.fromName).split(' ')[0]) + '</small></span>' +
@@ -492,16 +530,86 @@ function render(P) {
           : '<span class="when" title="Delivered ' + esc(new Date(h.delivered).toLocaleString()) + '">✓ Has it</span>') + '</li>';
     }).join('') + (M.staff || []).map(function (t) {
       return '<li><span>•</span><span><span class="who" style="--c:' + pc(t.who) + '">' + esc(nm(t.who)) + '</span> ' + esc(t.task) + '</span><span class="when">' + esc(t.when) + '</span></li>';
-    }).join('') + '</ul></div></div></section>';
+    }).join('') + '</ul></div></div></section>');
+  function staffSummary(tasks) {
+    return ['lead'].concat(cast).map(function (k) {
+      var L = tasks.filter(function (t) { return t.who === k; }); if (!L.length) return '';
+      var n = function (st) { return L.filter(function (t) { return t.status === st; }).length; }, r = n('ready'), d = n('doing'), td = n('todo'), ch = L.filter(function (t) { return t.changed; }).length;
+      var parts = [r ? '<b>' + r + ' ready for you</b>' : '', d ? d + ' in progress' : '', td ? td + ' to do' : '', ch ? '<span class="tchg">' + ch + ' changed since approved</span>' : ''].filter(Boolean);
+      return '<li><span>' + (r || ch ? '👀' : '•') + '</span><span><span class="who" style="--c:' + pc(k) + '">' + esc(nm(k)) + '</span> ' + (parts.join(' · ') || 'all approved') + '</span><span class="when"><a href="#work">Board</a></span></li>';
+    }).join('');
+  }
 
   // First deliverables: the proof that the Staff is working.
-  html += '<section id="work"><h2>📄 Your Staff\'s first work <small>drafts and research, ready for you to use</small></h2><div class="grid">' +
+  // 📋 Your Staff's work (Tai, 11-08): one column per Pro with every task: Ready for you (you approve), In progress, To do, and
+  // Approved (one line each; amber if a file changed since you approved). The first deliverable is each Pro's first task.
+  function taskSrc(t) { return t.source === 'first' ? 'first deliverable' : t.source === 'plan' ? 'from the plan' : t.source === 'handoff' ? 'from ' + String(t.from || 'a teammate').split(' ')[0] : 'you asked'; }
+  function taskBody(t) {
+    if (t.source === 'first' && D[t.who]) {
+      var rv = (P.firstWork || {})[t.who], d = D[t.who], a = (M.agents || {})[t.who] || {}, kind = (a.first && a.first.kind) || 'research';
+      return '<details><summary>Open' + (rv ? ' the latest (revised ' + esc(new Date(rv.at).toLocaleDateString([], { month: 'short', day: 'numeric' })) + ')' : ' the first draft') + '</summary>' +
+        '<div class="md">' + md(rv ? rv.text.replace(/^#\s+[^\n]*\n+/, '') : d.body) + '</div>' +
+        (rv ? '<details class="orig"><summary>See the original first draft</summary><div class="md">' + md(d.body) + '</div></details>' : '') + '</details>' +
+        '<span class="tbtns"><button type="button" class="say mini" data-sayd="' + esc(t.who) + '" title="Read it aloud">🔊</button>' + (kind === 'email' ? '<button type="button" class="mini" data-copy="' + esc(t.who) + '">Copy draft</button>' : '') +
+        (LIVE && TALK ? '<button type="button" class="mini" data-redo="' + esc(t.who) + '" title="Opens the chat with the request filled in; you press Send">🔎 Refresh with research</button>' : '') + '</span>';
+    }
+    return (t.files || []).length ? '<span class="tfiles">' + t.files.map(function (f) { return '<button type="button" class="mini" data-topen="' + esc(t.who) + '" data-f="' + esc(f) + '">📄 ' + esc(f.split('/').pop()) + '</button>'; }).join('') + '</span>' : '';
+  }
+  // 👤 A real person's column (Tai, 11-08): what they owe you, messages for you to send them (never sent by SpinUp), what you received.
+  function realOf(k) { return REAL.filter(function (h) { return h.id === k; })[0]; }
+  function realCol(h, L) {
+    var owed = L.filter(function (t) { return t.status === 'todo' || t.status === 'ready' || t.status === 'doing'; }), got = L.filter(function (t) { return t.status === 'approved'; });
+    var msgs = (P.messages || []).filter(function (m) { return m.to === h.id && !m.dropped; }).slice(-5).reverse();
+    var row = function (t, extra) { return '<li class="task ' + t.status + '"><b>' + esc(t.title) + '</b><small>' + (t.from && t.from !== 'you' ? 'for ' + esc(String(t.from).split(' ')[0]) : 'you added it') + (t.when ? ' · ' + esc(t.when) : '') + '</small>' + (extra || '') + '</li>'; };
+    return '<article class="wcol real" style="--c:#e8916b"><h3>👤 ' + esc(h.name) + ' <small>' + esc(h.role) + ' · real person</small></h3>' +
+      '<h4>⏳ Owed to you <small>' + owed.length + '</small></h4>' + (owed.length ? '<ul>' + owed.map(function (t) { return row(t, LIVE ? '<span class="tact"><button type="button" class="primary mini" data-tappr="' + esc(t.id) + '" title="You received it">✓ Got it</button><button type="button" class="mini tdrop" data-tdrop="' + esc(t.id) + '" title="Not needed any more">✕</button></span>' : ''); }).join('') + '</ul>' : '<p class="tnone">Nothing right now.</p>') +
+      (LIVE ? '<button type="button" class="mini tadd" data-tadd="' + esc(h.id) + '">＋ Add something ' + esc(h.name.split(' ')[0]) + ' owes you</button>' : '') +
+      (msgs.length ? '<h4>✉️ Messages to send <small>' + msgs.length + '</small></h4><ul>' + msgs.map(function (m) {
+        return '<li class="task msg"><b>' + esc(m.subject) + '</b><small>drafted by ' + esc(String(m.by).split(' ')[0]) + ' · ' + (m.gmail ? 'saved as a Gmail draft (not sent)' : 'copy it into your email or text') + '</small>' +
+          '<details><summary>Read it</summary><pre class="msgtext">' + esc(m.text) + '</pre></details>' +
+          (LIVE ? '<span class="tact"><button type="button" class="mini" data-mcopy="' + esc(m.id) + '">📋 Copy</button><button type="button" class="mini tdrop" data-mdrop="' + esc(m.id) + '" title="Done with it">✕</button></span>' : '') + '</li>';
+      }).join('') + '</ul>' : '') +
+      (got.length ? '<details class="tok"><summary>✓ Received <small>' + got.length + '</small></summary><ul>' + got.map(function (t) { return '<li class="task approved"><span>✓ ' + esc(t.title) + ' <small>' + esc(new Date(t.approved.at).toLocaleDateString([], { month: 'short', day: 'numeric' })) + '</small></span>' + (LIVE ? '<button type="button" class="mini linkish" data-tunappr="' + esc(t.id) + '">Undo</button>' : '') + '</li>'; }).join('') + '</ul></details>' : '') +
+      '</article>';
+  }
+  function boardHtml(tasks) {
+    var order = ['lead'].concat(cast).concat(REAL.map(function (h) { return h.id; })), by = {};
+    tasks.forEach(function (t) { (by[t.who] = by[t.who] || []).push(t); });
+    var cols = order.filter(function (k) { return by[k] || realOf(k); }).map(function (k) {
+      if (realOf(k)) return realCol(realOf(k), by[k] || []);
+      var L = by[k], g = function (st) { return L.filter(function (t) { return t.status === st; }); };
+      var ready = g('ready'), doing = g('doing'), todo = g('todo'), ok = g('approved'), p = proOf(k);
+      var row = function (t, extra) { return '<li class="task ' + t.status + '"><b>' + esc(t.title) + '</b><small>' + esc(taskSrc(t)) + (t.when ? ' · ' + esc(t.when) : '') + '</small>' + (extra || '') + '</li>'; };
+      return '<article class="wcol" style="--c:' + pc(k) + '"><h3>' + esc(p.emoji || '') + ' ' + esc(p.name) + ' <small>' + esc(p.title || '') + '</small></h3>' +
+        (ready.length ? '<h4>👀 Ready for you <small>' + ready.length + '</small></h4><ul>' + ready.map(function (t) { return row(t, taskBody(t) +
+          (LIVE ? '<span class="tact"><button type="button" class="primary mini" data-tappr="' + esc(t.id) + '">✓ Approve</button><button type="button" class="mini" data-hopen="' + esc(k) + '">Ask for changes</button><button type="button" class="mini tdrop" data-tdrop="' + esc(t.id) + '" title="Not needed any more">✕</button></span>' : '')); }).join('') + '</ul>' : '') +
+        (doing.length ? '<h4>🔧 In progress <small>' + doing.length + '</small></h4><ul>' + doing.map(function (t) { return row(t, taskBody(t)); }).join('') + '</ul>' : '') +
+        (todo.length ? '<h4>📝 To do <small>' + todo.length + '</small></h4><ul>' + todo.map(function (t) { return row(t, LIVE ? '<span class="tact"><button type="button" class="mini tdrop" data-tdrop="' + esc(t.id) + '" title="Not needed any more">✕</button></span>' : ''); }).join('') + '</ul>' : '') +
+        (ok.length ? '<details class="tok"' + (ok.some(function (t) { return t.changed; }) ? ' open' : '') + '><summary>✓ Approved <small>' + ok.length + '</small></summary><ul>' + ok.map(function (t) {
+          return '<li class="task approved' + (t.changed ? ' changed' : '') + '"><span>✓ ' + esc(t.title) + ' <small>' + esc(new Date(t.approved.at).toLocaleDateString([], { month: 'short', day: 'numeric' })) + '</small></span>' +
+            (t.changed ? '<span class="tchg">⚠️ Changed since you approved' + (LIVE ? ' <button type="button" class="mini" data-tappr="' + esc(t.id) + '">Approve again</button>' : '') + '</span>' : '') +
+            (Object.keys(t.approved.sigs || {}).length && LIVE ? '<span class="tfiles">' + Object.keys(t.approved.sigs).map(function (f) { return '<button type="button" class="mini" data-tsnap="' + esc(t.id) + '" data-f="' + esc(f) + '">See what you approved: ' + esc(f.split('/').pop()) + '</button>'; }).join('') + '</span><div class="tsnapbox" hidden></div>' : '') +
+            (LIVE ? '<button type="button" class="mini linkish" data-tunappr="' + esc(t.id) + '">Undo approval</button>' : '') + '</li>';
+        }).join('') + '</ul></details>' : '') +
+        (!ready.length && !doing.length && !todo.length ? '<p class="tnone">Nothing open.' + (TALK ? ' <button type="button" class="mini" data-hopen="' + esc(k) + '">Ask ' + esc(p.name.split(' ')[0]) + ' for something</button>' : '') + '</p>' : '') +
+        '</article>';
+    });
+    return cols.length ? '<div class="wboard">' + cols.join('') + '</div>' : '<p class="empty">No tasks yet.</p>';
+  }
+  if (P.tasks) html += '<section id="work"><h2>📋 Your Staff\'s work <small>every Pro\'s tasks; what\'s ready waits for your OK</small></h2><div id="workBody">' + boardHtml(P.tasks) + '</div></section>';
+  else html += '<section id="work"><h2>📄 Your Staff\'s first work <small>drafts and research, ready for you to use</small></h2><div class="grid">' +
     delivs.map(function (k) {
       var p = people[k], a = (M.agents || {})[k] || {}, d = D[k], kind = (a.first && a.first.kind) || 'research';
+      // 📄 The latest version (Tai, 11-08): once the Pro revises its first draft, the card shows that, with the original one click away.
+      var rv = (P.firstWork || {})[k], latest = rv ? rv.text.replace(/^#\s+[^\n]*\n+/, '') : '';
       return '<article class="deliv" style="--c:' + pc(k) + '"><div class="hd"><span class="kind">' + esc(KIND[kind] || kind) + ' · ' + esc(p.emoji) + ' ' + esc(p.name) + '</span>' +
         '<span class="hdb"><button type="button" class="say" data-sayd="' + k + '" title="Read it aloud">🔊 Listen</button>' +
-        (kind === 'email' ? '<button type="button" data-copy="' + k + '">Copy draft</button>' : '') + '</span></div><h3>' + esc(d.title) + '</h3><p class="sum">' + esc(d.summary) + '</p>' +
-        '<details' + (kind === 'email' ? '' : '') + '><summary>Open</summary><div class="md">' + md(d.body) + '</div></details></article>';
+        (kind === 'email' ? '<button type="button" data-copy="' + k + '">Copy draft</button>' : '') + '</span></div><h3>' + esc(d.title) + '</h3>' +
+        '<p class="dstate">' + (rv ? '✏️ <b>Revised</b> by ' + esc(p.name.split(' ')[0]) + ' · ' + esc(new Date(rv.at).toLocaleDateString([], { month: 'short', day: 'numeric' })) : '📝 <b>First draft</b> · from your setup answers, no research yet') + '</p>' +
+        (rv ? '' : '<p class="sum">' + esc(d.summary) + '</p>') +
+        '<details><summary>Open' + (rv ? ' the latest' : '') + '</summary><div class="md">' + md(rv ? latest : d.body) + '</div>' +
+        (rv ? '<details class="orig"><summary>See the original first draft</summary><p class="sum">' + esc(d.summary) + '</p><div class="md">' + md(d.body) + '</div></details>' : '') + '</details>' +
+        (LIVE && TALK ? '<button type="button" class="mini redo" data-redo="' + k + '" title="Opens ' + esc(p.name) + '’s chat with the request filled in; you press Send">🔎 Refresh with research</button>' : '') + '</article>';
     }).join('') + '</div></section>';
 
   // ⏱ Time and value (Tai, 11-07): your real time, what a person would have billed for the same files, and the AI cost.
@@ -556,7 +664,7 @@ function render(P) {
         '<button type="button" class="ib" id="chatX" aria-label="Close">✕</button></div>' +
         '<div class="cbody"><nav class="side" aria-label="Staff and files"><div class="tabs" role="tablist">' + tabs + '</div>' +
         (LIVE ? '<h3>📁 Files<button type="button" id="treeO" title="Open this project folder in File Explorer" aria-label="Open folder">📂</button><button type="button" id="treeR" title="Refresh" aria-label="Refresh files" style="margin-left:0">⟳</button></h3><div class="ftree" id="ftree"></div>' : '') + '</nav>' +
-        '<section class="cmain">' + (LIVE ? '<div class="ctime" id="ctime"></div>' : '') + '<div class="msgs" id="msgs" aria-live="polite"></div>' +
+        '<section class="cmain">' + (LIVE ? '<div class="ctime" id="ctime"></div><div class="cdeps" id="cdeps" aria-live="polite"></div>' : '') + '<div class="msgs" id="msgs" aria-live="polite"></div>' +
         '<form id="chatF">' + (LIVE ? '<div class="atts" id="atts" aria-label="Attachments"></div><button type="button" class="clip" id="chatClip" title="Attach images or PDFs (or paste a screenshot, or drop files here)" aria-label="Attach">📎</button><input type="file" id="chatFile" accept="image/png,image/jpeg,image/gif,image/webp,application/pdf" multiple hidden>' : '<span></span>') + '<textarea id="chatT" rows="2" aria-label="Your message"></textarea>' +
         '<button type="submit" class="send">Send</button><span class="hint">You\'re talking to AI, not a person · Enter sends · Shift+Enter for a new line · paste or drop images and PDFs · each Pro remembers your conversation · drafts only</span></form></section>' +
         '<section class="viewer" id="viewer" aria-label="File"><div class="vhd"><b id="vname"></b><span class="hdb" id="vbtns"></span><button type="button" id="vX" aria-label="Close file">✕</button></div><div class="vbody" id="vbody"></div></section></div>';
@@ -681,7 +789,7 @@ function render(P) {
     document.getElementById('msgs').innerHTML = '<p class="wait">Loading…</p>';
     fetch('/pro/history?p=' + encodeURIComponent(P.dir) + '&who=' + who).then(function (r) { return r.json(); }).then(function (h) {
       if (CH.who !== who) return;
-      drawMsgs(who, h.messages || [], h.more || 0); drawTime(); if (!CH.tree) loadTree(); else drawTree();
+      drawMsgs(who, h.messages || [], h.more || 0); drawTime(); loadDeps(); if (!CH.tree) loadTree(); else drawTree();
       if (CH.busy[who] || h.busy) waitRow(who);
       document.getElementById('chatT').focus();
     });
@@ -766,7 +874,7 @@ function render(P) {
           el.scrollTop = el.scrollHeight; return;
         }
         el.insertAdjacentHTML('beforeend', r.error ? '<div class="m err">' + esc(r.error) + '</div>' : bubble(who, { from: who, text: r.reply, action: r.action, at: r.at }));
-        loadTree(); loadValue(); if (window.loadDataNow) loadDataNow(); el.scrollTop = el.scrollHeight;
+        loadTree(); loadValue(); loadDeps(); if (window.loadDataNow) loadDataNow(); el.scrollTop = el.scrollHeight;
         if (r.security && window.SU_SECURITY) window.SU_SECURITY();
       })
       .catch(function () { CH.busy[who] = false; markBusy(); var w = document.getElementById('waitrow'); if (w) w.remove(); el.insertAdjacentHTML('beforeend', '<div class="m err">Couldn\'t reach the SpinUp helper. Is it running?</div>'); });
@@ -988,6 +1096,42 @@ function render(P) {
       var mx = e.target.closest('[data-memx]');
       if (mx) { mx.disabled = true; dPost('/project/memory', { forget: mx.dataset.memx }).then(function () { mx.closest('.mem').remove(); }, function () { mx.disabled = false; }); return; }
       var ho = e.target.closest('[data-hopen]'); if (ho) { chatOpen(ho.dataset.hopen); return; }
+      var tbd = e.target.closest('[data-toboard]'); if (tbd && !document.getElementById('workBody')) { e.preventDefault(); location.href = 'project.html?p=' + encodeURIComponent(P.dir) + '#work'; return; }
+      // 📋 Board: approve, undo, drop, open a task's file, or see the version you approved.
+      var tb = e.target.closest('[data-tappr],[data-tunappr],[data-tdrop]');
+      if (tb && !tb.disabled) {
+        var url = tb.dataset.tappr ? '/tasks/approve' : tb.dataset.tunappr ? '/tasks/unapprove' : '/tasks/drop';
+        tb.disabled = true;
+        dPost(url, { id: tb.dataset.tappr || tb.dataset.tunappr || tb.dataset.tdrop }).then(function (j) {
+          P.tasks = j.tasks; var wb = document.getElementById('workBody'); if (wb) wb.innerHTML = boardHtml(P.tasks);
+          var wt = document.querySelector('a.tile[href="#work"] b'); if (wt) wt.textContent = P.tasks.filter(function (t) { return t.status === 'ready' || t.changed; }).length;
+          if (window.loadTasksNow) loadTasksNow();
+        }, function (er) { tb.disabled = false; tb.title = er.message; });
+        return;
+      }
+      var ta2 = e.target.closest('[data-tadd]');
+      if (ta2) { var h0 = realOf(ta2.dataset.tadd), what = prompt('What does ' + (h0 ? h0.name : 'they') + ' owe you? (for example: Quote for the built-ins, by Nov 20)'); if (!what) return;
+        dPost('/tasks/add', { who: ta2.dataset.tadd, title: what }).then(function (j) { P.tasks = j.tasks; document.getElementById('workBody').innerHTML = boardHtml(P.tasks); }); return; }
+      var mc = e.target.closest('[data-mcopy]');
+      if (mc) { var mm = (P.messages || []).filter(function (m) { return m.id === mc.dataset.mcopy; })[0]; if (mm && navigator.clipboard) navigator.clipboard.writeText(mm.text).then(function () { mc.textContent = '✓ Copied'; }); return; }
+      var mdp = e.target.closest('[data-mdrop]');
+      if (mdp) { dPost('/messages/drop', { id: mdp.dataset.mdrop }).then(function (j) { P.messages = j.messages; document.getElementById('workBody').innerHTML = boardHtml(P.tasks); }); return; }
+      var to = e.target.closest('[data-topen]');
+      if (to) { var tf = to.dataset.f, kind = /\.(png|jpe?g|gif|webp)$/i.test(tf) ? 'image' : /\.pdf$/i.test(tf) ? 'pdf' : /\.html?$/i.test(tf) ? 'html' : /\.md$/i.test(tf) ? 'md' : 'text';
+        chatOpen(to.dataset.topen); setTimeout(function () { openFile(to.dataset.topen, tf, kind); }, 300); return; }
+      var sn = e.target.closest('[data-tsnap]');
+      if (sn) { var box = sn.closest('li').querySelector('.tsnapbox');
+        if (!box.hidden) { box.hidden = true; return; }
+        dPost('/tasks/approved-file', { id: sn.dataset.tsnap, f: sn.dataset.f }).then(function (j) { box.innerHTML = /\.md$/i.test(sn.dataset.f) ? '<div class="md">' + md(j.text) + '</div>' : '<pre>' + esc(j.text) + '</pre>'; box.hidden = false; }, function (er) { box.textContent = er.message; box.hidden = false; });
+        return; }
+      // 🔎 Refresh with research: opens the Pro's chat with the request typed in; you press Send (it runs a longer, web-searching turn).
+      var rd = e.target.closest('[data-redo]');
+      if (rd) {
+        chatOpen(rd.dataset.redo);
+        var ta = document.getElementById('chatT');
+        if (ta) { ta.value = 'Please redo your first deliverable (first-deliverable.md) with real research: search the web for current prices, products and local rules, use what\'s in the project memory and our chat, update the file in place, and list your sources at the end. Keep it under 400 words, and tell me in 3 lines what changed.'; ta.focus(); }
+        return;
+      }
       var yr = e.target.closest('[data-yrm]');
       if (yr) { yr.disabled = true; dPost('/project/yours-remove', { id: yr.dataset.yrm }).then(function () { yr.closest('li').remove(); }, function (er) { yr.disabled = false; yr.title = er.message; }); return; }
       var ut = e.target.closest('[data-untick]');
@@ -1067,6 +1211,58 @@ function render(P) {
       }).join('') + '</div>' +
       '<p class="vnote">How it\'s counted: your time comes from the chat timestamps; a gap of 15 minutes or more starts a new sitting, so time away isn\'t counted. "A person would take" is an AI estimate of the hours a human in that role would bill for the deliverable they would really hand over (a drawing set, not a web page), made once per file version. "Worth" is those hours at the middle of the going rate. It leaves out site visits, meetings and licensed sign-off, and your Staff\'s work is a draft, not a professional\'s. AI cost is what the same calls would cost on the API; your Claude plan covers it.</p>';
   }
+  // ⏳ What this Pro waits on, and who waits on it (Tai, 11-08). Click a teammate to open their chat; ✕ clears one.
+  var DEPS = [];
+  function loadDeps() {
+    if (!LIVE) return;
+    fetch('/pro/deps?p=' + encodeURIComponent(P.dir)).then(function (r) { return r.json(); }).then(function (j) { DEPS = j.deps || []; drawDeps(); }).catch(function () {});
+    loadTasksNow();
+  }
+  // 📋 The board and the chat's task line, refreshed after every reply (a Pro may have moved its tasks).
+  function loadTasksNow() {
+    if (!LIVE || !P.tasks) return;
+    fetch('/tasks?p=' + encodeURIComponent(P.dir)).then(function (r) { return r.json(); }).then(function (j) {
+      if (!j.tasks) return; P.tasks = j.tasks; if (j.messages) P.messages = j.messages;
+      var wb = document.getElementById('workBody'); if (wb && !wb.contains(document.activeElement)) wb.innerHTML = boardHtml(P.tasks);
+      var wt = document.querySelector('a.tile[href="#work"] b'); if (wt) wt.textContent = P.tasks.filter(function (t) { return t.status === 'ready' || t.changed; }).length;
+      drawDeps();
+    }).catch(function () {});
+  }
+  window.loadTasksNow = loadTasksNow;
+  function taskLine(who) {
+    var L = (P.tasks || []).filter(function (t) { return t.who === who && ['ready', 'doing', 'todo'].indexOf(t.status) >= 0; });
+    if (!L.length) return '';
+    var first = proOf(who).name.split(' ')[0], g = function (st) { return L.filter(function (t) { return t.status === st; }); }, r = g('ready'), d = g('doing'), td = g('todo');
+    return '<div class="dl tasks"><b>📋 ' + esc(first) + '’s tasks:</b> ' + [
+      r.length ? '<span class="tready">👀 Ready for you: ' + r.map(function (t) { return esc(t.title); }).join('; ') + '</span>' : '',
+      d.length ? '🔧 ' + d.map(function (t) { return esc(t.title); }).join('; ') : '',
+      td.length ? '📝 ' + td.length + ' to do' : ''].filter(Boolean).join(' · ') + ' <a href="#work" class="mini" data-toboard>Board</a></div>';
+  }
+  function drawDeps() {
+    var el = document.getElementById('cdeps'); if (!el) return;
+    var who = CH.who, open = DEPS.filter(function (d) { return d.open; });
+    var mine = open.filter(function (d) { return d.pro === who; }), onMe = open.filter(function (d) { return d.on === who; });
+    var when = function (d) { return d.by ? ' <small' + (d.late ? ' class="late" title="Past when it was needed"' : '') + '>(' + esc(d.by) + (d.late ? ', late' : '') + ')</small>' : ''; };
+    var x = function (d) { return '<button type="button" class="dx" data-depx="' + esc(d.id) + '" title="Clear this: it is no longer needed" aria-label="Clear">✕</button>'; };
+    var item = function (d, k) {
+      return k && !realOf(k) ? '<button type="button" class="dep" data-hopen="' + esc(k) + '" title="Open ' + esc(nm(k)) + '’s chat">' + esc(d.what) + '</button>'
+        : '<span>' + esc(d.what) + (d.todoTask && d.todoTask.toLowerCase() !== d.what.toLowerCase() ? ' <small>(your to-do: ' + esc(d.todoTask) + ')</small>' : '') + '</span>';
+    };
+    var h = '', first = proOf(who).name.split(' ')[0], groups = {};
+    mine.forEach(function (d) { (groups[d.on] = groups[d.on] || []).push(d); });
+    Object.keys(groups).forEach(function (on) {
+      h += '<div class="dl ' + (on === 'you' ? 'you' : 'them') + '"><b>⏳ ' + esc(first) + ' is waiting on ' + (on === 'you' ? 'you' : esc(nm(on))) + ':</b> ' +
+        groups[on].map(function (d) { return item(d, on === 'you' ? '' : on) + when(d) + x(d); }).join(' · ') + '</div>';
+    });
+    if (onMe.length) h += '<div class="dl them"><b>👉 Waiting on ' + esc(first) + ':</b> ' +
+      onMe.map(function (d) { return '<button type="button" class="dep" data-hopen="' + esc(d.pro) + '">' + esc(nm(d.pro)) + '</button> needs ' + esc(d.what) + when(d) + x(d); }).join(' · ') + '</div>';
+    el.innerHTML = taskLine(who) + h;
+  }
+  document.addEventListener('click', function (e) {
+    var dx = e.target.closest('[data-depx]'); if (!dx) return;
+    dx.disabled = true;
+    fetch('/pro/deps/clear', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ p: P.dir, id: dx.dataset.depx }) }).then(function () { loadDeps(); });
+  });
   function drawTime() {
     var el = document.getElementById('ctime'); if (!el) return;
     var x = VAL && (VAL.pros || []).filter(function (v) { return v.who === CH.who; })[0];
@@ -1123,7 +1319,7 @@ function render(P) {
   document.addEventListener('click', function (e) {
     var b = e.target.closest('[data-sayd],[data-sayb],[data-sayf]'); if (!b) return;
     var who, text;
-    if (b.dataset.sayd) { who = b.dataset.sayd; var d = D[who]; text = d.title + '. ' + (d.summary || '') + ' ' + plainForSpeech(d.body); }
+    if (b.dataset.sayd) { who = b.dataset.sayd; var d = D[who], rv = (P.firstWork || {})[who]; text = d.title + '. ' + (d.summary || '') + ' ' + plainForSpeech(rv ? rv.text.replace(/^#\s+[^\n]*\n+/, '') : d.body); }
     else if (b.dataset.sayf) { who = b.dataset.sayf; text = b.dataset.text || ''; }
     else { who = b.dataset.sayb; var m = b.closest('.m').cloneNode(true); m.querySelectorAll('table, button').forEach(function (x) { x.remove(); }); text = m.textContent.replace(/\s+/g, ' ').trim(); }
     say(b, text, who, genderOf(who));
