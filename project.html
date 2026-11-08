@@ -118,6 +118,14 @@ button.primary { background:var(--accent); color:#06231f; border-color:var(--acc
 .tlr ul { margin:0; padding-left:18px; } .tlr .err { color:#ff8a7a; }
 .tlbtn { margin-left:auto; font:inherit; font-size:13.5px; }
 .sched { margin:6px 0 0; color:var(--ink-2); font-size:15px; } .sched b { color:var(--lead); }
+/* 🧠 Project memory and handoffs (Tai, 11-08) */
+.facts .mem { border-color:color-mix(in srgb, #ff9f5a 45%, var(--line)); }
+.facts .mem small { color:var(--ink-2); margin-left:2px; }
+.memx { background:none; border:0; padding:0 0 0 6px; color:var(--ink-2); cursor:pointer; font-size:12px; }
+.memx:hover { color:var(--bad); }
+li.hand small { color:var(--ink-2); }
+.todo .added { display:block; font-size:12.5px; color:var(--ink-2); }
+.ticked { display:grid; gap:4px; margin-top:6px; font-size:13.5px; color:var(--good); } .ticked s { color:var(--ink-2); }
 /* 🗂️ Project data (Tai, 11-08) */
 #data .dtabs { display:flex; gap:6px; flex-wrap:wrap; }
 #data .dtabs button { font:inherit; font-size:14px; padding:6px 12px; border-radius:999px; border:1px solid var(--line); background:var(--surface); color:var(--ink-2); cursor:pointer; }
@@ -385,7 +393,8 @@ function render(P) {
   var nm = function (k) { return k === 'you' ? (ME || 'You') : k === 'lead' ? lead.name.split(' ')[0] : people[k] ? people[k].name : human(k) ? '👤 ' + human(k).name : k; };
   document.title = '🚀 ' + (M.title || P.request || 'SpinUp project');
   var storeKey = 'spinup-todo-' + (P.dir || P.slug || M.title);
-  var doneMap = {}; try { doneMap = JSON.parse(localStorage.getItem(storeKey) || '{}'); } catch (e) {}
+  // Live, SpinUp's saved ticks are the truth (a Pro may tick or undo too); the browser's copy is only for the offline demo (Tai, 11-08).
+  var doneMap = {}; if (!LIVE) try { doneMap = JSON.parse(localStorage.getItem(storeKey) || '{}'); } catch (e) {}
   if (P.done) Object.keys(P.done).forEach(function (k) { if (P.done[k]) doneMap[k] = true; });   // ticks saved on the PC (Chief and Telegram see these)
   // A high-stakes to-do only shows done once it went through the check (who reviewed it, or "without a professional").
   var riskOf = function (k) { return (GUARD && GUARD.yours[+k.slice(1)]) || []; };
@@ -416,14 +425,14 @@ function render(P) {
 
   html += '<nav class="tiles" aria-label="Sections">' +
     tile('#staff', 'var(--accent)', cast.length, 'Pros at work') +
-    tile('#today', 'var(--you)', (M.yours || []).length, 'for you to do') +
+    tile('#today', 'var(--you)', (M.yours || []).filter(function (t) { return !t.removed; }).length, 'for you to do') +
     tile('#work', 'var(--good)', delivs.length, 'first deliverables done') +
     (LIVE ? '<a class="tile" href="#value" style="--c:#3fd1c7" id="vTile"><b>…</b><span>your time with your Staff</span></a>' : '') +
     (LIVE ? '<a class="tile" href="#data" style="--c:#f2b84b" id="dTile" hidden><b>…</b><span>records in your project data</span></a>' : '') +
     tile('#timeline', 'var(--lead)', weeks, 'weeks on the timeline') +
     (emails.length ? tile('#work', '#e88bd8', emails.length, 'email drafts waiting on you') : '') +
     tile('#decisions', '#b28dff', (M.decisions || []).length, 'decisions made') +
-    tile('#knowledge', '#ff9f5a', (M.knowledge || []).length, 'things your Staff knows') + '</nav>';
+    tile('#knowledge', '#ff9f5a', (M.knowledge || []).length + (P.memory || []).length, 'things your Staff knows') + '</nav>';
   function tile(href, c, n, label) { return '<a class="tile" href="' + href + '" style="--c:' + c + '"><b>' + n + '</b><span>' + esc(label) + '</span></a>'; }
 
   // Your Staff, now agents.
@@ -466,14 +475,21 @@ function render(P) {
   // Today: yours vs your Staff's.
   html += '<section id="today"><h2>✅ Today <small>you do what only a person can; your Staff does the rest</small></h2><div class="cols">' +
     '<div class="box"><h3>' + (ME ? esc(ME) + '\'s' : 'Yours') + '</h3><ul class="todo">' + (M.yours || []).map(function (t, i) {
+      if (t.removed) return '';   // ✕ removed: hidden, and the others keep their positions
       var id = 'y' + i, done = !!doneMap[id];
       var risk = riskOf(id), ck = GUARD && GUARD.checks[id];
       return '<li class="' + (done ? 'done' : '') + '"><input type="checkbox" data-id="' + id + '"' + (done ? ' checked' : '') + ' aria-label="Done"><span class="t">' + esc(t.task) +
         (LIVE && risk.length ? '<span class="gtag">' + (ck ? (ck.self ? '⚠️ Done without a professional (recorded)' : '✓ Reviewed by ' + esc(ck.reviewer)) : risk.map(function (a) { return esc(GUARD.lines[a].split(':')[0]); }).join(' · ') + ': needs a professional\'s OK') + '</span>' : '') +
+        (t.addedBy ? '<span class="added">➕ added by ' + esc(String(t.addedByName || nm(t.addedBy)).split(' ')[0]) + (LIVE ? ' <button type="button" class="memx" data-yrm="' + id + '" title="Remove this to-do" aria-label="Remove: ' + esc(t.task) + '">✕</button>' : '') + '</span>' : '') +
         '</span><span class="when">' + esc(t.when) + '</span></li>';
     }).join('') + '</ul></div>' +
     '<div class="box"><h3>Your Staff\'s</h3><ul class="todo">' + delivs.map(function (k) {
       return '<li class="delivered"><span>✓</span><span class="t"><span class="who" style="--c:' + pc(k) + '">' + esc(nm(k)) + '</span> ' + esc(D[k].title) + '</span><span class="when">Done</span></li>';
+    }).join('') + (P.handoffs || []).slice(-8).reverse().map(function (h) {
+      // 📨 A handoff between Pros (Tai, 11-08): it reaches the named Pro with your next message to them.
+      return '<li class="hand"><span>📨</span><span><span class="who" style="--c:' + pc(h.to) + '">' + esc(nm(h.to)) + '</span> ' + esc(h.task) + ' <small>from ' + esc(String(h.fromName).split(' ')[0]) + '</small></span>' +
+        (h.status === 'waiting' ? '<span class="when">' + (LIVE ? '<button type="button" class="mini" data-hopen="' + esc(h.to) + '" title="It reaches ' + esc(nm(h.to)) + ' with your next message">Talk to ' + esc(nm(h.to)) + '</button>' : 'Waiting') + '</span>'
+          : '<span class="when" title="Delivered ' + esc(new Date(h.delivered).toLocaleString()) + '">✓ Has it</span>') + '</li>';
     }).join('') + (M.staff || []).map(function (t) {
       return '<li><span>•</span><span><span class="who" style="--c:' + pc(t.who) + '">' + esc(nm(t.who)) + '</span> ' + esc(t.task) + '</span><span class="when">' + esc(t.when) + '</span></li>';
     }).join('') + '</ul></div></div></section>';
@@ -508,7 +524,10 @@ function render(P) {
     '<ul class="decisions">' + (M.decisions || []).map(function (d) { return '<li><b>' + esc(d.what) + '</b><br><span>' + esc(d.why) + '</span></li>'; }).join('') + '</ul></section>';
 
   // What the Staff knows.
-  html += '<section id="knowledge"><h2>📚 What your Staff knows</h2><div class="facts">' + (M.knowledge || []).map(function (f) { return '<span>' + esc(f) + '</span>'; }).join('') + '</div>' +
+  // 🧠 Plus the project memory (Tai, 11-08): facts you gave any Pro since, saved for the whole Staff, with who saved them.
+  html += '<section id="knowledge"><h2>📚 What your Staff knows <small>every Pro on this project sees all of it</small></h2><div class="facts">' + (M.knowledge || []).map(function (f) { return '<span>' + esc(f) + '</span>'; }).join('') +
+    (P.memory || []).map(function (m) { return '<span class="mem" title="Saved by ' + esc(m.name) + ' on ' + esc(new Date(m.at).toLocaleDateString()) + '">🧠 ' + esc(m.text) + ' <small>' + esc(String(m.name).split(' ')[0]) + '</small>' +
+      (LIVE ? '<button type="button" class="memx" data-memx="' + esc(m.id) + '" title="Remove this from the project memory" aria-label="Remove: ' + esc(m.text) + '">✕</button>' : '') + '</span>'; }).join('') + '</div>' +
     (P.plan && P.plan.steps ? '<details><summary>The original plan from ' + esc(lead.name) + '</summary><ol>' + P.plan.steps.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ol></details>' : '') + '</section>';
 
   // AI disclosure (EU AI Act Art. 50; Tai, 11-04): the names and voices are friendly, but nobody here is a person.
@@ -680,7 +699,16 @@ function render(P) {
   }
   // A Staff change the Lead proposed (renames): Apply or Not now. Nothing changes until you press Apply (Tai, 11-03).
   function actCard(m) {
+    // ✓ To-dos this Pro ticked for you because you said they were done (Tai, 11-08), each with Undo.
+    var tk = (m.ticked || []).length ? '<div class="ticked">' + m.ticked.map(function (t) { return '<span>' + (t.undone ? '↶ Unticked: <s>' + esc(t.task) + '</s>' : '✓ Ticked: ' + esc(t.task) +
+      (LIVE ? ' <button type="button" class="mini" data-untick="' + esc(t.id) + '" data-at="' + esc(m.at) + '">↶ Undo</button>' : '')) + '</span>'; }).join('') + '</div>' : '';
+    return tk + actCard2(m);
+  }
+  function actCard2(m) {
     var a = m.action; if (a && a.type === 'tables') return tablesCard(m);
+    if (a && a.type === 'ticks') return '<div class="act"><b>✓ Tick ' + (a.items.length === 1 ? 'this' : 'these') + ' on your list?</b><ul>' + a.items.map(function (t) { return '<li>' + esc(t.task) + '</li>'; }).join('') + '</ul>' +
+      (a.done ? '<span class="actdone">' + (a.done === 'applied' ? '✓ Ticked' + (a.held && a.held.length ? ' (except ' + a.held.length + ' that need a professional\'s check first)' : '') : 'Not ticked') + '</span>'
+        : '<span class="actbtns"><button type="button" class="primary" data-kapply="' + esc(m.at) + '">Apply</button><button type="button" data-kdecline="' + esc(m.at) + '">Not now</button></span><span class="err"></span>') + '</div>';
     if (!a || a.type !== 'rename') return '';
     var rows = a.changes.map(function (c) { return '<li>' + esc(c.from) + ' → <b>' + esc(c.name) + '</b>' + (c.clash && !a.done ? '<br><span class="clash">⚠️ ' + esc(c.clash) + '</span>' : '') + '</li>'; }).join('');
     return '<div class="act"><b>✏️ Rename ' + a.changes.length + (a.changes.length === 1 ? ' person' : ' people') + '</b><ul>' + rows + '</ul>' +
@@ -957,6 +985,22 @@ function render(P) {
       var un = e.target.closest('[data-dundo]'); if (un) { un.disabled = true; dPost('/tables/undo', { id: +un.dataset.dundo }).then(function () { loadData(); }, function (er) { dMsg('⚠️ ' + er.message); un.disabled = false; }); return; }
       var sd = e.target.closest('[data-dsend]');
       if (sd) { sd.disabled = true; dMsg('Sending…'); dPost('/tables/deliver', { t: DT.cur, how: sd.dataset.dsend }).then(function (j) { dMsg(j.line); sd.disabled = false; }, function (er) { dMsg('⚠️ ' + er.message); sd.disabled = false; }); return; }
+      var mx = e.target.closest('[data-memx]');
+      if (mx) { mx.disabled = true; dPost('/project/memory', { forget: mx.dataset.memx }).then(function () { mx.closest('.mem').remove(); }, function () { mx.disabled = false; }); return; }
+      var ho = e.target.closest('[data-hopen]'); if (ho) { chatOpen(ho.dataset.hopen); return; }
+      var yr = e.target.closest('[data-yrm]');
+      if (yr) { yr.disabled = true; dPost('/project/yours-remove', { id: yr.dataset.yrm }).then(function () { yr.closest('li').remove(); }, function (er) { yr.disabled = false; yr.title = er.message; }); return; }
+      var ut = e.target.closest('[data-untick]');
+      if (ut) { ut.disabled = true; dPost('/project/untick', { who: CH.who, at: ut.dataset.at, id: ut.dataset.untick }).then(function () { location.reload(); }, function (er) { ut.disabled = false; ut.title = er.message; }); return; }
+      var kp = e.target.closest('[data-kapply],[data-kdecline]');
+      if (kp && !kp.disabled) {
+        var kc = kp.closest('.act'), kno = !!kp.dataset.kdecline; kc.querySelectorAll('button').forEach(function (x) { x.disabled = true; });
+        dPost('/project/ticks-apply', { who: CH.who, at: kp.dataset.kapply || kp.dataset.kdecline, decline: kno }).then(function (j) {
+          if (kno) { kc.querySelector('.actbtns').outerHTML = '<span class="actdone">Not ticked</span>'; return; }
+          location.reload();
+        }, function (er) { kc.querySelectorAll('button').forEach(function (x) { x.disabled = false; }); kc.querySelector('.err').textContent = er.message; });
+        return;
+      }
       var ap = e.target.closest('[data-tapply],[data-tdecline]');
       if (ap && !ap.disabled) {
         var card = ap.closest('.act'), no = !!ap.dataset.tdecline; card.querySelectorAll('button').forEach(function (x) { x.disabled = true; });
@@ -1308,7 +1352,9 @@ function render(P) {
     }
     doneMap[c.dataset.id] = c.checked; c.closest('li').classList.toggle('done', c.checked);
     try { localStorage.setItem(storeKey, JSON.stringify(doneMap)); } catch (er) {}
-    if (LIVE) fetch('/project/ticks', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ p: P.dir, done: doneMap }) }).catch(function () {});
+    // Only the one you clicked (Tai, 11-08): a Pro may have ticked others since this page loaded, and those must survive.
+    var one = {}; one[c.dataset.id] = c.checked;
+    if (LIVE) fetch('/project/ticks', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ p: P.dir, set: one }) }).catch(function () {});
   });
   // The safety note and the to-do check (guardrails).
   var gpost = function (u, body) { return fetch(u, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(Object.assign({ p: P.dir }, body)) }).then(function (r) { return r.json(); }); };
