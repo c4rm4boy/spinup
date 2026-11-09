@@ -6,8 +6,34 @@ SpinUp started on October 31, 2026 as "Cabinet Builder," a clickable mockup for 
 
 ---
 
+## v0.9.16 · Nov 9 · A simpler project page that fits any kind of project
+
+- **One screen tells you what needs you.** The project page was more than eight screens long, and the same to-do showed up in three places. Now the top answers three questions: what phase you're in, who's waiting on you, and what's due. Everything else is one tap away.
+- **▶ Now, for projects with phases.** A remodel or a build shows the phase you're in, the next one, and what's blocking it ("⛔ Blocking it: the paint-can photo, from you"). An ongoing project, like running your week, skips it.
+- **A tile for everyone, real people included.** Each shows urgent or ✓ clear, whether they're waiting on you, and what's ready. Tap a tile to see that person's card, what they're waiting on and their tasks, and approve work right there.
+- **What you do on the left, what you watch on the right.** ✅ Your list shows everything you do in three bands. 🔴 Now holds your to-dos that are late or due in 2 days, plus anything a Pro is waiting on ("⏳ Jane is waiting on this"). 👀 Review holds work waiting for your OK. Later holds the rest. A to-do never jumps columns; it moves up a band as its date gets close. 👥 Your Staff shows what to keep an eye on: Pros' items that are late or due soon, Pros waiting on each other, and what real people owe you.
+- **Tabs for the rest:** Board, Timeline, People, Knows, Decisions, Value and Data. The page remembers the one you used last. The board shows who's waiting on whom, and 3 tasks per Pro until you ask for all of them.
+
+## v0.9.15 · Nov 9 · "Needs you soon", real dates, and closing what you did yourself
+
+- **👥 Your Staff at a glance.** A tile for you and each Pro at the top of the project page. Each shows "N urgent" in red or "✓ clear" in green, how many items are open, and how many are ready for you. Tap a Pro to talk to them. This replaces the "Your Staff's" box under Today, so everything is in one place.
+- **⏰ Needs you soon.** Your project page had no "urgent" view: a Wednesday appointment looked the same as something weeks away. Now a list under the tiles shows everything that's late or due in the next 2 days: your to-dos, your Staff's tasks with a date, and what a Pro is waiting on from you. Late items are in red. The bar hides when nothing's pressing.
+- **Real dates count.** "Due Nov 11", "Nov 11" and "11/11" are now read as that day, so they sort and turn red. Before, only "This week" or "Week 3" counted. Your Pros now write a real date whenever there is one.
+- **Done means done.** When you tell a Pro you did something yourself ("I booked it"), the Pro closes that task instead of sending it to you for review. Undo puts it back on the list.
+
+## v0.9.14 · Nov 9 · Rename a project, talk to your Chief on your PC
+
+- **✏️ Rename a project.** There was no way to change a project's name after setup. Now there's a ✏️ next to the name on its SpinUp Home card and at the top of its project page. Only the name changes; the project's folder, files and every Pro's chat stay where they are.
+- **💬 Talk to your Chief on SpinUp Home.** Your Chief only answered on Telegram, so without Telegram there was no way to reach them. Now "💬 Talk to <your Chief>" on the Chief's card opens the same conversation Telegram uses: ask how your projects are going, or start with a Pro's name ("Priya, ...") to reach that Pro directly.
+- **Your Chief points to the right button.** The Chief can't change anything itself, so when you ask to rename, pause or archive something, it tells you where the ✏️ or the button is instead of guessing.
+
 ## v0.9.13 · Nov 3 · Your own words always get a team
 
+- **👍 "Got what I needed" is gone; your approvals say it.** Time and value now shows "✓ 3 approved" per Pro, and the line you can copy says "…and got exactly what I needed (I approved 3 pieces of their work)" once you've approved any of that Pro's work on the board.
+- **🔗 Clickable links.** Web links in chat, in your own messages and in Pro documents open in a new tab, whether written as [text](https://…) or a bare https://… address (shown shortened). Only http and https addresses become links.
+- **✅ Your to-dos are in due-date order.** Soonest first ("Week 3" is the end of the project's third week), anything overdue in amber with "late", undated items after the dated ones, done ones at the bottom. SpinUp Home's "waiting on you" and your Chief use the same order.
+- **✏️ Pros change or remove your to-dos when you ask.** "Change the Sell bookcase task to Move bookcase" used to get a second item, because Pros could only add. Now the Pro edits the item in place (links to it, like a teammate waiting on it, are kept) or removes one, and the reply shows ✏️ / 🗑 with ↶ Undo.
+- **📅 The timeline moved to the top**, right under the summary tiles, and shows where you are: "now: week 1 (Design and sign-off)", a line down the chart at this week, and the current phase highlighted.
 - **👤 Real people on the work board.** Each real person you add (a contractor, a CPA) gets a column: ⏳ what they owe you (✓ Got it when it arrives, ＋ to add one yourself), ✉️ messages your Pros drafted for you to send them, and ✓ Received. A Pro can be waiting on a real person ("⏳ Rosa is waiting on Mike: moisture test results"); it clears when the item is received, and a Pro marks it received when you say it arrived. A handoff to a real person becomes a message, a Gmail draft if Google is on for that Pro or text to copy otherwise; SpinUp never contacts anyone.
 - **📋 Your Staff's work: one board with every Pro's tasks.** Replaces "Your Staff's first work". Each Pro has a column: 👀 Ready for you, 🔧 In progress, 📝 To do, ✓ Approved. A Pro's first deliverable is its first task; the plan's tasks, handoffs from teammates and anything you ask for in chat are tasks too. Pros move their own tasks and attach the files the work is in; only you approve. Approving keeps a copy of the files as the baseline ("See what you approved"); if the Pro changes them later the task turns amber, "Changed since you approved". Undo approval and ✕ (not needed) are one click. The chat strip shows that Pro's tasks, the Today section and Staff cards summarize them, and SpinUp Home counts what's ready for your review.
 - **📄 First work shows the latest version.** A Pro's first deliverable is a quick one-shot draft from your setup answers (no web research). Once the Pro revises it in chat, the card shows the revision, marked "✏️ Revised by Rosa · Nov 8", with the original one click away; until then it says "📝 First draft" (the Today list says First draft or Revised instead of Done). 🔎 Refresh with research opens that Pro's chat with the request typed in, for you to send.

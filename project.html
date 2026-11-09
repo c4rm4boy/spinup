@@ -124,6 +124,7 @@ button.primary { background:var(--accent); color:#06231f; border-color:var(--acc
 .memx { background:none; border:0; padding:0 0 0 6px; color:var(--ink-2); cursor:pointer; font-size:12px; }
 .memx:hover { color:var(--bad); }
 li.hand small { color:var(--ink-2); }
+.todo .when.late { color:var(--warn); font-weight:650; }
 .todo .added { display:block; font-size:12.5px; color:var(--ink-2); }
 .deliv .dstate { margin:0; font-size:13px; color:var(--ink-2); } .deliv .dstate b { color:var(--ink); }
 .deliv details.orig { margin-top:8px; } .deliv .redo { justify-self:start; margin-top:4px; }
@@ -260,6 +261,7 @@ li.hand small { color:var(--ink-2); }
 .task { display:grid; gap:4px; padding:8px; border:1px solid var(--line); border-radius:10px; background:var(--surface-2, var(--bg)); font-size:14px; min-width:0; }
 .task small { color:var(--ink-2); font-size:12.5px; }
 .task.ready { border-color:color-mix(in srgb, var(--good) 55%, var(--line)); }
+.vok { color:var(--good); font-size:13px; font-weight:600; }
 .task.approved { padding:5px 8px; background:none; } .task.approved.changed { border-color:var(--warn); }
 .task details summary { cursor:pointer; font-size:13px; color:var(--ink-2); } .task .md { font-size:13.5px; max-height:420px; overflow:auto; }
 .tact, .tfiles, .tbtns { display:flex; flex-wrap:wrap; gap:5px; align-items:center; }
@@ -267,7 +269,8 @@ li.hand small { color:var(--ink-2); }
 .tdrop { color:var(--ink-2); } .task.todo { grid-template-columns:1fr auto; } .task.todo > b, .task.todo > small { grid-column:1; } .task.todo > .tact { grid-column:2; grid-row:1 / span 2; align-self:start; } .tchg { color:var(--warn); font-size:13px; }
 .tnone { margin:0; font-size:13.5px; color:var(--ink-2); }
 .tok summary { cursor:pointer; font-size:13.5px; color:var(--good); }
-.wcol.real { border-top-style:dashed; } .task.approved { grid-template-columns:1fr auto; align-items:center; } .task.approved > .tchg, .task.approved > .tfiles, .task.approved > .tsnapbox { grid-column:1 / -1; } .tadd { justify-self:start; } .msgtext { white-space:pre-wrap; font-family:inherit; font-size:13.5px; margin:4px 0 0; max-height:260px; overflow:auto; }
+.wcol.real { border-top-style:dashed; } .task.approved { grid-template-columns:1fr auto; align-items:center; } .task.approved > .tchg, .task.approved > .tfiles, .task.approved > .tlnow { color:var(--accent); } .track { position:relative; } .nowline { position:absolute; top:-3px; bottom:-3px; width:2px; background:var(--accent); border-radius:2px; } .bar.now { box-shadow:0 0 0 2px color-mix(in srgb, var(--accent) 60%, transparent); }
+.tsnapbox { grid-column:1 / -1; } .tadd { justify-self:start; } .msgtext { white-space:pre-wrap; font-family:inherit; font-size:13.5px; margin:4px 0 0; max-height:260px; overflow:auto; }
 .tsnapbox { border-left:3px solid var(--good); padding-left:8px; font-size:13px; max-height:320px; overflow:auto; }
 .cdeps .dl.tasks b { color:var(--good); } .cdeps .tready { color:var(--good); }
 
@@ -299,6 +302,59 @@ body.staffview #app, body.staffview .secban ~ #app { visibility:hidden; }
 .gnote h2 { margin:0; font-size:19px; } .gnote p { margin:0; } .gnote .areas { font-weight:650; } .gnote .small { font-size:13px; color:var(--muted); }
 .gnote button { justify-self:start; }
 .gack { font-size:13.5px; color:var(--muted); margin:8px 0; }
+/* ⏰ Needs you soon (Tai, 11-09): late or due within 2 days, across your list, your Staff's tasks and what Pros wait on from you. */
+/* 🧭 F3 layout (Tai, 11-09): facts line, Now strip, tiles, Needs you | Your list, tabs, side panel. */
+.facts1 { margin:8px 0 0; display:flex; flex-wrap:wrap; gap:6px 16px; align-items:center; color:var(--ink-2); font-size:14px; }
+.facts1 b { color:var(--ink); }
+.ib.shield, .dpanel .ib { font:inherit; font-size:13px; padding:2px 10px; background:var(--surface); color:var(--ink); border:1px solid var(--line); border-radius:8px; cursor:pointer; }
+.nowstrip { background:var(--surface); border:1px solid var(--line); border-left:4px solid var(--lead); border-radius:12px; padding:10px 14px; display:grid; gap:4px; margin-bottom:10px; font-size:15px; }
+.nowstrip small { color:var(--muted); } .nowstrip .nx { color:var(--ink-2); margin-left:6px; } .nowstrip .blk { font-size:14px; color:var(--ink-2); } .nowstrip .okc { color:#6fcf97; }
+.gt.realt { border-top-style:dashed; } .gt em.w { color:#f2c94c; }
+.nowcols { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:12px; align-items:start; }
+.needsbox { background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:12px 14px; display:grid; gap:6px; align-content:start; }
+.needsbox h2, .yl h2 { font-size:18px; } .ngroups { display:grid; gap:10px; }
+.needsbox h3, .blocked h3 { margin:0 0 4px; font-size:14.5px; } .needsbox h3 small, .blocked h3 small { font-weight:400; color:var(--muted); font-size:12.5px; }
+.needsbox ul, .blocked ul { margin:0; padding:0; list-style:none; display:grid; gap:4px; }
+.needsbox li, .blocked li { display:flex; gap:8px; align-items:baseline; font-size:14.5px; } .needsbox li .d, .blocked li .d { margin-left:auto; white-space:nowrap; font-size:12.5px; color:var(--muted); }
+.needsbox li.late .d, .blocked li.late .d { color:#e86b6b; font-weight:650; } .needsbox .who { font-weight:650; white-space:nowrap; }
+.needsbox .linkish { background:none; border:0; padding:0; color:inherit; font:inherit; text-align:left; text-decoration:underline dotted; cursor:pointer; }
+.needsbox .more { margin:2px 0 0; font-size:13px; color:var(--muted); }
+.yl { gap:6px; } .yl .cols { grid-template-columns:1fr; }
+/* F4: Your list in bands; Your Staff is what to watch. */
+.band { margin:4px 0 0; font-size:14.5px; } .band small { font-weight:400; color:var(--muted); font-size:12.5px; } .band.now { color:#e86b6b; }
+#ynow li { box-shadow:inset 3px 0 0 #e86b6b; } .wnote { display:block; font-size:12.5px; color:#f2c94c; } .todo li.wdep > span:first-child { text-align:center; }
+.yl .rev { list-style:none; margin:0; padding:0; display:grid; gap:6px; }
+.yl .rev li { display:flex; gap:8px; align-items:baseline; font-size:14.5px; padding:6px 8px; border-radius:8px; background:var(--surface-2); } .yl .rev .who { font-weight:650; white-space:nowrap; }
+.yl .linkish { background:none; border:0; padding:0; color:inherit; font:inherit; text-align:left; text-decoration:underline dotted; cursor:pointer; }
+.yl .more { margin:2px 0 0; font-size:13px; color:var(--muted); }
+#ylist li.inneeds { display:none; } #ylist:not(.all) li.ymore { display:none; }
+.ptabs { display:flex; flex-wrap:wrap; gap:6px; border-bottom:1px solid var(--line); padding-bottom:8px; scroll-margin-top:12px; }
+.ptabs button { font:inherit; font-size:14.5px; color:var(--ink-2); background:var(--surface); border:1px solid var(--line); border-radius:999px; padding:5px 12px; cursor:pointer; }
+.ptabs button small { color:var(--muted); } .ptabs button small.none { font-style:italic; }
+.ptabs button[aria-selected="true"] { color:var(--ink); border-color:var(--accent); background:color-mix(in srgb, var(--accent) 14%, var(--surface)); font-weight:650; }
+.tabpanes { display:grid; } .tabpanes > section[hidden] { display:none; }
+.blocked { background:var(--surface); border:1px solid var(--line); border-left:4px solid #f2c94c; border-radius:12px; padding:10px 14px; margin-bottom:6px; }
+.wcol.clip:not(.all) ul li:nth-child(n+4) { display:none; } .wcol .wall { justify-self:start; }
+.prodrawer { position:fixed; inset:0; z-index:40; background:rgba(0,0,0,.45); display:flex; justify-content:flex-end; }
+.prodrawer[hidden] { display:none; }
+.dpanel { width:min(100%,480px); height:100%; overflow:auto; background:var(--bg); border-left:1px solid var(--line); padding:14px 16px 40px; display:grid; gap:12px; align-content:start; }
+.dpanel .dhd { display:flex; justify-content:flex-end; } .dpanel .wboard { grid-template-columns:1fr; }
+.dpanel .wcol > h3, .dpanel .pdeps { display:none; } #tlreview:empty { display:none; }
+@media (max-width:560px) { #soon .gts { grid-template-columns:repeat(auto-fill,minmax(80px,1fr)); gap:6px; } #soon .gt { padding:7px 3px; }
+  #soon .gt .e { font-size:19px; } #soon .gt b { font-size:13px; } #soon .gt i { font-size:11px; padding:1px 6px; } #soon .gt em { font-size:10.5px; } }
+.glance { margin:12px 0; } .glance h2 { margin:0 0 8px; }
+.gts { display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,118px),1fr)); gap:8px; margin-bottom:10px; }
+.gt { display:block; font:inherit; color:inherit; text-decoration:none; text-align:center; cursor:pointer; background:var(--surface); border:1px solid var(--line); border-top:4px solid var(--c); border-radius:12px; padding:10px 6px; }
+.gt:hover, .gt:focus-visible { border-color:var(--c); }
+.gt .e { display:block; font-size:24px; } .gt b { display:block; margin:2px 0 4px; font-size:15px; }
+.gt i { font-style:normal; display:inline-block; padding:1px 10px; border-radius:999px; font-size:12.5px; font-weight:650; }
+.gt i.ok { background:color-mix(in srgb, #4caf7d 20%, var(--surface)); color:#6fcf97; } .gt i.hot { background:color-mix(in srgb, #e86b6b 22%, var(--surface)); color:#e86b6b; }
+.gt em { display:block; font-style:normal; font-size:12px; color:var(--muted); margin-top:4px; } .gt em.r { color:var(--ink-2); }
+.soonok { color:var(--muted); font-size:14px; margin:4px 0; }
+.soon { border:1px solid #e86b6b; background:color-mix(in srgb, #e86b6b 9%, var(--surface)); border-radius:14px; padding:10px 14px; }
+.soon h3 { margin:0 0 6px; font-size:16px; } .soon h3 small { font-weight:400; color:var(--muted); font-size:13px; } .soon ul { margin:0; padding:0; list-style:none; display:grid; gap:4px; }
+.soon li { display:flex; gap:8px; align-items:baseline; font-size:14.5px; } .soon li .d { margin-left:auto; white-space:nowrap; font-size:13px; color:var(--muted); }
+.soon li.late .d { color:#e86b6b; font-weight:650; } .soon .who { font-weight:650; }
 .gstrict { background:#5c3a14; color:#fff; border-radius:10px; padding:8px 12px; font-size:14px; }
 .gline { margin-top:6px; padding-top:6px; border-top:1px dashed var(--line); font-size:12.5px; color:var(--warn, #f2c94c); }
 .gtag { display:inline-block; width:100%; font-size:12px; color:var(--warn, #f2c94c); margin-top:2px; }   /* inline-block: the done strike-through stays off it */
@@ -352,8 +408,20 @@ var q = new URLSearchParams(location.search);
 var GUARD = null;
 
 // Small, safe Markdown: everything is escaped first, then headings, bullets, tables and bold are formatted.
+// 🔗 Web links (Tai, 11-08: "can the chat make web links clickable?"). Works on text that is already escaped: [text](https://…)
+// and bare https://… addresses become links that open in a new tab. Only http and https; quotes and < > are escaped, so an
+// address can't break out of the link.
+function linkify(h) {
+  var keep = [];
+  h = h.replace(/\[([^\]\n]{1,200})\]\((https?:\/\/[^\s)<]+)\)/g, function (m, t, u) { keep.push('<a href="' + u + '" target="_blank" rel="noopener noreferrer">' + t + '</a>'); return '\u0000' + (keep.length - 1) + '\u0000'; });
+  h = h.replace(/(^|[\s(])(https?:\/\/[^\s<]+[^\s<.,;:!?)\]'"])/g, function (m, pre, u) {
+    var short = u.replace(/^https?:\/\/(www\.)?/, ''); if (short.length > 45) short = short.slice(0, 42) + '…';
+    keep.push('<a href="' + u + '" target="_blank" rel="noopener noreferrer" title="' + u + '">' + short + '</a>'); return pre + '\u0000' + (keep.length - 1) + '\u0000';
+  });
+  return h.replace(/\u0000(\d+)\u0000/g, function (m, i) { return keep[+i]; });
+}
 function md(src) {
-  var lines = esc(src).split('\n'), out = '', list = false, table = [];
+  var lines = esc(src).split('\n').map(linkify), out = '', list = false, table = [];
   function flushTable() {
     if (!table.length) return;
     var rows = table.filter(function (r) { return !/^\s*\|?[\s:|-]+\|?\s*$/.test(r); });
@@ -435,28 +503,34 @@ function render(P) {
   var delivs = cast.filter(function (k) { return D[k]; });
   var emails = delivs.filter(function (k) { return ((M.agents || {})[k] || {}).first && M.agents[k].first.kind === 'email'; });
   var weeks = Math.max.apply(null, (M.timeline || []).map(function (p) { return p.start + p.weeks - 1; }).concat([4]));
+  var nowWk0 = Date.parse(P.date || String(P.dir || '').slice(0, 10)) ? Math.floor((Date.now() - Date.parse(P.date || String(P.dir || '').slice(0, 10))) / 6048e5) + 1 : 0;
 
   var html = '<header>' + (LIVE ? '<p style="margin:0 0 6px"><a href="SpinUp%20Home.html">← 🏠 SpinUp Home: all your projects</a></p>' : '') +
-    '<p class="eyebrow">An AI Staff for any goal <span>· SpinUp project</span></p><h1>' + esc(M.title || P.request) + '</h1>' +
+    '<p class="eyebrow">An AI Staff for any goal <span>· SpinUp project</span></p><h1>' + esc(M.title || P.request) +
+      (LIVE && !P.demo ? ' <button type="button" class="ren" data-ptitle title="Rename this project" aria-label="Rename this project">✏️</button>' : '') + '</h1>' +
     '<p class="one">' + esc(M.oneLine || P.brief || P.request) + '</p>' +
     (P.schedule && P.schedule.label ? '<p class="sched">⏱ ' + esc(P.schedule.label) + ' · <b>' + esc(P.schedule.priority) + ' priority</b>' +
       (P.schedule.deadline && !/not sure|no rush/i.test(P.schedule.deadline) ? ' · you asked for ' + esc(P.schedule.deadline.toLowerCase()) : '') + '</p>' : '') +
-    '<div class="meta"><span class="pill">Your Staff is working</span><span>Your Lead: ' + esc(lead.emoji || '') + ' ' + esc(lead.name) + (LIVE ? ' <button type="button" class="ren" data-ren="lead" title="Rename your Lead" aria-label="Rename your Lead">✏️</button>' : '') + (lead.title ? ', ' + esc(lead.title) : '') + '</span>' +
-    '<span>Staff of ' + cast.length + ' Pros</span>' + (P.date ? '<span>Set up ' + esc(P.date) + '</span>' : '') +
+    '<div class="meta">' + (LIVE ? '' : '<span class="pill">Your Staff is working</span>') + '<span>Your Lead:' + esc(lead.emoji || '') + ' ' + esc(lead.name) + (LIVE ? ' <button type="button" class="ren" data-ren="lead" title="Rename your Lead" aria-label="Rename your Lead">✏️</button>' : '') + (lead.title ? ', ' + esc(lead.title) : '') + '</span>' +
+    (LIVE ? '' : '<span>Staff of ' + cast.length + ' Pros</span>' + (P.date ? '<span>Set up ' + esc(P.date) + '</span>' : '')) +
     (TALK ? '<button type="button" class="talk" data-talk="lead">💬 Talk to ' + esc(lead.name.split(' ')[0]) + '</button>' : '') +
     (LIVE ? '<button type="button" class="gbadge' + (P.google && P.google.on ? ' on' : '') + '" id="gBadge" aria-expanded="false" title="' +
       (P.google && P.google.on ? 'Connected to Google (read and draft only). Click to change.' : 'Not connected to Google. Click to connect.') + '"><span class="g">G</span>' +
       (P.google && P.google.on ? ' Google' : '') + '</button>' : '') + '</div>' +
+    // 🧾 One line of facts instead of eight number tiles (Tai, 11-09, F3: "the page seems busy").
+    (LIVE ? '<p class="facts1"><span>' + (nowWk0 >= 1 ? 'week ' + Math.min(nowWk0, weeks) + ' of ' + weeks : weeks + ' weeks') + '</span><span>' + cast.length + ' Pros' + (REAL.length ? ' + ' + REAL.length + ' real' : '') + '</span>' +
+      '<span><b id="vFact">…</b> with your Staff</span><span><b id="aiFact">…</b> AI cost</span>' +
+      (GUARD && GUARD.need && GUARD.ack ? '<button type="button" class="ib shield" id="gackBtn" aria-expanded="false" title="Your safety note">🛡️ Safety note</button>' : '') + '</p>' : '') +
     (LIVE ? '<div id="gpanel" class="gpanel" hidden role="region" aria-label="Google for this project"></div>' : '') + '</header>';
   // The safety note: shown until accepted (the Staff won't chat before that), then a one-line reminder with the record number.
   if (LIVE && GUARD && GUARD.need) html += GUARD.ack
-    ? '<p class="gack">🛡️ ' + (GUARD.areaLine ? esc(GUARD.areaLine) + ' · ' : '') + 'You accepted the safety note on ' + esc(new Date(GUARD.ack.at).toLocaleString()) + ' (safety record #' + esc(GUARD.ack.record) + '). Check advice with a professional before acting.</p>'
+    ? '<p class="gack" id="gackP" hidden>🛡️ ' + (GUARD.areaLine ? esc(GUARD.areaLine) + ' · ' : '') + 'You accepted the safety note on ' + esc(new Date(GUARD.ack.at).toLocaleString()) + ' (safety record #' + esc(GUARD.ack.record) + '). Check advice with a professional before acting.</p>'
     : '<section class="gnote" role="alert"><h2>🛡️ Before your Staff starts: a safety note</h2>' + (GUARD.areaLine ? '<p class="areas">' + esc(GUARD.areaLine) + '</p>' : '') +
       '<p>' + esc(GUARD.ackText) + '</p><p class="small">Your answer is saved in this PC\'s safety record with the date and time, and Chief sends you a receipt on Telegram.</p>' +
       '<button type="button" class="primary" id="gAck">I understand. I\'ll check with a professional before acting.</button></section>';
   if (LIVE && GUARD && GUARD.strict) html += '<p class="gstrict">⚠️ This Staff runs on ' + esc(GUARD.model) + ', which may have fewer built-in safety checks than Claude. SpinUp\'s own safety rules apply to every project.</p>';
 
-  html += '<nav class="tiles" aria-label="Sections">' +
+  if (!LIVE) html += '<nav class="tiles" aria-label="Sections">' +
     tile('#staff', 'var(--accent)', cast.length, 'Pros at work') +
     tile('#today', 'var(--you)', (M.yours || []).filter(function (t) { return !t.removed; }).length, 'for you to do') +
     (P.tasks ? tile('#work', 'var(--good)', P.tasks.filter(function (t) { return t.status === 'ready' || t.changed; }).length, 'Staff work ready for you') : tile('#work', 'var(--good)', delivs.length, 'first deliverables done')) +
@@ -468,10 +542,26 @@ function render(P) {
     tile('#knowledge', '#ff9f5a', (M.knowledge || []).length + (P.memory || []).length, 'things your Staff knows') + '</nav>';
   function tile(href, c, n, label) { return '<a class="tile" href="' + href + '" style="--c:' + c + '"><b>' + n + '</b><span>' + esc(label) + '</span></a>'; }
 
-  // Your Staff, now agents.
-  html += '<section id="staff"><h2>👥 Your Staff <small>each Pro is now an agent with its own knowledge, rules and watch list</small></h2><div class="grid">' +
-    cast.map(function (k) {
-      var p = people[k], a = (M.agents || {})[k] || {};
+  // F3 (Tai, 11-09): each section is built once into S, then laid out: live, a one-screen "what needs me" plus tabs;
+  // the static demo and the video keep the long page.
+  var S = {};
+  // 📅 Timeline (Tai, 11-08: "should be placed in a more strategic spot"): right under the tiles, with where you are now.
+  var tlStart = Date.parse(P.date || String(P.dir || '').slice(0, 10)), nowWk = tlStart ? Math.floor((Date.now() - tlStart) / 6048e5) + 1 : 0;
+  var nowPh = (M.timeline || []).filter(function (ph) { return nowWk >= ph.start && nowWk < ph.start + ph.weeks; });
+  S.timeline = '<section id="timeline"><h2>📅 Timeline <small>' + weeks + ' weeks, by owner' + (nowWk >= 1 && nowWk <= weeks ? ' · <b class="tlnow">now: week ' + nowWk + '</b>' + (nowPh.length ? ' (' + nowPh.map(function (ph) { return esc(ph.phase); }).join(', ') + ')' : '') : nowWk > weeks ? ' · <b class="tlnow">past the planned end</b>' : '') + '</small>' +
+    (LIVE ? '<button type="button" class="tlbtn" data-tl="review">🔄 Ask ' + esc(lead.name.split(' ')[0]) + ' to review it</button>' : '') + '</h2><div class="gantt" style="--w:' + weeks + '">' +
+    '<div class="grow"><span></span><span class="axis">Week 1' + (weeks > 1 ? ' → week ' + weeks : '') + '</span></div>' +
+    (M.timeline || []).map(function (ph) {
+      return '<div class="grow"><span class="lbl">' + esc(ph.phase) + '<small>' + esc(nm(ph.owner)) + ' · weeks ' + ph.start + (ph.weeks > 1 ? '–' + (ph.start + ph.weeks - 1) : '') + '</small></span>' +
+        '<div class="track" style="--w:' + weeks + '"><div class="bar' + (nowPh.indexOf(ph) >= 0 ? ' now' : '') + '" style="--c:' + pc(ph.owner) + ';left:' + ((ph.start - 1) / weeks * 100) + '%;width:' + (ph.weeks / weeks * 100) + '%"></div>' +
+        (nowWk >= 1 && nowWk <= weeks ? '<i class="nowline" style="left:' + ((nowWk - 0.5) / weeks * 100) + '%" title="Now: week ' + nowWk + '"></i>' : '') + '</div></div>';
+    }).join('') + '</div></section>';
+
+  // Your Staff, now agents. agentCard(k) is also what a tile opens in the side panel (F3).
+  S.staff = '<section id="staff"><h2>👥 Your Staff <small>each Pro is now an agent with its own knowledge, rules and watch list</small></h2><div class="grid">' +
+    cast.map(agentCard).join('') + '</div></section>';
+  function agentCard(k) {
+      var p = k === 'lead' ? lead : people[k], a = (M.agents || {})[k] || {};
       return '<article class="agent" style="--c:' + pc(k) + '"><div class="top"><div class="av">' + esc(p.emoji) + '</div><div><div class="nm">' + esc(p.name) + (LIVE ? ' <button type="button" class="ren" data-ren="' + k + '" title="Rename ' + esc(p.name) + '" aria-label="Rename ' + esc(p.name) + '">✏️</button>' : '') + '</div><div class="ti">' + esc(p.title) + '</div></div><span class="badge">AI AGENT · READY</span></div>' +
         '<div class="status">' + (function () { var T = (P.tasks || []).filter(function (t) { return t.who === k; }), now = T.filter(function (t) { return t.status === 'doing'; })[0], rd = T.filter(function (t) { return t.status === 'ready'; }).length;
           if (P.tasks) return now ? '<b>Working on:</b> ' + esc(now.title) + (rd ? ' · <b>' + rd + ' ready for you</b>' : '') : rd ? '<b>' + rd + ' ready for you</b>' : '<b>Up to date</b>';
@@ -482,14 +572,14 @@ function render(P) {
         '<details><summary>What ' + esc(p.name) + ' knows, follows and watches</summary><dl>' +
         dd('Knows', a.knows) + dd('Rules', a.rules) + dd('Watches for', a.watch) + (a.reports ? '<dt>Reports</dt><dd>' + esc(a.reports) + '</dd>' : '') + '</dl></details>' +
         (TALK ? '<button type="button" class="talk" data-talk="' + k + '">💬 Talk to ' + esc(p.name) + '</button>' : '') + '</article>';
-    }).join('') + '</div></section>';
+  }
 
   // Real people on your Staff (step 13a): mentors, hired pros, anyone you work with. Your AI Pros prepare for them.
-  html += '<section id="real"><h2>👤 Real people on your Staff <small>mentors, hired pros and anyone you work with; your AI Pros prepare for them</small></h2>' +
+  S.real = '<section id="real"><h2>👤 Real people on your Staff <small>mentors, hired pros and anyone you work with; your AI Pros prepare for them</small></h2>' +
     (LIVE ? '<div class="realbar"><button type="button" data-human="add">＋ Add a real Pro</button><button type="button" data-human="suggest">💡 Who do I need?</button></div>' : '') +
     '<div id="needs">' + needsHtml(NEED) + '</div>' +
     '<div class="grid">' + (REAL.length ? REAL.map(realCard).join('') : '<p class="empty">No real people yet.' + (LIVE ? ' Add your mentor, CPA or contractor, or tap "Who do I need?" and ' + esc(lead.name.split(' ')[0]) + ' will suggest who this project needs.' : '') + '</p>') + '</div>' +
-    '<div id="tlreview"></div></section>';
+    (LIVE ? '' : '<div id="tlreview"></div>') + '</section>';
   function realCard(h) {
     var log = (h.log || []).slice(-3).reverse();
     return '<article class="agent real" data-hid="' + esc(h.id) + '" style="--c:#e8916b"><div class="top"><div class="av">👤</div><div><div class="nm">' + esc(h.name) + '</div>' +
@@ -511,17 +601,20 @@ function render(P) {
   function dd(t, list) { return list && list.length ? '<dt>' + t + '</dt><dd><ul>' + list.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></dd>' : ''; }
 
   // Today: yours vs your Staff's.
-  html += '<section id="today"><h2>✅ Today <small>you do what only a person can; your Staff does the rest</small></h2><div class="cols">' +
-    '<div class="box"><h3>' + (ME ? esc(ME) + '\'s' : 'Yours') + '</h3><ul class="todo">' + (M.yours || []).map(function (t, i) {
-      if (t.removed) return '';   // ✕ removed: hidden, and the others keep their positions
+  S.today = (LIVE ? '<section id="today" class="yl"><h2>✅ Your list <small>what you do</small></h2><div class="cols">'
+    : '<section id="today"><h2>✅ Today <small>you do what only a person can; your Staff does the rest</small></h2><div class="cols">') +
+    // F4 (Tai, 11-09): live, one list in bands: 🔴 Now (due soon or someone's blocked), 👀 Review, Later. drawSoon fills the bands.
+    '<div class="box">' + (LIVE ? '<div id="yNowBand"></div><div id="yRevBand"></div><h3 class="band" id="yLaterH" hidden>Later</h3>' : '<h3>' + (ME ? esc(ME) + '\'s' : 'Yours') + '</h3>') + '<ul class="todo" id="ylist">' + yoursByDue().map(function (x, o) {
+      var t = x.t, i = x.i;
       var id = 'y' + i, done = !!doneMap[id];
       var risk = riskOf(id), ck = GUARD && GUARD.checks[id];
-      return '<li class="' + (done ? 'done' : '') + '"><input type="checkbox" data-id="' + id + '"' + (done ? ' checked' : '') + ' aria-label="Done"><span class="t">' + esc(t.task) +
+      return '<li class="' + (done ? 'done' : '') + '" data-y="' + id + '" data-o="' + o + '"><input type="checkbox" data-id="' + id + '"' + (done ? ' checked' : '') + ' aria-label="Done"><span class="t">' + esc(t.task) +
         (LIVE && risk.length ? '<span class="gtag">' + (ck ? (ck.self ? '⚠️ Done without a professional (recorded)' : '✓ Reviewed by ' + esc(ck.reviewer)) : risk.map(function (a) { return esc(GUARD.lines[a].split(':')[0]); }).join(' · ') + ': needs a professional\'s OK') + '</span>' : '') +
         (t.addedBy ? '<span class="added">➕ added by ' + esc(String(t.addedByName || nm(t.addedBy)).split(' ')[0]) + (LIVE ? ' <button type="button" class="memx" data-yrm="' + id + '" title="Remove this to-do" aria-label="Remove: ' + esc(t.task) + '">✕</button>' : '') + '</span>' : '') +
-        '</span><span class="when">' + esc(t.when) + '</span></li>';
-    }).join('') + '</ul></div>' +
-    '<div class="box"><h3>Your Staff\'s</h3><ul class="todo">' + (P.tasks ? staffSummary(P.tasks) + '</ul></div></div></section>' : delivs.map(function (k) {
+        '</span><span class="when' + (x.late && !done ? ' late' : '') + '"' + (x.due ? ' title="Due ' + esc(new Date(x.due).toLocaleDateString([], { month: 'short', day: 'numeric' })) + '"' : '') + '>' + esc(t.when) + (x.late && !done ? ' · late' : '') + '</span></li>';
+    }).join('') + '</ul>' + (LIVE ? '<button type="button" class="mini linkish" id="yAll" hidden></button>' : '') + '</div>' +
+    // With live tasks, the Staff's side moved up into "Your Staff at a glance" (Tai, 11-09: "combining the Your Staff's section").
+    (P.tasks ? '</div></section>' : '<div class="box"><h3>Your Staff\'s</h3><ul class="todo">' + delivs.map(function (k) {
       return '<li class="delivered"><span>✓</span><span class="t"><span class="who" style="--c:' + pc(k) + '">' + esc(nm(k)) + '</span> ' + esc(D[k].title) + '</span><span class="when">' + ((P.firstWork || {})[k] ? 'Revised' : 'First draft') + '</span></li>';
     }).join('') + (P.handoffs || []).slice(-8).reverse().map(function (h) {
       // 📨 A handoff between Pros (Tai, 11-08): it reaches the named Pro with your next message to them.
@@ -531,6 +624,28 @@ function render(P) {
     }).join('') + (M.staff || []).map(function (t) {
       return '<li><span>•</span><span><span class="who" style="--c:' + pc(t.who) + '">' + esc(nm(t.who)) + '</span> ' + esc(t.task) + '</span><span class="when">' + esc(t.when) + '</span></li>';
     }).join('') + '</ul></div></div></section>');
+  // 📆 A real date in the text ("Due Nov 11", "Nov 11", "11/11") is due at the end of that day (Tai, 11-09: a Pro wrote
+  // "This week" for a Wednesday deadline, so it never rose to the top). Same rule as the helper's depsOf.
+  function dateDue(s, at) {
+    s = String(s || ''); var base = new Date(at || Date.now()), y = base.getFullYear(), mo, d;
+    var m = s.match(/\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+(\d{1,2})\b/i);
+    if (m) { mo = 'janfebmaraprmayjunjulaugsepoctnovdec'.indexOf(m[1].toLowerCase()) / 3; d = +m[2]; }
+    else { m = s.match(/\b(\d{1,2})\/(\d{1,2})\b/); if (!m) return null; mo = +m[1] - 1; d = +m[2]; }
+    if (mo < 0 || mo > 11 || d < 1 || d > 31) return null;
+    var t = new Date(y, mo, d, 23, 59).getTime(); if (t < base.getTime() - 120 * 864e5) t = new Date(y + 1, mo, d, 23, 59).getTime();
+    return t;
+  }
+  // ✅ Your to-dos by due date (Tai, 11-08: "my todo's need to be ordered by due date"). "Week 3" is the end of the project's
+  // week 3; "This week"/"Today" count from when the item was made. Only the order on screen changes; each item keeps its id.
+  function yoursByDue() {
+    var start = Date.parse(P.date || String(P.dir || '').slice(0, 10)) || Date.now();
+    var dueOf = function (t) { var w = String(t.when || '').match(/week\s*(\d{1,3})/i), at = Date.parse(t.at) || start, dd = dateDue(t.when, at);
+      return dd ? dd : w ?start + (+w[1]) * 6048e5 : /today/i.test(t.when) ? at + 864e5 : /this week/i.test(t.when) ? at + 6048e5 : /next week/i.test(t.when) ? at + 2 * 6048e5 : null; };
+    return (M.yours || []).map(function (t, i) { var d = dueOf(t); return { t: t, i: i, due: d, late: !!d && Date.now() > d }; })
+      .filter(function (x) { return !x.t.removed; })
+      .sort(function (a, b) { var da = !!doneMap['y' + a.i], db = !!doneMap['y' + b.i]; if (da !== db) return da ? 1 : -1;
+        if (a.due === null || b.due === null) return (a.due === null) - (b.due === null) || a.i - b.i; return a.due - b.due || a.i - b.i; });
+  }
   function staffSummary(tasks) {
     return ['lead'].concat(cast).map(function (k) {
       var L = tasks.filter(function (t) { return t.who === k; }); if (!L.length) return '';
@@ -572,15 +687,17 @@ function render(P) {
       (got.length ? '<details class="tok"><summary>✓ Received <small>' + got.length + '</small></summary><ul>' + got.map(function (t) { return '<li class="task approved"><span>✓ ' + esc(t.title) + ' <small>' + esc(new Date(t.approved.at).toLocaleDateString([], { month: 'short', day: 'numeric' })) + '</small></span>' + (LIVE ? '<button type="button" class="mini linkish" data-tunappr="' + esc(t.id) + '">Undo</button>' : '') + '</li>'; }).join('') + '</ul></details>' : '') +
       '</article>';
   }
-  function boardHtml(tasks) {
+  // only: one person's column (the side panel, F3). Live, a long column shows 3 per group with "Show all" (F3).
+  function boardHtml(tasks, only) {
     var order = ['lead'].concat(cast).concat(REAL.map(function (h) { return h.id; })), by = {};
     tasks.forEach(function (t) { (by[t.who] = by[t.who] || []).push(t); });
-    var cols = order.filter(function (k) { return by[k] || realOf(k); }).map(function (k) {
+    var cols = order.filter(function (k) { return (!only || k === only) && (by[k] || realOf(k)); }).map(function (k) {
       if (realOf(k)) return realCol(realOf(k), by[k] || []);
       var L = by[k], g = function (st) { return L.filter(function (t) { return t.status === st; }); };
       var ready = g('ready'), doing = g('doing'), todo = g('todo'), ok = g('approved'), p = proOf(k);
       var row = function (t, extra) { return '<li class="task ' + t.status + '"><b>' + esc(t.title) + '</b><small>' + esc(taskSrc(t)) + (t.when ? ' · ' + esc(t.when) : '') + '</small>' + (extra || '') + '</li>'; };
-      return '<article class="wcol" style="--c:' + pc(k) + '"><h3>' + esc(p.emoji || '') + ' ' + esc(p.name) + ' <small>' + esc(p.title || '') + '</small></h3>' +
+      var clip = LIVE && !only && [ready, doing, todo].some(function (g) { return g.length > 3; });
+      return '<article class="wcol' + (clip ? ' clip' : '') + '" style="--c:' + pc(k) + '"><h3>' + esc(p.emoji || '') + ' ' + esc(p.name) + ' <small>' + esc(p.title || '') + '</small></h3>' +
         (ready.length ? '<h4>👀 Ready for you <small>' + ready.length + '</small></h4><ul>' + ready.map(function (t) { return row(t, taskBody(t) +
           (LIVE ? '<span class="tact"><button type="button" class="primary mini" data-tappr="' + esc(t.id) + '">✓ Approve</button><button type="button" class="mini" data-hopen="' + esc(k) + '">Ask for changes</button><button type="button" class="mini tdrop" data-tdrop="' + esc(t.id) + '" title="Not needed any more">✕</button></span>' : '')); }).join('') + '</ul>' : '') +
         (doing.length ? '<h4>🔧 In progress <small>' + doing.length + '</small></h4><ul>' + doing.map(function (t) { return row(t, taskBody(t)); }).join('') + '</ul>' : '') +
@@ -591,13 +708,14 @@ function render(P) {
             (Object.keys(t.approved.sigs || {}).length && LIVE ? '<span class="tfiles">' + Object.keys(t.approved.sigs).map(function (f) { return '<button type="button" class="mini" data-tsnap="' + esc(t.id) + '" data-f="' + esc(f) + '">See what you approved: ' + esc(f.split('/').pop()) + '</button>'; }).join('') + '</span><div class="tsnapbox" hidden></div>' : '') +
             (LIVE ? '<button type="button" class="mini linkish" data-tunappr="' + esc(t.id) + '">Undo approval</button>' : '') + '</li>';
         }).join('') + '</ul></details>' : '') +
+        (clip ? '<button type="button" class="mini linkish wall" data-wall>Show all ' + (ready.length + doing.length + todo.length) + ' open</button>' : '') +
         (!ready.length && !doing.length && !todo.length ? '<p class="tnone">Nothing open.' + (TALK ? ' <button type="button" class="mini" data-hopen="' + esc(k) + '">Ask ' + esc(p.name.split(' ')[0]) + ' for something</button>' : '') + '</p>' : '') +
         '</article>';
     });
     return cols.length ? '<div class="wboard">' + cols.join('') + '</div>' : '<p class="empty">No tasks yet.</p>';
   }
-  if (P.tasks) html += '<section id="work"><h2>📋 Your Staff\'s work <small>every Pro\'s tasks; what\'s ready waits for your OK</small></h2><div id="workBody">' + boardHtml(P.tasks) + '</div></section>';
-  else html += '<section id="work"><h2>📄 Your Staff\'s first work <small>drafts and research, ready for you to use</small></h2><div class="grid">' +
+  if (P.tasks) S.work = '<section id="work"><h2>📋 Your Staff\'s work <small>every Pro\'s tasks; what\'s ready waits for your OK</small></h2>' + (LIVE ? '<div id="blockedBox"></div>' : '') + '<div id="workBody">' + boardHtml(P.tasks) + '</div></section>';
+  else S.work = '<section id="work"><h2>📄 Your Staff\'s first work <small>drafts and research, ready for you to use</small></h2><div class="grid">' +
     delivs.map(function (k) {
       var p = people[k], a = (M.agents || {})[k] || {}, d = D[k], kind = (a.first && a.first.kind) || 'research';
       // 📄 The latest version (Tai, 11-08): once the Pro revises its first draft, the card shows that, with the original one click away.
@@ -613,36 +731,202 @@ function render(P) {
     }).join('') + '</div></section>';
 
   // ⏱ Time and value (Tai, 11-07): your real time, what a person would have billed for the same files, and the AI cost.
-  if (LIVE) html += '<section id="value"><h2>⏱ Time and value <small>how long you spent, and what the same work would cost from a person</small></h2><div id="valBody"><p class="empty">Adding it up…</p></div></section>';
-  if (LIVE) html += '<section id="data"><h2>🗂️ Project data <small>the tables your whole Staff reads and adds to, kept on this PC (SQLite)</small></h2><div id="dataBody"><p class="empty">Loading…</p></div></section>';
+  if (LIVE) S.value = '<section id="value"><h2>⏱ Time and value <small>how long you spent, and what the same work would cost from a person</small></h2><div id="valBody"><p class="empty">Adding it up…</p></div></section>';
+  if (LIVE) S.data = '<section id="data"><h2>🗂️ Project data <small>the tables your whole Staff reads and adds to, kept on this PC (SQLite)</small></h2><div id="dataBody"><p class="empty">Loading…</p></div></section>';
 
-  // Timeline.
-  html += '<section id="timeline"><h2>📅 Timeline <small>' + weeks + ' weeks, by owner</small>' +
-    (LIVE ? '<button type="button" class="tlbtn" data-tl="review">🔄 Ask ' + esc(lead.name.split(' ')[0]) + ' to review it</button>' : '') + '</h2><div class="gantt" style="--w:' + weeks + '">' +
-    '<div class="grow"><span></span><span class="axis">Week 1' + (weeks > 1 ? ' → week ' + weeks : '') + '</span></div>' +
-    (M.timeline || []).map(function (ph) {
-      return '<div class="grow"><span class="lbl">' + esc(ph.phase) + '<small>' + esc(nm(ph.owner)) + ' · weeks ' + ph.start + (ph.weeks > 1 ? '–' + (ph.start + ph.weeks - 1) : '') + '</small></span>' +
-        '<div class="track" style="--w:' + weeks + '"><div class="bar" style="--c:' + pc(ph.owner) + ';left:' + ((ph.start - 1) / weeks * 100) + '%;width:' + (ph.weeks / weeks * 100) + '%"></div></div></div>';
-    }).join('') + '</div></section>';
 
   // Decisions and how the idea grew.
   var briefs = P.briefs || P.howItGrew || [];
-  html += '<section id="decisions"><h2>🧭 Decisions &amp; changes</h2>' +
+  S.decisions = '<section id="decisions"><h2>🧭 Decisions &amp; changes</h2>' +
     (briefs.length > 1 ? '<p class="grew"><b>How the idea grew:</b> ' + briefs.map(esc).join(' → ') + '</p>' : '') +
     '<ul class="decisions">' + (M.decisions || []).map(function (d) { return '<li><b>' + esc(d.what) + '</b><br><span>' + esc(d.why) + '</span></li>'; }).join('') + '</ul></section>';
 
   // What the Staff knows.
   // 🧠 Plus the project memory (Tai, 11-08): facts you gave any Pro since, saved for the whole Staff, with who saved them.
-  html += '<section id="knowledge"><h2>📚 What your Staff knows <small>every Pro on this project sees all of it</small></h2><div class="facts">' + (M.knowledge || []).map(function (f) { return '<span>' + esc(f) + '</span>'; }).join('') +
+  S.knowledge = '<section id="knowledge"><h2>📚 What your Staff knows <small>every Pro on this project sees all of it</small></h2><div class="facts">' + (M.knowledge || []).map(function (f) { return '<span>' + esc(f) + '</span>'; }).join('') +
     (P.memory || []).map(function (m) { return '<span class="mem" title="Saved by ' + esc(m.name) + ' on ' + esc(new Date(m.at).toLocaleDateString()) + '">🧠 ' + esc(m.text) + ' <small>' + esc(String(m.name).split(' ')[0]) + '</small>' +
       (LIVE ? '<button type="button" class="memx" data-memx="' + esc(m.id) + '" title="Remove this from the project memory" aria-label="Remove: ' + esc(m.text) + '">✕</button>' : '') + '</span>'; }).join('') + '</div>' +
     (P.plan && P.plan.steps ? '<details><summary>The original plan from ' + esc(lead.name) + '</summary><ol>' + P.plan.steps.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ol></details>' : '') + '</section>';
 
-  // AI disclosure (EU AI Act Art. 50; Tai, 11-04): the names and voices are friendly, but nobody here is a person.
-  html += '<p class="guard"><b>Your Staff is AI, not people.</b> The names and voices make the team easy to talk to; every Lead and Pro is an AI agent (Claude), and it can be wrong. Check anything important with a licensed professional.</p>';
-  html += '<p class="guard"><b>Your Staff drafts; you decide.</b> Nothing is sent, bought, booked or signed without your OK. Every Pro follows that rule, plus the rules on its card.</p>' +
-    '<p class="foot">Set up with SpinUp, a prototype by Tai Nguyen built with Claude Code. General guidance only, not professional advice.</p>';
+  // 🧭 F3 layout (Tai, 11-09: "busy and a little disorganized… informative but yet simple", and it must fit both a phased
+  // project with handoffs and real people (the office refit) and an ongoing information one (the cabinet)).
+  // Live: Now strip (phased projects only) + tiles → Needs you | Your list → tabs. Static demo and video: the long page.
+  var TABS = [['work', '📋 Board'], ['timeline', '📅 Timeline'], ['real', '👤 People'], ['knowledge', '📚 Knows'], ['decisions', '🧭 Decisions'], ['value', '⏱ Value'], ['data', '🗂 Data']];
+  if (LIVE) {
+    var tabN = { work: (P.tasks || []).filter(function (t) { return t.status === 'ready' || t.changed; }).length, real: REAL.length,
+      knowledge: (M.knowledge || []).length + (P.memory || []).length, decisions: (M.decisions || []).length };
+    html += '<div id="soon"></div><div id="tlreview"></div>' +
+      '<div class="nowcols">' + S.today + '<section id="needsBox" class="needsbox" aria-label="Your Staff: what to watch"></section></div>' +
+      '<nav class="ptabs" role="tablist" aria-label="More about this project">' + TABS.map(function (t) {
+        var n = tabN[t[0]];
+        return '<button type="button" role="tab" data-ptab="' + t[0] + '" aria-selected="false">' + t[1] + (n ? ' <small>' + n + '</small>' : t[0] === 'real' && !n ? ' <small class="none">none yet</small>' : '') + '</button>'; }).join('') + '</nav>' +
+      '<div class="tabpanes">' + TABS.map(function (t) { return S[t[0]] || ''; }).join('') + '</div>' +
+      '<aside id="prodrawer" class="prodrawer" hidden aria-label="Pro details"></aside>';
+  } else html += S.timeline + S.staff + S.real + S.today + S.work + (S.value || '') + (S.data || '') + S.decisions + S.knowledge;
+  // AI disclosure (EU AI Act Art. 50; Tai, 11-04): the names and voices are friendly, but nobody here is a person. One line live (F3).
+  html += LIVE ? '<p class="guard"><b>Your Staff is AI, not people, and it drafts; you decide.</b> Every Lead and Pro is an AI agent (Claude) and can be wrong; check anything important with a licensed professional. Nothing is sent, bought, booked or signed without your OK.</p>'
+    : '<p class="guard"><b>Your Staff is AI, not people.</b> The names and voices make the team easy to talk to; every Lead and Pro is an AI agent (Claude), and it can be wrong. Check anything important with a licensed professional.</p>' +
+      '<p class="guard"><b>Your Staff drafts; you decide.</b> Nothing is sent, bought, booked or signed without your OK. Every Pro follows that rule, plus the rules on its card.</p>';
+  html += '<p class="foot">Set up with SpinUp, a prototype by Tai Nguyen built with Claude Code. General guidance only, not professional advice.</p>';
   var app = document.getElementById('app'); app.innerHTML = html;
+  // 🧭 The first screen (F1 → F3, Tai, 11-09). Built from your list, your Staff's tasks and the needs (deps), redrawn after
+  // every reply (loadTasksNow). Works for both shapes of project:
+  //  - Now strip: only when the timeline is phased (phases start at different weeks): the phase you're in, the next one, and
+  //    what's blocking it. An ongoing project (most lanes start in week 1, like the cabinet) skips it.
+  //  - Tiles: you, the Lead (if it has tasks), each Pro and each real person: urgent or ✓ clear, waiting on you, ready, open.
+  //    A tile opens that person's side panel (card, tasks, Talk); yours jumps to your list.
+  //  - Needs you: ⏰ late or due in 2 days · ⏳ Pros waiting on you · 👀 ready for your review. Each group only when it has items.
+  //  - Your list: what isn't already in Needs you, next 5 first. The board tab gets ⛔ Blocked: every open need.
+  var DEPS0 = [];
+  function drawSoon(deps) {
+    if (deps) DEPS0 = deps; deps = DEPS0;
+    var el = document.getElementById('soon'); if (!el) return;
+    var now = Date.now(), cut = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 2, 23, 59).getTime(), rows = [];
+    var day = function (t) { var dd = new Date(t), td = new Date(); td.setHours(0, 0, 0, 0); var n = Math.round((new Date(dd.getFullYear(), dd.getMonth(), dd.getDate()) - td) / 864e5);
+      return n < 0 ? 'late, was ' + dd.toLocaleDateString([], { month: 'short', day: 'numeric' }) : n === 0 ? 'today' : n === 1 ? 'tomorrow' : dd.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' }); };
+    var T = P.tasks || [], openD = deps.filter(function (d) { return d.open; });
+    var waitYou = openD.filter(function (d) { return d.on === 'you'; });
+    var linked = {}; waitYou.forEach(function (d) { if (d.todo) linked[d.todo] = 1; });
+    yoursByDue().forEach(function (x) { if (!doneMap['y' + x.i] && !linked['y' + x.i] && x.due && x.due <= cut) rows.push({ who: 'you', what: x.t.task, due: x.due, y: 'y' + x.i }); });
+    T.forEach(function (t) { if (['todo', 'doing', 'ready'].indexOf(t.status) < 0) return;
+      var du = dateDue(t.when, t.at) || dateDue((String(t.title).match(/due\s+[a-z]{3}[a-z]*\.?\s+\d{1,2}/i) || [''])[0], t.at);
+      if (du && du <= cut) rows.push({ who: t.who, what: t.title.replace(/\s*\(.*$/, '').slice(0, 110), due: du, ready: t.status === 'ready' }); });
+    // The same item on your list and a Pro's (an imported desk has both) shows once, as yours.
+    var key = function (s) { return String(s).replace(/[^a-z0-9 ]/gi, '').replace(/\s+/g, ' ').trim().toLowerCase().slice(0, 28); }, seen = {};
+    rows = rows.filter(function (r) { var k = key(r.what); if (seen[k]) return false; seen[k] = 1; return true; });
+    rows.sort(function (a, b) { return a.due - b.due; });
+    var ready = T.filter(function (t) { return (t.status === 'ready' || t.changed) && !realOf(t.who); });
+    var owed = T.filter(function (t) { return realOf(t.who) && ['todo', 'doing', 'ready'].indexOf(t.status) >= 0; });
+
+    // ▶ Now strip (phased projects only).
+    var tl = M.timeline || [], strip = '';
+    var phased = tl.length >= 2 && tl.filter(function (p) { return p.start === 1; }).length <= tl.length / 2;
+    if (phased && nowWk0 >= 1) {
+      var cur = tl.filter(function (p) { return nowWk0 >= p.start && nowWk0 < p.start + p.weeks; });
+      var nxt = tl.filter(function (p) { return p.start > nowWk0; }).sort(function (a, b) { return a.start - b.start; })[0];
+      var start = Date.parse(P.date || String(P.dir || '').slice(0, 10)), curEnd = start + Math.max.apply(null, cur.map(function (p) { return p.start + p.weeks - 1; }).concat([nowWk0])) * 6048e5;
+      var block = openD.filter(function (d) { return d.late || (d.due && Date.parse(d.due) <= curEnd); }).slice(0, 3);
+      var wk = function (p) { return 'wk ' + p.start + (p.weeks > 1 ? '–' + (p.start + p.weeks - 1) : ''); };
+      strip = '<div class="nowstrip"><div><b>▶ Now:</b> ' + (cur.length ? cur.map(function (p) { return esc(p.phase) + ' <small>(' + wk(p) + ')</small>'; }).join(' · ') : 'between phases') +
+        (nxt ? ' <span class="nx">→ next: ' + esc(nxt.phase) + ' <small>(' + wk(nxt) + ')</small></span>' : nowWk0 > weeks ? ' <span class="nx">past the planned end</span>' : '') + '</div>' +
+        '<div class="blk">' + (block.length ? '<b>⛔ Blocking it:</b> ' + block.map(function (d) { return esc(d.what) + ' <small>(' + (d.on === 'you' ? 'you' : esc(nm(d.on))) + (d.late ? ', late' : '') + ')</small>'; }).join(' · ')
+          : '<span class="okc">✓ Nothing blocking this phase</span>') + ' <a href="#timeline" class="mini linkish">Timeline</a></div></div>';
+    }
+
+    // 👥 Tiles.
+    var who = ['you'].concat(T.some(function (t) { return t.who === 'lead'; }) ? ['lead'] : []).concat(cast).concat(REAL.map(function (h) { return h.id; }));
+    var tiles = who.map(function (k) {
+      var h = realOf(k), u = rows.filter(function (r) { return r.who === k; }).length;
+      var w = k === 'you' ? waitYou.length : waitYou.filter(function (d) { return d.pro === k; }).length;
+      var open = k === 'you' ? yoursByDue().filter(function (x) { return !doneMap['y' + x.i]; }).length : T.filter(function (t) { return t.who === k && ['todo', 'doing', 'ready'].indexOf(t.status) >= 0; }).length;
+      var rd = h ? 0 : T.filter(function (t) { return t.who === k && (t.status === 'ready' || t.changed); }).length;
+      var em = k === 'you' ? '👔' : h ? '👤' : ((k === 'lead' ? lead : people[k]) || {}).emoji || '•', name = h ? h.name.split(' ')[0] : nm(k);
+      return (k === 'you' ? '<a class="gt" href="#today"' : '<button type="button" class="gt' + (h ? ' realt' : '') + '" data-pro="' + esc(k) + '" title="' + esc(h ? h.name + ', ' + h.role : nm(k)) + '"') + ' style="--c:' + pc(k) + '">' +
+        '<span class="e">' + esc(em) + '</span><b>' + esc(name) + '</b><i class="' + (u ? 'hot' : 'ok') + '">' + (u ? u + ' urgent' : '✓ clear') + '</i>' +
+        (w ? '<em class="w">⏳ ' + w + (k === 'you' ? ' waiting on you' : ' needs you') + '</em>' : '') + (rd ? '<em class="r">👀 ' + rd + ' ready</em>' : '') +
+        '<em>' + (h ? open + ' owed to you' : open + ' open') + '</em>' + (k === 'you' ? '</a>' : '</button>');
+    }).join('');
+    el.innerHTML = strip + '<div class="gts" role="list" aria-label="Your Staff">' + tiles + '</div>';
+
+    // 👥 Your Staff, the right column (F4, Tai, 11-09: "what is the difference between Needs You and Your list?"): what to
+    // WATCH, never your own to-dos. Pros' items late or due in 2 days, Pros stuck on each other, what real people owe you.
+    var proRows = rows.filter(function (r) { return r.who !== 'you'; }), between = openD.filter(function (d) { return d.on !== 'you'; });
+    var g = [];
+    if (proRows.length) g.push('<h3>⏰ Due soon <small>their items, late or in the next 2 days</small></h3><ul>' + proRows.slice(0, 6).map(function (r) {
+      return '<li class="' + (r.due < now ? 'late' : '') + '"><span class="who" style="color:' + pc(r.who) + '">' + esc(nm(r.who)) + '</span><span>' + esc(r.what) + '</span><span class="d">' + esc(day(r.due)) + '</span></li>'; }).join('') + '</ul>' +
+      (proRows.length > 6 ? '<p class="more">+' + (proRows.length - 6) + ' more</p>' : ''));
+    if (between.length) g.push('<h3>⛔ Waiting on each other</h3><ul>' + between.slice(0, 5).map(function (d) {
+      return '<li class="' + (d.late ? 'late' : '') + '"><span><b style="color:' + pc(d.pro) + '">' + esc(nm(d.pro)) + '</b> waits on <b style="color:' + pc(d.on) + '">' + esc(nm(d.on)) + '</b>: ' + esc(d.what) + '</span><span class="d">' + esc(d.by || '') + (d.late ? ', late' : '') + '</span></li>'; }).join('') + '</ul>');
+    if (owed.length) g.push('<h3>👤 Owed to you by real people</h3><ul>' + owed.slice(0, 4).map(function (t) {
+      return '<li><span class="who" style="color:' + pc(t.who) + '">' + esc(realOf(t.who).name.split(' ')[0]) + '</span><span>' + esc(t.title) + '</span><span class="d">' + esc(t.when || '') + '</span></li>'; }).join('') + '</ul>');
+    var nb = document.getElementById('needsBox');
+    if (nb) nb.innerHTML = '<h2>👥 Your Staff <small>what to watch</small></h2>' + (g.length ? '<div class="ngroups">' + g.join('') + '</div>' : '<p class="soonok">Nothing late, due soon or stuck. ✓</p>') +
+      '<p class="more">Tap a tile above for any Pro\'s card and tasks.</p>';
+
+    // ✅ Your list, the left column (F4): everything you do, in bands. 🔴 Now: your to-dos late or due in 2 days, and anything
+    // a Pro is blocked on (linked to-do or not). 👀 Review: Staff work waiting for your OK. Later: the rest, next 5 first.
+    // A to-do never changes column; it moves up a band as its date gets close. The checkboxes are the same items, moved.
+    var yl = document.getElementById('ylist'), ynB = document.getElementById('yNowBand'), yrB = document.getElementById('yRevBand');
+    if (yl && ynB && yrB) {
+      [].forEach.call(ynB.querySelectorAll('li[data-y]'), function (li) { yl.appendChild(li); });
+      [].slice.call(yl.querySelectorAll('li[data-o]')).sort(function (a, b) { return a.dataset.o - b.dataset.o; }).forEach(function (li) { yl.appendChild(li); });
+      [].forEach.call(yl.querySelectorAll('.ynone, .wnote'), function (x) { x.remove(); });
+      var nowItems = [];
+      rows.forEach(function (r) { if (r.who !== 'you') return; var li = yl.querySelector('li[data-y="' + r.y + '"]'); if (li) nowItems.push({ due: r.due, li: li }); });
+      waitYou.forEach(function (d) {
+        var li = d.todo && yl.querySelector('li[data-y="' + d.todo + '"]'), du = d.due ? Date.parse(d.due) : Infinity;
+        var note = '<span class="wnote">⏳ ' + esc(nm(d.pro)) + ' is waiting on this' + (d.by ? ' (' + esc(d.by) + (d.late ? ', late' : '') + ')' : '') + '</span>';
+        if (li) { if (li.classList.contains('done')) return; li.querySelector('.t').insertAdjacentHTML('beforeend', note);
+          var have = nowItems.filter(function (x) { return x.li === li; })[0]; if (have) have.due = Math.min(have.due, du); else nowItems.push({ due: du, li: li }); }
+        else nowItems.push({ due: du, html: '<li class="wdep"><span>⏳</span><span class="t">' + esc(d.what) + note + '</span><span class="when' + (d.late ? ' late' : '') + '">' + esc(d.by || '') + '</span></li>' });
+      });
+      nowItems.sort(function (a, b) { return a.due - b.due; });
+      ynB.innerHTML = nowItems.length ? '<h3 class="band now">🔴 Now <small>due soon, or someone is waiting on you</small></h3><ul class="todo" id="ynow"></ul>' : '';
+      var un = document.getElementById('ynow');
+      nowItems.forEach(function (x) { if (x.li) un.appendChild(x.li); else un.insertAdjacentHTML('beforeend', x.html); });
+      yrB.innerHTML = ready.length ? '<h3 class="band">👀 Review <small>your Staff\'s work, waiting for your OK</small></h3><ul class="rev">' + ready.slice(0, 5).map(function (t) {
+        return '<li><span class="who" style="color:' + pc(t.who) + '">' + esc(nm(t.who)) + '</span><span><button type="button" class="linkish" data-pro="' + esc(t.who) + '">' + esc(t.title.replace(/\s*\(.*$/, '').slice(0, 100)) + '</button>' + (t.changed ? ' <small>changed since you approved</small>' : '') + '</span></li>'; }).join('') + '</ul>' +
+        (ready.length > 5 ? '<p class="more">+' + (ready.length - 5) + ' more · <a href="#work">the board</a></p>' : '') : '';
+      var shown = 0, extra = 0;
+      [].forEach.call(yl.children, function (li) { li.classList.remove('inneeds'); var isMore = li.classList.contains('done') || shown >= 5; li.classList.toggle('ymore', isMore); if (isMore) extra++; else shown++; });
+      var lh = document.getElementById('yLaterH'); if (lh) lh.hidden = !(nowItems.length || ready.length) || !(shown + extra);
+      var ya = document.getElementById('yAll');
+      if (ya) { ya.hidden = !extra; ya.textContent = yl.classList.contains('all') ? 'Show fewer' : 'Show all (' + extra + ' more)'; }
+      if (!shown && !extra) yl.insertAdjacentHTML('beforeend', '<li class="ynone"><span></span><span class="t">' + (nowItems.length || ready.length ? 'Nothing else on your list. ✓' : 'Your list is clear. ✓') + '</span><span></span></li>');
+    }
+
+    // ⛔ Blocked, on the board tab: every open need, between Pros, on you and on real people.
+    var bb = document.getElementById('blockedBox');
+    if (bb) bb.innerHTML = openD.length ? '<div class="blocked"><h3>⛔ Waiting on someone <small>' + openD.length + '</small></h3><ul>' + openD.map(function (d) {
+      return '<li class="' + (d.late ? 'late' : '') + '"><span><b style="color:' + pc(d.pro) + '">' + esc(nm(d.pro)) + '</b> waits on <b style="color:' + pc(d.on) + '">' + esc(d.on === 'you' ? 'you' : nm(d.on)) + '</b>: ' + esc(d.what) + '</span><span class="d">' + esc(d.by || '') + (d.late ? ', late' : '') + '</span></li>'; }).join('') + '</ul></div>' : '';
+    drawDrawer();
+  }
+  window.drawSoon = drawSoon;
+
+  // 🗂 Tabs (F3): one open at a time, remembered per project; links to a tab's section (#work, #value …) open it.
+  var TABKEY = 'spinup-tab-' + (P.dir || ''), TABIDS = TABS.map(function (t) { return t[0]; });
+  function showTab(id, scroll) {
+    if (!LIVE || TABIDS.indexOf(id) < 0) return false;
+    TABIDS.forEach(function (k) { var s = document.getElementById(k); if (s) s.hidden = k !== id; });
+    [].forEach.call(document.querySelectorAll('[data-ptab]'), function (b) { b.setAttribute('aria-selected', b.dataset.ptab === id ? 'true' : 'false'); });
+    try { localStorage.setItem(TABKEY, id); } catch (e) {}
+    if (scroll) { var n = document.querySelector('.ptabs'); if (n) n.scrollIntoView({ block: 'start', behavior: 'smooth' }); }
+    return true;
+  }
+  if (LIVE) {
+    var t0 = (location.hash || '').slice(1), tSaved = null; try { tSaved = localStorage.getItem(TABKEY); } catch (e) {}
+    showTab(TABIDS.indexOf(t0) >= 0 ? t0 : TABIDS.indexOf(tSaved) >= 0 ? tSaved : 'work', TABIDS.indexOf(t0) >= 0);
+    document.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-ptab]'); if (b) { showTab(b.dataset.ptab); return; }
+      var a = e.target.closest('a[href^="#"]'); if (a && showTab(a.getAttribute('href').slice(1), true)) { e.preventDefault(); closeDrawer(); return; }
+      var w = e.target.closest('[data-wall]'); if (w) { var c = w.closest('.wcol'); c.classList.toggle('all'); w.textContent = c.classList.contains('all') ? 'Show fewer' : w.textContent.replace('Show fewer', 'Show all'); return; }
+      if (e.target.id === 'yAll') { var yl = document.getElementById('ylist'); yl.classList.toggle('all'); drawSoon(); return; }
+      if (e.target.id === 'gackBtn') { var gp = document.getElementById('gackP'); gp.hidden = !gp.hidden; e.target.setAttribute('aria-expanded', String(!gp.hidden)); return; }
+      var pr = e.target.closest('[data-pro]'); if (pr) { openDrawer(pr.dataset.pro); return; }
+      if (e.target.closest('[data-drawx]') || e.target.id === 'prodrawer') { closeDrawer(); return; }
+      if (e.target.closest('#prodrawer [data-talk]')) closeDrawer();
+    });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeDrawer(); });
+  }
+
+  // 🪪 Side panel (F3): a tile opens that person's card, their tasks (approve right there) and Talk. Replaces the Staff cards.
+  var DRAW = null;
+  function openDrawer(k) { DRAW = k; drawDrawer(); var d = document.getElementById('prodrawer'); if (d) { d.hidden = false; var x = d.querySelector('[data-drawx]'); if (x) x.focus(); } }
+  function closeDrawer() { DRAW = null; var d = document.getElementById('prodrawer'); if (d) d.hidden = true; }
+  function drawDrawer() {
+    var d = document.getElementById('prodrawer'); if (!d || !DRAW) return;
+    var h = realOf(DRAW), k = DRAW, T = P.tasks || [];
+    var mine = deps0Of(k);
+    d.innerHTML = '<div class="dpanel" role="dialog" aria-modal="true" aria-label="' + esc(h ? h.name : nm(k)) + '"><div class="dhd"><button type="button" class="ib" data-drawx aria-label="Close">✕</button></div>' +
+      (h ? realCard(h) : agentCard(k)) + mine +
+      (T.some(function (t) { return t.who === k; }) || h ? boardHtml(T, k) : '<p class="tnone">No tasks yet.</p>') + '</div>';
+  }
+  function deps0Of(k) {
+    var L = DEPS0.filter(function (d) { return d.open && (d.pro === k || d.on === k); });
+    return L.length ? '<div class="blocked"><h3>⏳ Waiting</h3><ul>' + L.map(function (d) {
+      return '<li class="' + (d.late ? 'late' : '') + '"><span>' + (d.pro === k ? 'Waits on <b>' + esc(d.on === 'you' ? 'you' : nm(d.on)) + '</b>' : '<b>' + esc(nm(d.pro)) + '</b> waits on them') + ': ' + esc(d.what) + '</span><span class="d">' + esc(d.by || '') + '</span></li>'; }).join('') + '</ul></div>' : '';
+  }
+  if (LIVE) { drawSoon([]); fetch('/pro/deps?p=' + encodeURIComponent(P.dir)).then(function (r) { return r.json(); }).then(function (j) { drawSoon(j.deps || []); }).catch(function () {}); }
   // In the video (&film=1): no scrollbar, and one agent card and one first deliverable are already open, as if clicked.
   if (q.get('film')) {
     document.documentElement.style.scrollbarWidth = 'none';
@@ -799,7 +1083,7 @@ function render(P) {
     // ☆ Star (Tai, 11-07): saves this message, or just the part you selected, as a preference every Pro sees.
     var star = LIVE && m.at ? '<button type="button" class="star mini' + (m.star ? ' on' : '') + '" data-star="' + esc(who) + '" data-at="' + esc(m.at) + '" aria-pressed="' + !!m.star + '" title="' +
       (m.star ? STAR_ON : STAR_OFF) + '">' + (m.star ? '★' : '☆') + '</button>' : '';
-    return '<div class="m ' + (mine ? 'you' : 'pro') + (m.stopped ? ' stopped' : '') + '" style="--c:' + c + '">' + star + (mine ? esc(m.text) + filesHtml(who, m.files) + (m.stopped ? '<span class="stoptag">⏹ Stopped before an answer</span>' : '') : md(m.text) +
+    return '<div class="m ' + (mine ? 'you' : 'pro') + (m.stopped ? ' stopped' : '') + '" style="--c:' + c + '">' + star + (mine ? linkify(esc(m.text)) + filesHtml(who, m.files) + (m.stopped ? '<span class="stoptag">⏹ Stopped before an answer</span>' : '') : md(m.text) +
       '<button type="button" class="say mini" data-sayb="' + esc(who) + '" title="Read aloud" aria-label="Read aloud">🔊</button>' +
       (GUARD && (GUARD.pros[who] || []).length ? '<div class="gline">' + GUARD.pros[who].map(function (a) { return esc(GUARD.lines[a]); }).join('<br>') + '</div>' : '') +
       (LIVE && m.at ? (m.flagged ? '<span class="flagged">⚠️ You reported this as ' + esc(m.flagged) + '</span>' : '<button type="button" class="flag mini" data-flag="' + esc(who) + '" data-at="' + esc(m.at) + '" title="Report a wrong or harmful answer">⚠️ Wrong?</button>') : '') +
@@ -810,7 +1094,12 @@ function render(P) {
     // ✓ To-dos this Pro ticked for you because you said they were done (Tai, 11-08), each with Undo.
     var tk = (m.ticked || []).length ? '<div class="ticked">' + m.ticked.map(function (t) { return '<span>' + (t.undone ? '↶ Unticked: <s>' + esc(t.task) + '</s>' : '✓ Ticked: ' + esc(t.task) +
       (LIVE ? ' <button type="button" class="mini" data-untick="' + esc(t.id) + '" data-at="' + esc(m.at) + '">↶ Undo</button>' : '')) + '</span>'; }).join('') + '</div>' : '';
-    return tk + actCard2(m);
+    // ✏️ / 🗑 Changes this Pro made to your list because you asked (Tai, 11-08), each with Undo.
+    var lc = (m.listChanges || []).length ? '<div class="ticked">' + m.listChanges.map(function (c) {
+      var what = c.kind === 'edit' ? '✏️ Changed: <s>' + esc(c.from) + '</s> → ' + esc(c.to) + (c.toWhen !== c.fromWhen ? ' (' + esc(c.toWhen) + ')' : '') : '🗑 Removed: <s>' + esc(c.from) + '</s>';
+      return '<span>' + (c.undone ? '↶ Undone: ' + esc(c.from) : what + (LIVE ? ' <button type="button" class="mini" data-lundo="' + esc(c.id) + '" data-at="' + esc(m.at) + '">↶ Undo</button>' : '')) + '</span>';
+    }).join('') + '</div>' : '';
+    return tk + lc + actCard2(m);
   }
   function actCard2(m) {
     var a = m.action; if (a && a.type === 'tables') return tablesCard(m);
@@ -1103,7 +1392,7 @@ function render(P) {
         var url = tb.dataset.tappr ? '/tasks/approve' : tb.dataset.tunappr ? '/tasks/unapprove' : '/tasks/drop';
         tb.disabled = true;
         dPost(url, { id: tb.dataset.tappr || tb.dataset.tunappr || tb.dataset.tdrop }).then(function (j) {
-          P.tasks = j.tasks; var wb = document.getElementById('workBody'); if (wb) wb.innerHTML = boardHtml(P.tasks);
+          P.tasks = j.tasks; var wb = document.getElementById('workBody'); if (wb) wb.innerHTML = boardHtml(P.tasks); if (window.drawSoon) drawSoon();
           var wt = document.querySelector('a.tile[href="#work"] b'); if (wt) wt.textContent = P.tasks.filter(function (t) { return t.status === 'ready' || t.changed; }).length;
           if (window.loadTasksNow) loadTasksNow();
         }, function (er) { tb.disabled = false; tb.title = er.message; });
@@ -1134,6 +1423,8 @@ function render(P) {
       }
       var yr = e.target.closest('[data-yrm]');
       if (yr) { yr.disabled = true; dPost('/project/yours-remove', { id: yr.dataset.yrm }).then(function () { yr.closest('li').remove(); }, function (er) { yr.disabled = false; yr.title = er.message; }); return; }
+      var lu = e.target.closest('[data-lundo]');
+      if (lu) { lu.disabled = true; dPost('/project/list-undo', { who: CH.who, at: lu.dataset.at, id: lu.dataset.lundo }).then(function () { location.reload(); }, function (er) { lu.disabled = false; lu.title = er.message; }); return; }
       var ut = e.target.closest('[data-untick]');
       if (ut) { ut.disabled = true; dPost('/project/untick', { who: CH.who, at: ut.dataset.at, id: ut.dataset.untick }).then(function () { location.reload(); }, function (er) { ut.disabled = false; ut.title = er.message; }); return; }
       var kp = e.target.closest('[data-kapply],[data-kdecline]');
@@ -1180,7 +1471,7 @@ function render(P) {
   // The sentence Tai can tell someone, in his words: "I spent 2 hours with Jane and got exactly what I needed."
   function tellLine(x) {
     var t = x.time.ms ? dur(x.time.ms) : 'a few minutes';
-    return 'I spent ' + t + ' with ' + proFirst(x) + ', my AI ' + (x.title || 'Pro') + (x.liked ? ', and got exactly what I needed' : '') + '. ' +
+    return 'I spent ' + t + ' with ' + proFirst(x) + ', my AI ' + (x.title || 'Pro') + (x.approved ? ', and got exactly what I needed (I approved ' + (x.approved === 1 ? 'a piece' : x.approved + ' pieces') + ' of their work)' : '') + '. ' +
       (x.hours.hi ? 'A human ' + (x.title || 'pro').toLowerCase() + ' would bill about ' + hrs(x.hours) + ' for the same work' + (x.human ? ', ' + rng(x.human.lo, x.human.hi, money) + (x.rate && x.rate.src !== 'you' && x.rate.city ? ' at ' + x.rate.city + ' rates' : '') : '') + '. ' : '') +
       'The AI cost about ' + cents(x.ai) + '.';
   }
@@ -1188,6 +1479,8 @@ function render(P) {
     var el = document.getElementById('valBody'), vt = document.getElementById('vTile'); if (!el || !VAL) return;
     var list = VAL.pros || [], T = totals(list);
     if (vt) vt.querySelector('b').textContent = T.ms ? dur(T.ms) : '0 min';
+    var vf = document.getElementById('vFact'), af = document.getElementById('aiFact');   // the facts line (F3)
+    if (vf) vf.textContent = T.ms ? dur(T.ms) : '0 min'; if (af) af.textContent = cents(T.ai + (VAL.setupAi || 0));
     if (!list.length) { el.innerHTML = '<p class="empty">Nothing yet. Talk to a Pro and the time and value add up here.</p>'; return; }
     var pend = list.some(function (x) { return x.pending; });
     el.innerHTML = '<div class="vsum"><div><b>' + (T.ms ? dur(T.ms) : '0 min') + '</b><span>your time with your Staff</span></div>' +
@@ -1198,7 +1491,7 @@ function render(P) {
       '<div class="vrows">' + list.map(function (x) {
         var c = x.who === 'lead' ? 'var(--lead)' : pc(x.who);
         return '<article class="vrow" style="--c:' + c + '" data-vwho="' + esc(x.who) + '"><div class="vhead"><b>' + esc(x.name) + '</b><span>' + esc(x.title) + '</span>' +
-          '<button type="button" class="like' + (x.liked ? ' on' : '') + '" data-like="' + esc(x.who) + '" aria-pressed="' + !!x.liked + '" title="Did ' + esc(proFirst(x)) + ' give you what you needed?">👍 ' + (x.liked ? 'Got what I needed' : 'Got what I needed?') + '</button></div>' +
+          (x.approved ? '<span class="vok" title="Work you approved on the board">✓ ' + x.approved + ' approved</span>' : '') + '</div>' +
           '<dl><dt>Your time</dt><dd>' + (x.time.ms ? dur(x.time.ms) : '—') + ' <small>' + x.time.sittings + (x.time.sittings === 1 ? ' sitting' : ' sittings') + ' · ' + x.time.msgs + ' messages</small></dd>' +
           '<dt>A person would take</dt><dd>' + hrs(x.hours) + (x.pending ? ' <small>⏳ ' + x.pending + ' to price</small>' : '') + '</dd>' +
           '<dt>Going rate</dt><dd class="vrate">' + (x.rate ? rng(x.rate.lo, x.rate.hi, money) + '/hr <small>' + (x.rate.src === 'you' ? 'your rate' : 'estimate' + (x.rate.city ? ', ' + esc(x.rate.city) : '')) + '</small>' : '—') +
@@ -1215,14 +1508,14 @@ function render(P) {
   var DEPS = [];
   function loadDeps() {
     if (!LIVE) return;
-    fetch('/pro/deps?p=' + encodeURIComponent(P.dir)).then(function (r) { return r.json(); }).then(function (j) { DEPS = j.deps || []; drawDeps(); }).catch(function () {});
+    fetch('/pro/deps?p=' + encodeURIComponent(P.dir)).then(function (r) { return r.json(); }).then(function (j) { DEPS = j.deps || []; drawDeps(); drawSoon(DEPS); }).catch(function () {});
     loadTasksNow();
   }
   // 📋 The board and the chat's task line, refreshed after every reply (a Pro may have moved its tasks).
   function loadTasksNow() {
     if (!LIVE || !P.tasks) return;
     fetch('/tasks?p=' + encodeURIComponent(P.dir)).then(function (r) { return r.json(); }).then(function (j) {
-      if (!j.tasks) return; P.tasks = j.tasks; if (j.messages) P.messages = j.messages;
+      if (!j.tasks) return; P.tasks = j.tasks; if (j.messages) P.messages = j.messages; drawSoon();
       var wb = document.getElementById('workBody'); if (wb && !wb.contains(document.activeElement)) wb.innerHTML = boardHtml(P.tasks);
       var wt = document.querySelector('a.tile[href="#work"] b'); if (wt) wt.textContent = P.tasks.filter(function (t) { return t.status === 'ready' || t.changed; }).length;
       drawDeps();
@@ -1269,7 +1562,7 @@ function render(P) {
     if (!x) { el.innerHTML = ''; if (!VAL) loadValue(); return; }
     el.innerHTML = '⏱ <b>' + (x.time.ms ? dur(x.time.ms) : 'under a minute') + '</b> with ' + esc(proFirst(x)) + ' · ' + x.time.sittings + (x.time.sittings === 1 ? ' sitting' : ' sittings') + ' · ' + x.time.msgs + ' messages' +
       (x.hours.hi ? ' · a person: ' + hrs(x.hours) + (x.human ? ' (' + rng(x.human.lo, x.human.hi, money) + ')' : '') : '') +
-      ' <button type="button" class="like mini' + (x.liked ? ' on' : '') + '" data-like="' + esc(x.who) + '" aria-pressed="' + !!x.liked + '" title="Did ' + esc(proFirst(x)) + ' give you what you needed?">👍 ' + (x.liked ? 'Got what I needed' : 'Got what I needed?') + '</button>';
+      (x.approved ? ' · <span class="vok">✓ ' + x.approved + ' approved</span>' : '');
   }
   document.addEventListener('click', function (e) {
     var lk = e.target.closest('[data-like]');
@@ -1417,6 +1710,25 @@ function render(P) {
         api('/project/humans', { p: P.dir, op: 'log', id: h.id, entry: { kind: lf.querySelector('select').value, text: ins[0].value, next: ins[1].value } }).then(function () { location.reload(); }, function (er) { alert(er.message); });
       };
     }
+  });
+
+  // ✏️ Rename the project (Tai, 11-09). The title only; the folder, files and chats stay where they are.
+  app.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-ptitle]'); if (!b || b.dataset.busy) return;
+    var h = b.parentNode, cur = (P.manifest && P.manifest.title) || P.request || '';
+    var f = document.createElement('div'); f.className = 'renbox';
+    f.innerHTML = '<input type="text" maxlength="80" aria-label="Project name" style="min-width:min(520px,80vw)" value="' + esc(cur) + '"><button type="button" data-ok>Save</button><button type="button" data-no>Cancel</button><span class="err"></span>';
+    b.dataset.busy = '1'; h.hidden = true; h.parentNode.insertBefore(f, h.nextSibling);
+    var inp = f.querySelector('input'); inp.focus(); inp.select();
+    var close = function () { f.remove(); h.hidden = false; delete b.dataset.busy; };
+    var save = function () {
+      var t = inp.value.trim(); if (!t || t === cur) return close();
+      fetch('/project/title', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ p: P.dir, title: t }) })
+        .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error); return j; }); })
+        .then(function () { location.reload(); }, function (er) { f.querySelector('.err').textContent = er.message; });
+    };
+    f.querySelector('[data-no]').onclick = close; f.querySelector('[data-ok]').onclick = save;
+    inp.onkeydown = function (ev) { if (ev.key === 'Enter') save(); if (ev.key === 'Escape') close(); };
   });
 
   // ✏️ Rename a Pro or the Lead (live projects only). Their instructions are rebuilt from the project on every message,
