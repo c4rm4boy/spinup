@@ -327,6 +327,7 @@ body.staffview #app, body.staffview .secban ~ #app { visibility:hidden; }
 .yl .rev li { display:flex; gap:8px; align-items:baseline; font-size:14.5px; padding:6px 8px; border-radius:8px; background:var(--surface-2); } .yl .rev .who { font-weight:650; white-space:nowrap; }
 .yl .linkish { background:none; border:0; padding:0; color:inherit; font:inherit; text-align:left; text-decoration:underline dotted; cursor:pointer; }
 .yl .more { margin:2px 0 0; font-size:13px; color:var(--muted); }
+.ticknote { position:fixed; left:50%; bottom:20px; transform:translateX(-50%); z-index:60; max-width:min(92vw,640px); background:var(--surface); color:var(--ink); border:1px solid #6fcf97; border-radius:12px; padding:10px 14px; font-size:14.5px; box-shadow:0 6px 24px rgba(0,0,0,.4); }
 #ylist li.inneeds { display:none; } #ylist:not(.all) li.ymore { display:none; }
 .ptabs { display:flex; flex-wrap:wrap; gap:6px; border-bottom:1px solid var(--line); padding-bottom:8px; scroll-margin-top:12px; }
 .ptabs button { font:inherit; font-size:14.5px; color:var(--ink-2); background:var(--surface); border:1px solid var(--line); border-radius:999px; padding:5px 12px; cursor:pointer; }
@@ -882,6 +883,19 @@ function render(P) {
     drawDrawer();
   }
   window.drawSoon = drawSoon;
+  // ✓ "Ticked on your list" after an approval (F5), with Undo (unticks only; the approval stays). Gone after 15 s.
+  function tickNote(list) {
+    var n = document.getElementById('tickNote'); if (n) n.remove();
+    n = document.createElement('div'); n.id = 'tickNote'; n.className = 'ticknote'; n.setAttribute('role', 'status');
+    n.innerHTML = '✓ Ticked on your list: ' + list.map(function (x) { return '<b>' + esc(x.task) + '</b>'; }).join('; ') + ' <button type="button" class="mini">Undo</button>';
+    document.body.appendChild(n);
+    n.querySelector('button').addEventListener('click', function () {
+      var set = {}; list.forEach(function (x) { set[x.id] = false; doneMap[x.id] = false; var c = document.querySelector('input[data-id="' + x.id + '"]'); if (c) { c.checked = false; c.closest('li').classList.remove('done'); } });
+      fetch('/project/ticks', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ p: P.dir, set: set }) }).catch(function () {});
+      drawSoon(); n.remove();
+    });
+    setTimeout(function () { if (n.parentNode) n.remove(); }, 15000);
+  }
 
   // 🗂 Tabs (F3): one open at a time, remembered per project; links to a tab's section (#work, #value …) open it.
   var TABKEY = 'spinup-tab-' + (P.dir || ''), TABIDS = TABS.map(function (t) { return t[0]; });
@@ -1392,7 +1406,12 @@ function render(P) {
         var url = tb.dataset.tappr ? '/tasks/approve' : tb.dataset.tunappr ? '/tasks/unapprove' : '/tasks/drop';
         tb.disabled = true;
         dPost(url, { id: tb.dataset.tappr || tb.dataset.tunappr || tb.dataset.tdrop }).then(function (j) {
-          P.tasks = j.tasks; var wb = document.getElementById('workBody'); if (wb) wb.innerHTML = boardHtml(P.tasks); if (window.drawSoon) drawSoon();
+          P.tasks = j.tasks; var wb = document.getElementById('workBody'); if (wb) wb.innerHTML = boardHtml(P.tasks);
+          // ✓ F5: approving ticked your matching "review it" to-do (undo approval unticks it). Sync the boxes, then say so.
+          if (j.done) [].forEach.call(document.querySelectorAll('input[data-id]'), function (c) { var on = !!j.done[c.dataset.id]; if (on === !!doneMap[c.dataset.id]) return;
+            doneMap[c.dataset.id] = on; c.checked = on; c.closest('li').classList.toggle('done', on); });
+          if (window.drawSoon) drawSoon();
+          if ((j.ticked || []).length) tickNote(j.ticked);
           var wt = document.querySelector('a.tile[href="#work"] b'); if (wt) wt.textContent = P.tasks.filter(function (t) { return t.status === 'ready' || t.changed; }).length;
           if (window.loadTasksNow) loadTasksNow();
         }, function (er) { tb.disabled = false; tb.title = er.message; });

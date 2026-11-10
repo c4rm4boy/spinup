@@ -6,6 +6,12 @@ SpinUp started on October 31, 2026 as "Cabinet Builder," a clickable mockup for 
 
 ---
 
+## v0.9.17 · Nov 9 · Approving work closes your "review it" to-do
+
+- **Approve means done.** When you approve a Pro's work, SpinUp ticks the matching to-do on your list ("Review Jane's design boards"), once nothing else from that Pro is waiting for you. A note says what it ticked, with Undo. Undo approval unticks it too. A two-step to-do ("Approve the budget and buy materials") stays open, because the second step is still yours.
+- **No more "review my work" to-dos.** Pros mark their work ready, and it shows in 👀 Review. It doesn't also land on your list.
+- **Each thing a Pro needs from you is its own to-do.** "Send Jane a photo of the paint can labels" sits on its own line, so it's clear what she's waiting for, and ticking it is what clears the need.
+
 ## v0.9.16 · Nov 9 · A simpler project page that fits any kind of project
 
 - **One screen tells you what needs you.** The project page was more than eight screens long, and the same to-do showed up in three places. Now the top answers three questions: what phase you're in, who's waiting on you, and what's due. Everything else is one tap away.
