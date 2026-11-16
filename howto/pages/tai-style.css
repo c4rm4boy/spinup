@@ -1,0 +1,77 @@
+/* Tai's house style (Tai, 2026-10-28: "I like the CSS style of my homepage, use the same styling for everything").
+   Taken from pages/Home.html. Every page the cabinet makes uses it:
+     - pages in pages/:          <link rel="stylesheet" href="tai-style.css">
+     - pages elsewhere:          <link rel="stylesheet" href="../pages/tai-style.css">  (adjust the path)
+     - self-contained pages (built by a script, sent, printed or shared): paste this file into a <style> block.
+   Start a new page from pages/_template.html. Dark by default; <html data-theme="dark">, light via the toggle.
+   Lead colors: set --c on a card or section, e.g. style="--c: var(--c-peter)". */
+
+:root {
+  --bg: #0e1522; --surface: #162033; --surface-2: #1c2840; --ink: #e8edf6; --ink-2: #b3bfd3; --muted: #8592a8;
+  --line: #26324a; --focus: #7aa5ff; --accent: #6f9bff;
+  --good: #6fd38c; --warn: #f2c94c; --bad: #ff6b6b;
+  --c-carma: #9aa8c2; --c-jerry: #6f9bff; --c-coach: #b28dff; --c-rupert: #ffa24d; --c-peter: #f2c94c;
+  --c-elon: #3fd1c7; --c-doc: #6fd38c; --c-hud: #e8916b; --c-will: #f08bb4;
+  --f-display: "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "Cascadia Mono", Consolas, ui-monospace, monospace;
+  color-scheme: dark;
+}
+:root[data-theme="light"] {
+  --bg: #f3f5f8; --surface: #ffffff; --surface-2: #eef2f7; --ink: #142033; --ink-2: #4a5872; --muted: #7a879c;
+  --line: #dbe1ea; --focus: #3d6fd9; --accent: #3d72e0;
+  --good: #2f9a4c; --warn: #b88c06; --bad: #d63c3c;
+  --c-carma: #5b6b86; --c-jerry: #3d72e0; --c-coach: #8a5cf0; --c-rupert: #e07f1f; --c-peter: #c99a07;
+  --c-elon: #109a92; --c-doc: #2f9a4c; --c-hud: #c8643f; --c-will: #c4447a;
+  color-scheme: light;
+}
+
+/* Base */
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 var(--f-body); }
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+code, pre { font-family: var(--f-mono); font-size: 0.92em; }
+code { background: var(--surface-2); border-radius: 5px; padding: 0 5px; }
+pre { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px; overflow-x: auto; }
+
+/* Layout: a short header, then sections or a grid of cards */
+.wrap { max-width: 1000px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 48px; display: grid; gap: 22px; }
+.wrap.wide { max-width: 1200px; }
+header.top { display: flex; justify-content: space-between; align-items: start; gap: 12px; flex-wrap: wrap; }
+h1 { font: 700 clamp(28px, 5vw, 40px)/1.1 var(--f-display); margin: 0; }
+h2 { font: 650 20px/1.25 var(--f-display); margin: 0 0 10px; }
+h3 { font: 650 16px/1.25 var(--f-display); margin: 0 0 8px; }
+.lede { margin: 4px 0 0; color: var(--ink-2); max-width: 62ch; }
+.meta { color: var(--muted); font-size: 12.5px; }
+.note { color: var(--muted); font-size: 13px; margin: 0; }
+
+/* Cards: the homepage look. Put --c on the card for the owning lead's accent. */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.card, a.card { display: grid; gap: 6px; align-content: start; text-decoration: none; color: inherit; background: var(--surface);
+  border: 1px solid var(--line); border-left: 4px solid var(--c, var(--line)); border-radius: 12px; padding: 16px; min-width: 0; }
+a.card:hover { border-color: var(--c, var(--focus)); }
+.name { font: 650 18px/1.2 var(--f-display); }
+.what { color: var(--ink-2); font-size: 14.5px; }
+
+/* Numbers */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+.stat .n { font: 700 32px/1 var(--f-display); font-variant-numeric: tabular-nums; }
+.stat .l { color: var(--ink-2); font-size: 14px; margin-top: 6px; }
+
+/* Tables */
+.tablewrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--muted); font-weight: 600; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Buttons, chips and status */
+button, .btn { font: inherit; font-size: 14px; color: var(--ink-2); background: var(--surface); border: 1px solid var(--line);
+  border-radius: 8px; padding: 6px 12px; cursor: pointer; min-height: 36px; }
+button:hover, .btn:hover { color: var(--ink); border-color: var(--focus); }
+.chip { display: inline-block; font-size: 12.5px; padding: 2px 9px; border-radius: 999px; background: var(--surface-2); color: var(--ink-2); }
+.good { color: var(--good); } .warn { color: var(--warn); } .bad { color: var(--bad); }
+
+@media print { body { background: #fff; color: #000; } .no-print, #theme { display: none; } }

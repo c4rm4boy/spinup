@@ -10,6 +10,10 @@ Say what you want to do. Your **Chief** (your right hand, the same every time) f
 
 **🎬 Watch it:** [the full run, 3 min](spinup-taco-truck.mp4) · [the short cut, 2 min](spinup-taco-truck-x.mp4). A taco truck, from "I want to start a taco food truck" to a working Staff you can talk to.
 
+**💻 Run it on your PC (early tester copy):** [download SpinUp v0.9.21](https://github.com/c4rm4boy/spinup/releases/latest) (Windows 10 or 11, Node.js, and Claude Code signed in with your own paid Claude plan; the zip has a 15-minute setup guide).
+
+**🧭 [How to use SpinUp](https://c4rm4boy.github.io/spinup/howto/)**: every page, what each button does, and what each section is for. 11 narrated slides with screenshots from a real run, about 8 minutes.
+
 ## The idea
 
 Graph engineering is about wiring agents together: who hands off to whom. The harder question comes first: **who should be in the room at all?** People rarely know which specialists a goal needs. A good general contractor does, and so does a good wedding planner or a fishing guide.

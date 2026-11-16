@@ -6,6 +6,12 @@ SpinUp started on October 31, 2026 as "Cabinet Builder," a clickable mockup for 
 
 ---
 
+## v0.9.21 · Nov 16 · A tester copy you can download, and a narrated how-to
+
+- **Download and run it.** The [v0.9.21 release](https://github.com/c4rm4boy/spinup/releases/latest) is a zip with a Start SpinUp file and a setup guide. It runs on your PC with your own Claude Code sign-in; nothing goes to anyone but Anthropic, through your own account.
+- **How to use SpinUp.** [11 narrated slides](https://c4rm4boy.github.io/spinup/howto/): every page, button and section, with a focus box that follows the narration.
+- **Security before sharing.** The helper only answers its own pages (origin, host and a per-install key), pages run only their own scripts, saved passwords are encrypted for your Windows login, Pros can't use commands to reach the password files, and a malformed address can no longer crash the helper.
+
 ## v0.9.17 · Nov 9 · Approving work closes your "review it" to-do
 
 - **Approve means done.** When you approve a Pro's work, SpinUp ticks the matching to-do on your list ("Review Jane's design boards"), once nothing else from that Pro is waiting for you. A note says what it ticked, with Undo. Undo approval unticks it too. A two-step to-do ("Approve the budget and buy materials") stays open, because the second step is still yours.

@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🚀 How to use SpinUp</title>
+<!-- The tester kit's how-to slides (Elon, 11-16; Tai: "how things work, buttons and what they mean, sections and their purpose").
+     Narrated in the SpinUp Explained format (Tai, 11-16: "add narration like with the SpinUp Explained... I also like that format"):
+     Play, step, voice on/off, full screen, a big caption with each word lit as it's spoken, and the item being described lit up.
+     The voice is recorded (tour/voice/*.mp3, made by scripts/spinup-howto-voice.mjs) so every browser sounds the same; without the
+     files it falls back to the browser's own voice. Screenshots are a real run on a throwaway SpinUp (a backyard garden goal),
+     no personal data. House style: pages/tai-style.css. -->
+<link rel="stylesheet" href="pages/tai-style.css">
+<style>
+  .wrap { max-width: 1280px; gap: 14px; padding-block: 18px 28px; }
+  header.top h1 { font-family: var(--f-display); font-size: clamp(1.5rem, 3vw, 2rem); margin: 0; }
+  button, select { font: inherit; color: var(--ink); background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 7px 14px; cursor: pointer; }
+  button:hover { border-color: var(--c-elon); }
+  button.primary { background: var(--c-elon); color: #06201e; border-color: var(--c-elon); font-weight: 600; }
+  button:disabled { opacity: .4; cursor: default; }
+  .bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .bar .grow { flex: 1; }
+  .count { color: var(--muted); font-size: 13px; }
+  .stage { background: var(--bg); border: 1px solid var(--line); border-radius: 14px; }
+  .slide { display: none; padding: 18px 18px 20px; }
+  .slide.on { display: block; animation: fade .35s ease; }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+  .kick { color: var(--c-elon); font-size: 12.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  .slide h1 { font-family: var(--f-display); font-size: clamp(1.35rem, 2.6vw, 1.9rem); margin: 4px 0 6px; }
+  .sub { color: var(--ink-2); margin: 0 0 14px; max-width: 75ch; }
+  .grid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+  .shot { margin: 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--surface); }
+  .shot img { display: block; width: 100%; height: auto; cursor: zoom-in; }
+  .shot figcaption { color: var(--muted); font-size: 12.5px; padding: 6px 10px; border-top: 1px solid var(--line); }
+  .keys { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .keys li { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--c-elon); border-radius: 10px; padding: 8px 12px; color: var(--ink-2); line-height: 1.45; }
+  .keys li b { color: var(--ink); }
+  .ui { display: inline-block; font-weight: 600; color: var(--ink); background: var(--surface-2); border: 1px solid var(--line); border-radius: 7px; padding: 0 6px; white-space: nowrap; }
+  .tip { margin-top: 12px; color: var(--ink-2); background: var(--surface-2); border-radius: 10px; padding: 10px 12px; }
+  .tip b { color: var(--warn); }
+  .chain { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 16px 0; }
+  .chain > div { background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--c); border-radius: 12px; padding: 14px; }
+  .chain .e { font-size: 1.8rem; }
+  .chain b { display: block; font-family: var(--f-display); font-size: 1.15rem; margin: 4px 0; color: var(--ink); }
+  .chain span { color: var(--ink-2); font-size: 14.5px; }
+  .places { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .places > div { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; color: var(--ink-2); }
+  .places b { color: var(--ink); }
+  table.tabs { width: 100%; border-collapse: collapse; margin-top: 4px; }
+  table.tabs td { border-top: 1px solid var(--line); padding: 7px 8px; color: var(--ink-2); vertical-align: top; }
+  table.tabs td:first-child { white-space: nowrap; color: var(--ink); font-weight: 600; }
+  /* The item being narrated lights up; while the narration plays, the rest dim a little (as in SpinUp Explained). */
+  .keys li, .chain > div, .places > div, table.tabs tr { transition: opacity .3s, box-shadow .3s, background .3s; }
+  .stage.talking .slide.on :is(.keys li, .chain > div, .places > div, table.tabs tr) { opacity: .5; }
+  .stage.talking .slide.on .lit { opacity: 1 !important; box-shadow: 0 0 0 2px var(--c-elon); background: var(--surface-2); }
+  /* The caption stays in view at the bottom of the window, however tall the slide. */
+  .cap { position: sticky; bottom: 0; z-index: 2; min-height: 3.2em; font: 600 clamp(16px, 2.2vw, 22px)/1.4 var(--f-display); margin: 0; text-align: center; padding: 10px 12px; background: color-mix(in srgb, var(--bg) 92%, transparent); border-top: 1px solid var(--line); backdrop-filter: blur(4px); }
+  .cap:empty { display: none; }
+  .cap .w.now { color: var(--c-elon); }
+  /* The focus box on the screenshot: a bright outline, with everything around it dimmed. */
+  .pic { position: relative; overflow: hidden; }
+  .focus { position: absolute; border: 3px solid var(--c-elon); border-radius: 8px; box-shadow: 0 0 0 9999px rgba(4, 10, 20, .55), 0 0 18px var(--c-elon);
+    opacity: 0; pointer-events: none; transition: left .45s ease, top .45s ease, width .45s ease, height .45s ease, opacity .3s; }
+  .focus.on { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) { .focus { transition: opacity .2s; } }
+  .dots { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
+  .dots button { width: 10px; height: 10px; min-width: 0; min-height: 0; flex: none; padding: 0; border-radius: 50%; border: 0; background: var(--line); }
+  .dots button.on { background: var(--c-elon); }
+  #zoom { position: fixed; inset: 0; background: rgba(0,0,0,.85); display: none; place-items: center; z-index: 9; cursor: zoom-out; padding: 16px; }
+  #zoom.on { display: grid; }
+  #zoom img { max-width: 100%; max-height: 100%; border-radius: 8px; }
+  .wrap:fullscreen { max-width: none; background: var(--bg); padding: 2vh 3vw; overflow: auto; }
+  @media (max-width: 860px) { .grid, .chain, .places { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 560px) { .bar button { padding: 6px 10px; } #full { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .slide.on { animation: none; } }
+</style>
+</head>
+<body>
+<div class="wrap" id="wrap">
+  <header class="top">
+    <div>
+      <h1>🚀 How to use SpinUp</h1>
+      <p class="lede">Every page, what each button does, and what each section is for. About 8 minutes with the voice on.</p>
+      <div class="meta">← → step · Space play/pause · M mute · F full screen · click a screenshot to see it bigger</div>
+    </div>
+    <button id="theme" type="button">Light</button>
+  </header>
+
+  <div class="bar">
+    <button type="button" class="primary" id="play">▶ Play</button>
+    <button type="button" id="prev" aria-label="Back">◀</button>
+    <button type="button" id="next" aria-label="Next">▶▶</button>
+    <button type="button" id="mute" aria-pressed="false">🔊 Voice on</button>
+    <span class="grow"></span>
+    <span class="count" id="count"></span>
+    <button type="button" id="full">⛶ Full screen</button>
+  </div>
+
+  <div class="stage" id="stage">
+<section class="slide">
+  <div class="kick">Start here</div>
+  <h1>You're the CEO. SpinUp gives you a staff.</h1>
+  <p class="sub">Tell SpinUp a goal in plain words. It finds the right expert to lead it, brings in a team of specialists, and they do the research and drafts while you make the calls.</p>
+  <div class="chain">
+    <div style="--c: var(--c-jerry)"><div class="e">👤</div><b>You</b><span>The CEO. You set the goal, answer questions, approve work and make decisions. Nothing goes out without your OK.</span></div>
+    <div style="--c: var(--c-elon)"><div class="e">🧭</div><b>Chief</b><span>Your right hand, the same on every project. Finds the right Lead for each goal.</span></div>
+    <div style="--c: var(--warn)"><div class="e">🥕</div><b>Lead</b><span>The pro a friend would tell you to call first. Owns the outcome and picks the team.</span></div>
+    <div style="--c: var(--c-coach)"><div class="e">☀️</div><b>Pros</b><span>The specialists. Each asks only what they need, then does their part of the work.</span></div>
+  </div>
+  <p class="sub" style="margin-bottom:8px"><b>You'll use three pages:</b></p>
+  <div class="places">
+    <div><b>🏠 SpinUp Home</b><br>All your projects and everything waiting on you.</div>
+    <div><b>🚀 The Start page</b><br>Where you give a new goal and meet your team.</div>
+    <div><b>📋 A project page</b><br>One per goal: your list, your Staff's work, and chats with each Pro.</div>
+  </div>
+  <p class="tip">Use the <b>→</b> arrow key or <span class="ui">Next →</span> to move through the slides. Click any screenshot to see it bigger. The screenshots are from a real run: "Plan a small backyard vegetable garden this spring."</p>
+</section>
+
+<section class="slide">
+  <div class="kick">SpinUp Home · first visit</div>
+  <h1>Tell the Chief a little about you (optional)</h1>
+  <p class="sub">The first time you open SpinUp Home, the Chief asks a few quick questions so every Pro can tailor their questions and advice to you.</p>
+  <div class="grid">
+    <figure class="shot"><img src="tour/1-home-first.jpg" alt="SpinUp Home on a first visit, with the profile questions"><figcaption>SpinUp Home, first visit</figcaption></figure>
+    <ul class="keys">
+      <li><b>Every question is optional.</b> Skip any of them. It takes about two minutes, and you can change it later.</li>
+      <li><b>City and state</b> matters most. It drives laws, climate and prices in the advice.</li>
+      <li><b>How should your Staff talk to you?</b> sets the tone (witty, to the point, warm or detailed). It changes how they say things, never what they advise.</li>
+      <li><b>About you</b> shows everything SpinUp remembers. It stays on your PC, and you can forget any of it.</li>
+      <li><span class="ui">Light</span> switches between dark and light.</li>
+      <li><span class="ui">🐞 Feedback</span> at the bottom left is on every page. More on the last slide.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kick">The Start page</div>
+  <h1>Say what you're doing</h1>
+  <p class="sub">Type a real goal and press Start. The Chief picks a Lead and checks with you, then the Lead brings in the Pros.</p>
+  <div class="grid">
+    <figure class="shot"><img src="tour/2-start.jpg" alt="The Start page with a goal, the Lead and a Pro"><figcaption>The Start page, a minute in</figcaption></figure>
+    <ul class="keys">
+      <li><b>What are we doing?</b> Type your goal and press <span class="ui">Start</span>, or press <span class="ui">🎤</span> and say it.</li>
+      <li><b>Watch a demo</b> runs an example goal and picks the answers for you, so you can sit back and watch. It's a real run, so it uses your Claude plan.</li>
+      <li><span class="ui">🔊 Voices</span> has each person speak in their own voice. <span class="ui">🎤 Talk back</span> lets you answer out loud.</li>
+      <li><b>What we're doing</b> is the goal as the team understands it. Use <span class="ui">✏️ Change direction</span> if your idea grows. New Pros join, and only what changed gets asked again.</li>
+      <li><b>Your Staff</b> on the right: the Lead on top and the Pros below. A ✓ means that Pro is done asking.</li>
+      <li><b>The conversation:</b> click any message to hear it again.</li>
+      <li><span class="ui">Start over</span> clears it and starts a new goal.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kick">The Start page · answering</div>
+  <h1>Answer with a tap, your own words, or "Not sure"</h1>
+  <p class="sub">Each Pro asks a few questions in the order the work happens. Later Pros build on your earlier answers.</p>
+  <div class="grid">
+    <figure class="shot"><img src="tour/3-answer.jpg" alt="Answer buttons under a question"><figcaption>Answering the Lead's last question</figcaption></figure>
+    <ul class="keys">
+      <li><b>Tap an answer</b> to choose it. On "pick all that apply" questions, tap several, then press <span class="ui">Continue</span>.</li>
+      <li><span class="ui">Not sure, your call</span> lets the Pro decide. Use it freely.</li>
+      <li><b>Type your own answer</b> in the box, or tap an answer and add to it. Then press <span class="ui">Send</span>.</li>
+      <li><span class="ui">🎤 Say it</span> answers by voice. Windows+H also dictates into any box.</li>
+      <li><span class="ui">☆</span> next to one of your answers saves it as a fact about you, so no team asks again.</li>
+      <li>Before the plan, the Lead checks your <b>timeline</b> and tells you honestly what's realistic.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kick">The Start page · the plan</div>
+  <h1>Your plan, then "Put your Staff to work"</h1>
+  <p class="sub">When the questions are done, the team writes your plan. Then the Lead asks whether to put the Staff to work.</p>
+  <div class="grid">
+    <figure class="shot"><img src="tour/4-plan.jpg" alt="The written plan with each Pro's advice and the Lead's next steps"><figcaption>The plan</figcaption></figure>
+    <ul class="keys">
+      <li><b>Each Pro's box</b> holds their advice, with real rules of thumb.</li>
+      <li><b>Next steps</b> (from the Lead) are who does what, in order. Some steps are yours.</li>
+      <li><span class="ui">🔊 … reads the next steps</span> reads them aloud.</li>
+      <li><span class="ui">Yes, put them to work</span> gives each Pro their rules, a watch list and a first assignment, and opens the project page. It takes a minute or two.</li>
+      <li><span class="ui">Not now</span> saves the plan, so you can come back to it.</li>
+      <li>Typing something new instead (for example "I also want a herb bed") works it into the plan.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kick">The project page · the top</div>
+  <h1>Everything about one goal, on one page</h1>
+  <p class="sub">The top half answers two questions: what do I need to do, and what should I keep an eye on?</p>
+  <div class="grid">
+    <figure class="shot"><img src="tour/5-project.jpg" alt="The top of a project page"><figcaption>The project page</figcaption></figure>
+    <ul class="keys">
+      <li><b>The title</b> is written by your Lead. <span class="ui">✏️</span> renames it.</li>
+      <li><span class="ui">💬 Talk to Rosa</span> opens a chat with your Lead.</li>
+      <li><span class="ui">G</span> connects Google (Gmail and Calendar) to this project. It's read and draft only, and it's off until you turn it on.</li>
+      <li><b>The numbers line:</b> the week you're in, how many Pros, time spent with your Staff, and what the AI has cost from your plan.</li>
+      <li><span class="ui">▶ Put my Staff to work</span> has each Pro do its next task, one after another. Drafts only.</li>
+      <li><b>Now:</b> the current phase, what's next, and anything blocking it.</li>
+      <li><b>Tiles:</b> you and each Pro, with what's open or waiting. Tap one for details.</li>
+      <li><b>Your list</b> (left) is what <i>you</i> do: <b>Now</b>, then <b>Review</b> (work waiting for your OK), then <b>Later</b>. Tick items as you do them; ↶ Undo if you slip. <b>Your Staff</b> (right) shows anything late, due soon or stuck.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kick">The project page · the Board</div>
+  <h1>Your Staff's work: approve, ask for changes, or start a task</h1>
+  <p class="sub">Below your list are tabs. The Board shows every Pro's tasks. Anything "Ready for you" is waiting on your OK.</p>
+  <div class="grid">
+    <figure class="shot"><img src="tour/6-board.jpg" alt="The Board tab with each Pro's tasks"><figcaption>The Board tab</figcaption></figure>
+    <ul class="keys">
+      <li><b>Ready for you:</b> <span class="ui">Open the first draft</span> to read it. Then <span class="ui">✓ Approve</span> (the task is done and the Staff builds on it) or <span class="ui">Ask for changes</span>.</li>
+      <li><span class="ui">🔎 Refresh with research</span> has the Pro redo it with fresh web research.</li>
+      <li><span class="ui">▶ Start</span> asks that Pro to do this task now. It comes back for your review.</li>
+      <li><span class="ui">🔁</span> runs a task by itself on a schedule (daily, weekdays or weekly).</li>
+      <li><span class="ui">✕</span> means it's no longer needed. You can bring it back.</li>
+    </ul>
+  </div>
+  <table class="tabs" aria-label="The other tabs">
+    <tr><td>📅 Timeline</td><td>The phases week by week, with what sets the pace.</td></tr>
+    <tr><td>👤 People</td><td>Real people on the project (a contractor, an arborist) and what you owe each other.</td></tr>
+    <tr><td>📚 Knows</td><td>What your Staff knows about this project. Remove anything that's wrong.</td></tr>
+    <tr><td>🧭 Decisions</td><td>Every call you made and every change of direction, so nobody re-argues it.</td></tr>
+    <tr><td>⏱ Value</td><td>How long you spent, what the same work would cost from a person, and the AI cost.</td></tr>
+    <tr><td>🗂 Data</td><td>Tables the Pros keep (for example candidate spots or quotes). You can edit them.</td></tr>
+  </table>
+</section>
+
+<section class="slide">
+  <div class="kick">The project page · chat</div>
+  <h1>Talk to any Pro</h1>
+  <p class="sub">Each Pro remembers your project and only works in its own folder. Ask a question, give it a job, or attach a file.</p>
+  <div class="grid">
+    <figure class="shot"><img src="tour/7-chat.jpg" alt="The chat panel with the Lead's answer"><figcaption>Asking the Lead "What should I do first this week?"</figcaption></figure>
+    <ul class="keys">
+      <li><b>Staff &amp; files</b> (left) lists each Pro. Click one to talk to them. The <span class="ui">📁</span> count opens the files they've written.</li>
+      <li><b>The chips on top</b> show that Pro's work in progress, to-dos, and anything waiting on you.</li>
+      <li>When a Pro needs something from you, it says so and adds it to <b>your list</b>. Remove it with ✕ if you don't want it.</li>
+      <li><span class="ui">📎</span> attaches images, PDFs, Excel, Word, PowerPoint or CSV files. You can also paste a screenshot.</li>
+      <li><span class="ui">⚠️ Wrong?</span> under a reply flags it. The Pro is told, so it doesn't repeat it.</li>
+      <li><span class="ui">☆</span> on a reply saves it to what the Staff knows. <span class="ui">↗ New tab</span> pops the chat out.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kick">Staying in charge</div>
+  <h1>What SpinUp will and won't do</h1>
+  <p class="sub">The Pros do research and drafts. You decide what happens in the real world.</p>
+  <ul class="keys" style="max-width: 900px">
+    <li><b>Nothing is sent, posted or bought without you.</b> Pros write drafts. You send them.</li>
+    <li><b>Each Pro works only in its own folder.</b> Pros can search the web, but they can't open your other files.</li>
+    <li><b>Commands:</b> a Pro can suggest a command to run on your PC, but nothing runs until you press <span class="ui">▶ Run</span>. Read it first. If you aren't sure what it does, don't run it. Some commands are refused outright.</li>
+    <li><b>Red banner:</b> if a web page or file tries to slip a Pro hidden instructions, SpinUp pauses that Pro and shows a red banner. Read it before you resume.</li>
+    <li><b>Drafts on serious topics:</b> on legal, tax, medical, insurance or money questions, the Pros mark their work as a draft. Check it with a real professional.</li>
+    <li><b>Don't paste passwords or account numbers</b> into a chat.</li>
+    <li><b>To stop SpinUp,</b> close the black window. Your projects stay saved in <code>Documents\SpinUp</code>.</li>
+  </ul>
+</section>
+
+<section class="slide">
+  <div class="kick">SpinUp Home · every day</div>
+  <h1>One look at everything</h1>
+  <p class="sub">Once you have projects, SpinUp Home is where you start each day: what's waiting on you, and what each team is doing.</p>
+  <div class="grid">
+    <figure class="shot"><img src="tour/8-home.jpg" alt="SpinUp Home with one project card"><figcaption>SpinUp Home with a project</figcaption></figure>
+    <ul class="keys">
+      <li><b>The counters:</b> projects going, things waiting on you, Pros at work, and files your Staff wrote.</li>
+      <li><b>Each project card</b> shows your Lead and Pros, a progress bar, what's waiting on you (do the bold one first), anything ready for review, and what's next.</li>
+      <li><span class="ui">Open</span> goes to the project page. <span class="ui">✏️</span> renames it, and <span class="ui">📌</span> pins it to the top.</li>
+      <li><span class="ui">⏸ Suspend</span> pauses it. <span class="ui">Archive</span> puts it away when it's done. <span class="ui">⬇</span> downloads the whole project as one file.</li>
+      <li><span class="ui">Delete</span> removes it for good, so use Archive unless you're sure.</li>
+      <li><span class="ui">🚀 SpinUp: start a new project →</span> takes you to the Start page.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="kick">Tell me how it goes</div>
+  <h1>🐞 Feedback, from any page</h1>
+  <p class="sub">This is an early copy. When something breaks, confuses you or works great, the Feedback button at the bottom left sends it to me.</p>
+  <div class="grid">
+    <figure class="shot"><img src="tour/9-feedback.jpg" alt="The Feedback box"><figcaption>The Feedback box</figcaption></figure>
+    <ul class="keys">
+      <li><b>Pick a kind:</b> Bug, Idea, Confusing, Works great, or AI got it wrong.</li>
+      <li><b>Say what happened</b> in a line or two. Windows+H dictates.</li>
+      <li><span class="ui">Post on GitHub ↗</span> opens a post for you to check, then press <b>Submit new issue</b>. It needs a free GitHub account, and posts are <b>public</b>.</li>
+      <li><b>"Include the last few messages"</b> helps me see what happened. Leave it unticked if the chat has anything personal.</li>
+      <li><span class="ui">Save on this PC</span> keeps a note just for you. It doesn't reach me.</li>
+      <li>No GitHub account? Email me a screenshot and a line on what you were doing.</li>
+    </ul>
+  </div>
+  <p class="tip"><b>After your first project,</b> tell me three things: was it useful, what confused you, and would you keep using it?</p>
+</section>
+
+  </div>
+
+  <p class="cap" id="cap" aria-live="polite"></p>
+  <div class="dots" id="dots" role="tablist" aria-label="Slides"></div>
+  <p class="note">SpinUp is an early copy Tai built. Every Chief, Lead and Pro is an AI agent, not a person.</p>
+</div>
+<div id="zoom" role="dialog" aria-label="Screenshot, bigger"><img alt=""></div>
+
+<script>
+// The narration, slide by slide: [item to light up (-1 = none), line]. Items are counted in page order among the slide's
+// callouts (.keys li), the who's-who cards, the three-pages cards and the tab table rows.
+// After changing a line, re-record: node scripts/spinup-howto-voice.mjs
+window.HOWTO_NARR = [
+  [[-1, 'Welcome to SpinUp. In the next few minutes, you\'ll see every page, what the buttons do, and what each section is for.'],
+   [0, 'You\'re the CEO. You set the goal, answer questions, approve the work, and make the decisions. Nothing goes out without your OK.'],
+   [1, 'Your Chief is your right hand, the same on every project. Its job is to find the right Lead for each goal.'],
+   [2, 'The Lead is the pro a friend would tell you to call first. They own the outcome, and they pick the team.'],
+   [3, 'The Pros are the specialists. Each one asks only what they need, then does their part of the work.'],
+   [4, 'You\'ll use three pages. SpinUp Home shows all your projects, and everything waiting on you.'],
+   [5, 'The Start page is where you give a new goal and meet your team.'],
+   [6, 'And each goal gets its own project page, with your list, your Staff\'s work, and a chat with each Pro.']],
+  [[-1, 'The first time you open SpinUp Home, the Chief asks a few quick questions about you.'],
+   [0, 'Every question is optional. It takes about two minutes, and you can change it later.'],
+   [1, 'City and state matters most. It shapes the laws, climate and prices in the advice you get.'],
+   [2, 'You can also pick how your Staff talks to you: witty, to the point, warm, or detailed. That changes how they say things, never what they advise.'],
+   [3, 'About you shows everything SpinUp remembers. It stays on your PC, and you can forget any of it.'],
+   [5, 'And the Feedback button, at the bottom left, is on every page. More on that at the end.']],
+  [[-1, 'Now the Start page. This is where every project begins.'],
+   [0, 'Type your goal in plain words, and press Start. Or press the microphone, and say it.'],
+   [1, 'The demo buttons run an example goal and pick the answers for you. It\'s a real run, so it uses your Claude plan.'],
+   [2, 'Voices has each person speak in their own voice. Talk back lets you answer out loud.'],
+   [3, 'The yellow bar shows the goal as the team understands it. If your idea grows, press Change direction. New Pros join, and only what changed gets asked again.'],
+   [4, 'On the right is your Staff: the Lead on top, and the Pros below. A check mark means that Pro is done asking.'],
+   [5, 'And you can click any message in the conversation to hear it again.']],
+  [[-1, 'Each Pro asks a few questions, in the order the work happens.'],
+   [0, 'Tap an answer to choose it. When a question says pick all that apply, tap several, then press Continue.'],
+   [1, 'Not sure, your call, lets the Pro decide. Use it freely.'],
+   [2, 'You can also type your own answer, or tap one and add to it. Then press Send.'],
+   [3, 'Say it lets you answer by voice. Windows plus H also dictates into any box.'],
+   [4, 'The star next to one of your answers saves it as a fact about you, so no team asks again.'],
+   [5, 'Before the plan, the Lead checks your timeline, and tells you honestly what\'s realistic.']],
+  [[0, 'When the questions are done, your team writes the plan. Each Pro\'s box holds their advice, with real rules of thumb.'],
+   [1, 'The Lead\'s next steps say who does what, in order. Some of the steps are yours.'],
+   [2, 'This button reads the next steps aloud.'],
+   [3, 'Then the Lead asks if you want to put your Staff to work. Say yes, and each Pro gets their rules, a watch list, and a first assignment. Your project page is ready in a minute or two.'],
+   [4, 'Not now saves the plan for later.'],
+   [5, 'And if you type something new instead, the team works it into the plan.']],
+  [[-1, 'This is your project page. Everything about one goal is here.'],
+   [0, 'Your Lead writes the title. The pencil renames it.'],
+   [1, 'Talk to Rosa opens a chat with your Lead.'],
+   [2, 'The G button connects Google to this project. It\'s read and draft only, and it\'s off until you turn it on.'],
+   [3, 'The numbers line shows the week you\'re in, your Pros, your time with the Staff, and what the AI has cost from your plan.'],
+   [4, 'Put my Staff to work has each Pro do its next task, one after another. Drafts only.'],
+   [5, 'The Now bar shows the current phase, what\'s next, and anything blocking it.'],
+   [6, 'The tiles show you and each Pro, with what\'s open or waiting. Tap one for details.'],
+   [7, 'Your list, on the left, is what you do: now, then work to review, then later. Your Staff, on the right, shows anything late, due soon, or stuck.']],
+  [[-1, 'Below your list are tabs. The Board shows every Pro\'s tasks.'],
+   [0, 'Anything ready for you is waiting on your OK. Open the draft and read it. Then approve it, and the Staff builds on it. Or ask for changes.'],
+   [1, 'Refresh with research has the Pro redo it with fresh web research.'],
+   [2, 'Start asks that Pro to do a task now. It comes back for your review.'],
+   [3, 'The repeat button runs a task by itself, on a schedule.'],
+   [4, 'And the X means it\'s no longer needed. You can bring it back.'],
+   [5, 'Now the other tabs. Timeline shows the phases, week by week.'],
+   [6, 'People are the real people on the project, like a contractor, and what you owe each other.'],
+   [7, 'Knows is what your Staff knows about this project.'],
+   [8, 'Decisions keeps every call you made, so nobody re-argues it.'],
+   [9, 'Value shows your time, what the same work would cost from a person, and the AI cost.'],
+   [10, 'And Data holds the tables your Pros keep. You can edit them.']],
+  [[-1, 'You can talk to any Pro. Each one remembers your project, and works only in its own folder.'],
+   [0, 'On the left are your Pros. Click one to talk to them. The folder count opens the files they\'ve written.'],
+   [1, 'The chips on top show that Pro\'s work in progress, their to-dos, and anything waiting on you.'],
+   [2, 'When a Pro needs something from you, it says so, and adds it to your list.'],
+   [3, 'The paper clip attaches images, PDFs, Excel, Word, or PowerPoint files. You can also paste a screenshot.'],
+   [4, 'If an answer looks wrong, press Wrong. The Pro is told, so it doesn\'t repeat it.'],
+   [5, 'The star saves a reply to what your Staff knows. And New tab pops the chat out.']],
+  [[-1, 'Here\'s how you stay in charge.'],
+   [0, 'Nothing is sent, posted, or bought without you. Pros write drafts. You send them.'],
+   [1, 'Each Pro works only in its own folder. They can search the web, but they can\'t open your other files.'],
+   [2, 'A Pro can suggest a command to run on your PC, but nothing runs until you press Run. Read it first. If you aren\'t sure what it does, don\'t run it.'],
+   [3, 'If a web page or a file tries to slip a Pro hidden instructions, SpinUp pauses that Pro, and shows a red banner.'],
+   [4, 'On legal, tax, medical, insurance, or money questions, the work is marked as a draft. Check it with a real professional.'],
+   [5, 'Don\'t paste passwords or account numbers into a chat.'],
+   [6, 'And to stop SpinUp, close the black window. Your projects stay saved.']],
+  [[-1, 'Once you have projects, start each day on SpinUp Home.'],
+   [0, 'The counters show projects going, things waiting on you, Pros at work, and files your Staff wrote.'],
+   [1, 'Each project card shows your team, your progress, what\'s waiting on you, and what\'s next. Do the bold one first.'],
+   [2, 'Open goes to the project page. The pencil renames it, and the pin keeps it at the top.'],
+   [3, 'Suspend pauses a project. Archive puts it away when it\'s done. And the arrow downloads the whole project as one file.'],
+   [4, 'Delete removes it for good, so use Archive unless you\'re sure.'],
+   [5, 'And this button starts a new project.']],
+  [[-1, 'Last thing. This is an early copy, so your feedback matters.'],
+   [0, 'Press Feedback, at the bottom left, and pick a kind: bug, idea, confusing, works great, or AI got it wrong.'],
+   [1, 'Say what happened in a line or two.'],
+   [2, 'Post on GitHub opens a post for you to check and submit. It needs a free GitHub account, and posts are public.'],
+   [3, 'Including the last few messages helps. Leave it off if the chat has anything personal.'],
+   [4, 'Save on this PC keeps a note just for you. It doesn\'t reach Tai.'],
+   [5, 'No GitHub account? Just email a screenshot.'],
+   [-1, 'After your first project, tell Tai three things. Was it useful? What confused you? And would you keep using it? Thanks for trying SpinUp.']]
+];
+// For scripts/spinup-howto-voice.mjs: every line, with the file it's recorded to.
+// Focus box on the screenshot for each narration line (Tai, 11-16: "a focus box when explaining each section so the user can
+// visually follow along"): [x, y, width, height] in pixels of the 1366 x 900 screenshots, or null for no box. One entry per line.
+window.HOWTO_BOX = [
+  [],
+  [[92, 165, 760, 72], [92, 165, 760, 735], [470, 246, 370, 68], [100, 780, 630, 90], [86, 130, 162, 26], [14, 852, 106, 36]],
+  [[92, 206, 1168, 308], [110, 265, 1132, 52], [108, 322, 916, 36], [108, 364, 212, 38], [92, 532, 1168, 60], [769, 610, 491, 290], [92, 610, 662, 290]],
+  [[108, 0, 630, 700], [116, 714, 264, 42], [381, 714, 150, 42], [116, 760, 614, 46], [533, 714, 90, 42], [414, 258, 32, 30], [168, 100, 560, 140]],
+  [[106, 416, 1140, 149], [106, 574, 1140, 206], [935, 350, 312, 44], [166, 66, 564, 124], [166, 66, 564, 70], null],
+  [[100, 70, 690, 120], [100, 72, 620, 56], [589, 217, 127, 36], [725, 217, 44, 36], [98, 258, 390, 30], [492, 259, 168, 28], [102, 375, 1148, 70], [102, 455, 378, 158], [102, 643, 1150, 257]],
+  [[100, 78, 754, 38], [499, 272, 353, 186], [658, 352, 184, 36], [508, 572, 74, 36], [584, 572, 48, 36], [634, 572, 40, 36],
+   [204, 78, 107, 38], [313, 78, 143, 38], [458, 78, 104, 38], [564, 78, 125, 38], [691, 78, 82, 38], [775, 78, 78, 38]],
+  [[522, 0, 844, 900], [530, 83, 224, 164], [776, 91, 334, 32], [788, 462, 474, 114], [774, 804, 38, 70], [1178, 616, 82, 28], [1208, 8, 90, 32]],
+  [],
+  [null, [92, 52, 1170, 97], [92, 194, 284, 680], [102, 765, 52, 34], [156, 765, 180, 34], [102, 800, 58, 34], [90, 0, 284, 34]],
+  [[14, 481, 370, 362], [24, 522, 260, 76], [24, 596, 350, 94], [228, 788, 145, 38], [26, 696, 336, 44], [102, 788, 125, 38], null, null]
+];
+window.HOWTO_CLIPS = function () { var out = []; HOWTO_NARR.forEach(function (s, i) { s.forEach(function (l, n) { out.push({ file: (i + 1) + '-' + (n + 1) + '.mp3', text: l[1] }); }); }); return out; };
+
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var slides = [].slice.call(document.querySelectorAll('.slide')), stage = $('stage'), cap = $('cap'), dots = $('dots');
+  var i = 0, line = 0, PLAYING = false, VOICE = true, run = 0, audio = null, timer = null;
+  try { VOICE = localStorage.getItem('su-howto-voice') !== '0'; } catch (e) {}
+  var items = function (k) { return [].slice.call(slides[k].querySelectorAll('.keys li, .chain > div, .places > div, table.tabs tr')); };
+
+  // Browser voice, only if the recorded clips are missing.
+  var synth = window.speechSynthesis || null, bvoice = null;
+  function pickVoice() { if (!synth) return; var vs = synth.getVoices().filter(function (v) { return /^en/i.test(v.lang); });
+    bvoice = ['Andrew', 'Ava', 'Brian', 'Emma'].map(function (n) { return vs.find(function (v) { return /Natural/.test(v.name) && v.name.indexOf(n) >= 0; }); }).filter(Boolean)[0] || vs.find(function (v) { return /en-US/i.test(v.lang); }) || vs[0] || null; }
+  if (synth) { pickVoice(); synth.onvoiceschanged = pickVoice; }
+
+  // The caption: the line being spoken, each word lit as the voice reaches it (by its share of the line).
+  function caption(text) {
+    cap.innerHTML = text.split(/(\s+)/).map(function (w) { return /^\s+$/.test(w) ? w : '<span class="w">' + w.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</span>'; }).join('');
+    var ws = [].slice.call(cap.querySelectorAll('.w')), total = text.length, at = 0;
+    var ends = ws.map(function (w) { at += w.textContent.length + 1; return at / total; });
+    return function (f) { ws.forEach(function (w, n) { w.classList.toggle('now', f <= ends[n] && (n === 0 || f > ends[n - 1])); }); };
+  }
+  function light(k) { items(i).forEach(function (el, n) { el.classList.toggle('lit', n === k); });
+    var el = items(i)[k]; if (el && PLAYING) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+  // The focus box: moves over the part of the screenshot the narrator is describing, and dims the rest.
+  document.querySelectorAll('.shot img').forEach(function (im) {
+    var pic = document.createElement('div'); pic.className = 'pic'; im.parentNode.insertBefore(pic, im); pic.appendChild(im);
+    var f = document.createElement('div'); f.className = 'focus'; f.setAttribute('aria-hidden', 'true'); pic.appendChild(f);
+  });
+  function focusBox(b) {
+    var f = slides[i].querySelector('.focus'); if (!f) return;
+    if (!b) { f.classList.remove('on'); return; }
+    f.style.left = (b[0] / 13.66) + '%'; f.style.top = (b[1] / 9) + '%'; f.style.width = (b[2] / 13.66) + '%'; f.style.height = (b[3] / 9) + '%';
+    f.classList.add('on');
+  }
+  function stopSound() { clearInterval(timer); timer = null; if (audio) { audio.onended = audio.onerror = audio.ontimeupdate = null; audio.pause(); audio = null; } if (synth) synth.cancel(); }
+
+  function say(text, file, done) {
+    var my = run, mark = caption(text);
+    var finish = function () { if (my !== run) return; mark(2); stopSound(); setTimeout(function () { if (my === run) done(); }, 450); };
+    if (!VOICE) { var t0 = Date.now(), ms = Math.max(2200, text.length * 62);   // voice off: captions at reading pace
+      timer = setInterval(function () { var f = (Date.now() - t0) / ms; mark(f); if (f >= 1) finish(); }, 80); return; }
+    audio = new Audio('tour/voice/' + file);
+    audio.ontimeupdate = function () { if (audio && audio.duration) mark(audio.currentTime / audio.duration); };
+    audio.onended = finish;
+    var fell = false;
+    audio.onerror = function () { if (fell || my !== run) return; fell = true; audio = null; if (!synth) { VOICE = false; return say(text, file, done); }   // no clip: the browser's voice
+      var u = new SpeechSynthesisUtterance(text); if (bvoice) { u.voice = bvoice; u.lang = bvoice.lang; }
+      u.onboundary = function (e) { mark((e.charIndex + 1) / text.length); }; u.onend = u.onerror = finish; synth.speak(u); };
+    audio.play().catch(function () { if (audio) audio.onerror(); });
+  }
+  function step() {
+    var N = HOWTO_NARR[i] || [];
+    if (!PLAYING) return;
+    if (line >= N.length) { if (i < slides.length - 1) { show(i + 1, true); return step(); } pause(true); return; }
+    var l = N[line]; light(l[0]); focusBox((HOWTO_BOX[i] || [])[line]);
+    say(l[1], (i + 1) + '-' + (line + 1) + '.mp3', function () { line++; step(); });
+  }
+  function show(k, keepPlaying) {
+    run++; stopSound(); i = Math.max(0, Math.min(slides.length - 1, k)); line = 0;
+    slides.forEach(function (s, n) { s.classList.toggle('on', n === i); });
+    [].forEach.call(dots.children, function (d, n) { d.classList.toggle('on', n === i); d.setAttribute('aria-current', String(n === i)); });
+    $('count').textContent = (i + 1) + ' of ' + slides.length;
+    $('prev').disabled = i === 0; $('next').disabled = i === slides.length - 1;
+    items(i).forEach(function (el) { el.classList.remove('lit'); });
+    document.querySelectorAll('.focus.on').forEach(function (f) { f.classList.remove('on'); });
+    cap.textContent = PLAYING ? '' : (i === 0 ? 'Press ▶ Play to hear it, or step through with ◀ ▶▶.' : '');
+    try { history.replaceState(null, '', '#' + (i + 1)); } catch (e) {}
+    if (!keepPlaying && PLAYING) { stage.scrollIntoView({ block: 'start', behavior: 'smooth' }); step(); }
+  }
+  function play() { PLAYING = true; stage.classList.add('talking'); $('play').textContent = '⏸ Pause'; if (i === slides.length - 1 && line >= (HOWTO_NARR[i] || []).length) show(0, true); step(); }
+  function pause(ended) { PLAYING = false; run++; stopSound(); stage.classList.remove('talking'); if (ended) focusBox(null); $('play').textContent = ended ? '▶ Play again' : '▶ Play';
+    if (ended) { line = 0; cap.textContent = 'That\'s the tour. Open SpinUp Home and give it a real goal.'; } }
+  function setVoice(v) { VOICE = v; $('mute').textContent = v ? '🔊 Voice on' : '🔇 Voice off'; $('mute').setAttribute('aria-pressed', String(!v));
+    try { localStorage.setItem('su-howto-voice', v ? '1' : '0'); } catch (e) {}
+    if (PLAYING) { run++; stopSound(); step(); } }
+
+  slides.forEach(function (s, k) { var b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', 'Slide ' + (k + 1)); b.onclick = function () { show(k); }; dots.appendChild(b); });
+  $('play').onclick = function () { PLAYING ? pause() : play(); };
+  $('prev').onclick = function () { show(i - 1); }; $('next').onclick = function () { show(i + 1); };
+  $('mute').onclick = function () { setVoice(!VOICE); };
+  $('full').onclick = function () { var w = $('wrap'); if (document.fullscreenElement) document.exitFullscreen(); else if (w.requestFullscreen) w.requestFullscreen(); };
+  var zoom = $('zoom'), zi = zoom.querySelector('img');
+  document.querySelectorAll('.shot img').forEach(function (im) { im.onclick = function () { zi.src = im.src; zi.alt = im.alt; zoom.classList.add('on'); }; });
+  zoom.onclick = function () { zoom.classList.remove('on'); };
+  document.addEventListener('keydown', function (e) {
+    if (e.target.closest && e.target.closest('input, textarea, select')) return;
+    if (e.key === 'Escape') { zoom.classList.remove('on'); return; }
+    if (zoom.classList.contains('on')) return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); show(i + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); show(i - 1); }
+    else if (e.key === ' ') { e.preventDefault(); PLAYING ? pause() : play(); }
+    else if (e.key === 'm' || e.key === 'M') setVoice(!VOICE);
+    else if (e.key === 'f' || e.key === 'F') $('full').click();
+    else if (e.key === 'Home') show(0); else if (e.key === 'End') show(slides.length - 1);
+  });
+  setVoice(VOICE);
+  show((parseInt(location.hash.slice(1), 10) || 1) - 1);
+
+  var r = document.documentElement, t = $('theme');
+  function setTheme(v) { r.setAttribute('data-theme', v); t.textContent = v === 'dark' ? 'Light' : 'Dark'; try { localStorage.setItem('theme', v); } catch (e) {} }
+  try { var s = localStorage.getItem('theme'); if (s) setTheme(s); } catch (e) {}
+  t.onclick = function () { setTheme(r.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); };
+})();
+</script>
+</body>
+</html>
